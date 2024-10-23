@@ -1,0 +1,15 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { render } from "astro:content";
+
+export interface Props {
+	seed: CollectionEntry<"seeds">;
+}
+
+const { seed } = Astro.props;
+const { Content, headings } = await render(seed);
+console.log(headings)
+---
+
+<Content />
+
