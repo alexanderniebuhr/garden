@@ -1,0 +1,24 @@
+---
+import type { GetStaticPaths } from "astro";
+
+import { getCollection } from "astro:content";
+import Article from "../../components/Article.astro";
+import List from "../../components/List.astro";
+
+export const getStaticPaths = (async ({ paginate }) => {
+	const seedCollection = await getCollection("seeds");
+	return [
+		...paginate(seedCollection.concat().sort(), {
+			pageSize: 5,
+		}),
+		...seedCollection.map((entry) => ({
+			params: { page: entry.id },
+			props: { entry: entry },
+		})),
+	];
+}) satisfies GetStaticPaths;
+
+const { page, entry } = Astro.props;
+---
+
+{entry ? <Article seed={entry} /> : <List page={page} title="Articles" />}
