@@ -1,0 +1,10 @@
+{
+  "account_id": "1dc7f5dfd6f1830ea5b903d051c6d624",
+  "compatibility_date": "2025-06-21",
+  "main": "dist/_worker.js/index.js",
+  "name": "garden",
+  "assets": {
+    "binding": "ASSETS",
+    "directory": "./dist"
+  }
+}

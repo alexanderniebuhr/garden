@@ -1,12 +1,13 @@
 ---
-// Welcome to Astro! Everything between these triple-dash code fences
-// is your "component frontmatter". It never runs in the browser.
-console.log("This runs in your terminal, not the browser!");
-export const prerender = false
+export const prerender = false;
+
+import "../styles/reset.css";
+import "../styles/global.css";
+
+import Center from "../components/Center.astro";
+import ShareActions from "../components/ShareActions.astro";
 ---
 
-<!-- Below is your "component template." It's just HTML, but with
-    some magic sprinkled in to help you build great templates. -->
 <html>
   <head>
     <style>
@@ -16,10 +17,41 @@ export const prerender = false
     </style>
     <link rel="sitemap" href="/sitemap-index.xml" />
   </head>
-  <body>
-    <h1>Hello, World!</h1>
+  <body class="font-size:base">
     <!-- <Avatar server:defer>
       <GenericUserImage slot="fallback" />
     </Avatar> -->
+    <Center>
+      <h2 class="font-size:biggish">
+        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+      </h2>
+      <p>
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Rerum quas ut
+        aut, accusamus delectus at provident, veritatis temporibus in eveniet a
+        nemo numquam corporis porro explicabo. Magnam officiis quod consequatur.
+        Sint cupiditate quidem nesciunt quae totam non quas ut atque earum
+        impedit. Quisquam explicabo in ab earum quae aspernatur non. Molestias
+        aspernatur ratione ipsa, numquam laudantium dicta quibusdam eum odit!
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Itaque facilis
+        tenetur in consectetur repellat modi? Nam consequatur dignissimos
+        doloribus aliquid id repellendus animi, quas ab alias pariatur impedit,
+        nemo soluta. Beatae adipisci, expedita reprehenderit autem tempore,
+        nulla placeat rem odio voluptatem impedit velit nihil suscipit quas
+        dicta! Ea, rerum eum corporis adipisci soluta suscipit ut atque at
+        asperiores quasi sequi. Consequuntur reiciendis fugiat quos iste culpa
+        voluptates quae dolorum. Cum modi ipsam pariatur deserunt aspernatur
+        praesentium debitis sequi consectetur reiciendis soluta, quos et
+        voluptatum exercitationem corporis eos, laborum neque mollitia.
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum libero
+        aliquam tempora nobis rerum, reprehenderit maiores! Perspiciatis,
+        dignissimos veniam delectus debitis culpa sunt reprehenderit, nam,
+        provident odit consequuntur commodi ullam?
+      </p>
+    </Center>
+    <ShareActions url="https://example.com/test" />
   </body>
 </html>
