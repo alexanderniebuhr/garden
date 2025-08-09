@@ -1,4 +1,2 @@
 # renovate: datasource=node-version depName=node versioning=node
-node = "24.2.0"
-# renovate: datasource=npm depName=pnpm
-pnpm = "10.12.1"
+node = "24.5.0"
