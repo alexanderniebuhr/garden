@@ -1,5 +1,0 @@
-name = "garden"
-
-main = "dist/_worker.js/index.js"
-compatibility_date = "2024-08-21"
-experimental_assets = { directory = "./dist", binding = "ASSETS" }
