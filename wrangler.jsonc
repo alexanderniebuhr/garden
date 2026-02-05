@@ -1,10 +1,10 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"account_id": "1dc7f5dfd6f1830ea5b903d051c6d624",
-	"compatibility_date": "2026-02-05",
+	"compatibility_date": "2026-01-20",
 	"compatibility_flags": ["nodejs_compat", "disable_nodejs_process_v2"],
 	"main": "./src/worker.ts",
-	"name": "garden",
+	"name": "alexanderniebuhr-garden",
 	"assets": {
 		"binding": "ASSETS"
 	},
