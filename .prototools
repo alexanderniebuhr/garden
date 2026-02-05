@@ -1,2 +1,0 @@
-# renovate: datasource=node-version depName=node versioning=node
-node = "24.5.0"

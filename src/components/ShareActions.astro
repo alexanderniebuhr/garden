@@ -3,163 +3,159 @@ const { url, title } = Astro.props;
 ---
 
 <style is:inline>
-  .share-actions li {
-    position: relative;
-  }
+	.share-actions li {
+		position: relative;
+	}
 
-  .share-actions [role="alert"] {
-    position: absolute;
-    inset: 0;
-    align-content: center;
-    text-align: center;
-    text-transform: uppercase;
-    letter-spacing: var(--uppercase-kerning);
-    font-weight: var(--font-bold);
-    font-size: var(--size-step-00);
-    background: var(--color-primary);
-    color: var(--color-light);
-  }
+	.share-actions [role="alert"] {
+		position: absolute;
+		inset: 0;
+		align-content: center;
+		text-align: center;
+		text-transform: uppercase;
+		letter-spacing: var(--uppercase-kerning);
+		font-weight: var(--font-bold);
+		font-size: var(--size-step-00);
+		background: var(--color-primary);
+		color: var(--color-light);
+	}
 
-  .share-actions [role="alert"]:empty {
-    display: none;
-  }
+	.share-actions [role="alert"]:empty {
+		display: none;
+	}
 </style>
 
 <share-actions data-url={url} data-title={title}>
-  <p>Copy this link to share with your friends.</p>
-  <p>
-    <code>https://example.com</code>
-  </p>
+	<p>Copy this link to share with your friends.</p>
+	<p>
+		<code>https://example.com</code>
+	</p>
 </share-actions>
 
 <script>
-  class ShareActions extends HTMLElement {
-    constructor() {
-      super();
-    }
+	class ShareActions extends HTMLElement {
+		get url() {
+			return this.dataset.url || window.location.href;
+		}
 
-    get url() {
-      return this.dataset.url || window.location.href;
-    }
+		override get title() {
+			return this.dataset.title || document.title;
+		}
 
-    override get title() {
-      return this.dataset.title || document.title;
-    }
+		get description() {
+			const metaDescriptionElement = document.querySelector(
+				'meta[name="description"]',
+			);
 
-    get description() {
-      const metaDescriptionElement = document.querySelector(
-        'meta[name="description"]',
-      );
+			return metaDescriptionElement
+				? metaDescriptionElement.getAttribute("content")
+				: "";
+		}
 
-      return metaDescriptionElement
-        ? metaDescriptionElement.getAttribute("content")
-        : "";
-    }
+		get hasShareSupport() {
+			return navigator.share;
+		}
 
-    get hasShareSupport() {
-      return navigator.share;
-    }
+		// Determine if this browser can use the clipboard API
+		get hasClipboardSupport() {
+			return navigator.clipboard;
+		}
 
-    // Determine if this browser can use the clipboard API
-    get hasClipboardSupport() {
-      return navigator.clipboard;
-    }
+		renderAlert(text: string, context: EventTarget, clearTime = 3000) {
+			const alert = context
+				? context.nextElementSibling
+				: this.querySelector('[role="alert"]');
 
-    renderAlert(text: string, context: EventTarget, clearTime = 3000) {
-      const alert = context
-        ? context.nextElementSibling
-        : this.querySelector('[role="alert"]');
+			if (alert) {
+				alert.innerText = text;
 
-      if (alert) {
-        alert.innerText = text;
+				setTimeout(() => {
+					alert.innerText = "";
+				}, clearTime);
+			}
+		}
 
-        setTimeout(() => {
-          alert.innerText = "";
-        }, clearTime);
-      }
-    }
+		triggerShare(context: EventTarget) {
+			navigator
+				.share({
+					title: this.title,
+					url: this.url,
+					text: this.description ?? "",
+				})
+				.then(() => {
+					this.renderAlert("Thanks!", context);
+				})
+				.catch((error) => {
+					console.error("Error sharing", error);
+				});
+		}
 
-    triggerShare(context: EventTarget) {
-      navigator
-        .share({
-          title: this.title,
-          url: this.url,
-          text: this.description ?? "",
-        })
-        .then(() => {
-          this.renderAlert("Thanks!", context);
-        })
-        .catch((error) => {
-          console.error("Error sharing", error);
-        });
-    }
+		copyToClipboard(context: EventTarget) {
+			navigator.clipboard
+				.writeText(this.url)
+				.then(() => {
+					this.renderAlert("Copied!", context);
+				})
+				.catch((error) => console.error(error));
+		}
 
-    copyToClipboard(context: EventTarget) {
-      navigator.clipboard
-        .writeText(this.url)
-        .then(() => {
-          this.renderAlert("Copied!", context);
-        })
-        .catch((error) => console.error(error));
-    }
+		handleClick(event) {
+			const method = event.currentTarget.dataset.method;
 
-    handleClick(event) {
-      const method = event.currentTarget.dataset.method;
+			switch (method) {
+				case "share":
+					this.triggerShare(event.currentTarget);
+					return;
+				case "clipboard":
+					this.copyToClipboard(event.currentTarget);
+					return;
+			}
+		}
 
-      switch (method) {
-        case "share":
-          this.triggerShare(event.currentTarget);
-          return;
-        case "clipboard":
-          this.copyToClipboard(event.currentTarget);
-          return;
-      }
-    }
+		assignEvents() {
+			const buttons = this.querySelectorAll("button");
 
-    assignEvents() {
-      const buttons = this.querySelectorAll("button");
+			if (buttons.length) {
+				buttons.forEach((button) => {
+					button.addEventListener("click", (event) => this.handleClick(event));
+				});
+			}
+		}
 
-      if (buttons.length) {
-        buttons.forEach((button) => {
-          button.addEventListener("click", (event) => this.handleClick(event));
-        });
-      }
-    }
+		connectedCallback() {
+			if (!this.hasShareSupport && !this.hasClipboardSupport) {
+				console.log("No support so revert to MVE");
+				return;
+			}
 
-    connectedCallback() {
-      if (!this.hasShareSupport && !this.hasClipboardSupport) {
-        console.log("No support so revert to MVE");
-        return;
-      }
-
-      this.innerHTML = `
+			this.innerHTML = `
         <ul class="share-actions" role="list">
           ${
-            this.hasShareSupport
-              ? `
+						this.hasShareSupport
+							? `
             <li>
               <button class="button" data-method="share">Share</button>
               <div role="alert"></div>
             </li>
           `
-              : ""
-          }
+							: ""
+					}
           ${
-            this.hasClipboardSupport
-              ? `
+						this.hasClipboardSupport
+							? `
             <li>
               <button class="button" data-method="clipboard">Copy URL</button>
               <div role="alert"></div>
             </li>
             `
-              : ""
-          }
+							: ""
+					}
         </ul>
       `;
 
-      this.assignEvents();
-    }
-  }
+			this.assignEvents();
+		}
+	}
 
-  customElements.define("share-actions", ShareActions);
+	customElements.define("share-actions", ShareActions);
 </script>

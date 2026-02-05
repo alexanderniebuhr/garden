@@ -1,57 +1,33 @@
 ---
 export const prerender = false;
 
-import "../styles/reset.css";
 import "../styles/global.css";
 
-import Center from "../components/Center.astro";
 import ShareActions from "../components/ShareActions.astro";
 ---
 
 <html>
-  <head>
-    <style>
-      @view-transition {
-        navigation: auto;
-      }
-    </style>
-    <link rel="sitemap" href="/sitemap-index.xml" />
-  </head>
-  <body class="font-size:base">
-    <!-- <Avatar server:defer>
-      <GenericUserImage slot="fallback" />
-    </Avatar> -->
-    <Center>
-      <h2 class="font-size:biggish">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-      </h2>
-      <p>
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Rerum quas ut
-        aut, accusamus delectus at provident, veritatis temporibus in eveniet a
-        nemo numquam corporis porro explicabo. Magnam officiis quod consequatur.
-        Sint cupiditate quidem nesciunt quae totam non quas ut atque earum
-        impedit. Quisquam explicabo in ab earum quae aspernatur non. Molestias
-        aspernatur ratione ipsa, numquam laudantium dicta quibusdam eum odit!
-      </p>
-      <p>
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Itaque facilis
-        tenetur in consectetur repellat modi? Nam consequatur dignissimos
-        doloribus aliquid id repellendus animi, quas ab alias pariatur impedit,
-        nemo soluta. Beatae adipisci, expedita reprehenderit autem tempore,
-        nulla placeat rem odio voluptatem impedit velit nihil suscipit quas
-        dicta! Ea, rerum eum corporis adipisci soluta suscipit ut atque at
-        asperiores quasi sequi. Consequuntur reiciendis fugiat quos iste culpa
-        voluptates quae dolorum. Cum modi ipsam pariatur deserunt aspernatur
-        praesentium debitis sequi consectetur reiciendis soluta, quos et
-        voluptatum exercitationem corporis eos, laborum neque mollitia.
-      </p>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum libero
-        aliquam tempora nobis rerum, reprehenderit maiores! Perspiciatis,
-        dignissimos veniam delectus debitis culpa sunt reprehenderit, nam,
-        provident odit consequuntur commodi ullam?
-      </p>
-    </Center>
-    <ShareActions url="https://example.com/test" />
-  </body>
+	<head>
+		<title>Web Share API and Clipboard API Demo</title>
+	</head>
+	<body class="">
+		<ShareActions url="https://example.com/test" />
+		This work is licensed under
+		<a href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a>
+		<img
+			src="https://mirrors.creativecommons.org/presskit/icons/cc.svg"
+			alt=""
+			style="max-width: 1em;max-height:1em;margin-left: .2em;"
+		>
+		<img
+			src="https://mirrors.creativecommons.org/presskit/icons/by.svg"
+			alt=""
+			style="max-width: 1em;max-height:1em;margin-left: .2em;"
+		>
+		<img
+			src="https://mirrors.creativecommons.org/presskit/icons/nc.svg"
+			alt=""
+			style="max-width: 1em;max-height:1em;margin-left: .2em;"
+		>
+	</body>
 </html>

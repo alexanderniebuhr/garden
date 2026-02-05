@@ -1,28 +1,39 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.0.4/schema.json",
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "vcs": {
     "enabled": true,
     "clientKind": "git",
     "useIgnoreFile": true,
     "defaultBranch": "main"
   },
+  "files": {
+    "includes": ["**", "!**/worker-configuration.d.ts"]
+  },
   "formatter": {
-    "enabled": true,
-    "formatWithErrors": false,
-    "indentStyle": "tab",
-    "indentWidth": 2,
-    "lineWidth": 100,
-    "lineEnding": "lf"
+    "enabled": true
+  },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
+  },
+  "html": {
+    "experimentalFullSupportEnabled": true,
+    "formatter": {
+      "enabled": true,
+      "indentScriptAndStyle": true
+    }
   },
   "assist": {
     "enabled": true,
     "actions": {
       "recommended": true,
       "source": {
+        "recommended": true,
         "organizeImports": {
           "level": "on",
           "options": {
-            "groups": [{ "type": true }, ":BLANK_LINE:"]
+            "groups": [{ "type": true }]
           }
         }
       }
@@ -31,27 +42,18 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "nursery": {
+        "useSortedClasses": "warn"
+      }
     },
     "domains": {
       "project": "recommended"
     }
   },
-  "javascript": {
-    "formatter": {
-      "quoteStyle": "single",
-      "trailingCommas": "all"
-    }
-  },
-  "json": {
-    "formatter": {
-      "indentStyle": "space",
-      "trailingCommas": "none"
-    }
-  },
   "overrides": [
     {
-      "includes": ["**/*.astro"],
+      "includes": ["**/*.svelte", "**/*.astro", "**/*.vue"],
       "linter": {
         "rules": {
           "style": {

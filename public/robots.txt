@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://alexanderniebuhr.me/sitemap-index.xml
