@@ -1,0 +1,11 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+	post: CollectionEntry<"blog">;
+}
+
+// `post` will match your 'blog' collection schema type
+const { post } = Astro.props;
+---
+

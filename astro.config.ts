@@ -1,4 +1,5 @@
 import cloudflare from "@astrojs/cloudflare";
+import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
 import expressiveCode from "astro-expressive-code";
@@ -13,11 +14,24 @@ export default defineConfig({
 	}),
 	compressHTML: false,
 	experimental: {
+		clientPrerender: true,
 		contentIntellisense: true,
 		svgo: true,
 		chromeDevtoolsWorkspace: true,
 	},
-	integrations: [expressiveCode()],
+	i18n: {
+		locales: ["de"],
+		defaultLocale: "de",
+		routing: {
+			prefixDefaultLocale: true,
+			fallbackType: "redirect",
+		},
+		fallback: {},
+	},
+	prefetch: {
+		defaultStrategy: "hover",
+	},
+	integrations: [expressiveCode(), sitemap()],
 	devToolbar: {
 		enabled: false,
 	},

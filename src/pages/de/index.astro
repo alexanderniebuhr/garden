@@ -1,0 +1,22 @@
+---
+export const prerender = true;
+
+import { getCollection } from "astro:content";
+import Page from "../../layouts/Page.astro";
+
+const posts = (
+	await getCollection("blog", ({ data, id }) => {
+		return id.includes(Astro.currentLocale ?? Astro.preferredLocale ?? "de");
+	})
+).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<Page title="Hallo, Welt!">
+	{posts.map((post) => (
+    <article>
+        <h2>{post.data.title}</h2>
+        <p>Von {post.data.author} am {post.data.date.toLocaleDateString("de-DE")} veröffentlicht</p>
+        <a href={`/${post.id}`}>Weiterlesen</a>
+    </article>
+  ))}
+</Page>
