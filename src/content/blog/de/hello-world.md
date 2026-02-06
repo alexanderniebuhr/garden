@@ -1,7 +1,7 @@
 ---
 slug: "de/hello-world"
-title: Hello World
-author: Alexander Niebuhr
+title: "Hello World"
+author: "Alexander Niebuhr"
 date: "2024-06-01"
 ---
 

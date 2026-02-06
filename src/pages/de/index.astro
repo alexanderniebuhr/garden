@@ -15,6 +15,7 @@ const posts = (
 	{posts.map((post) => (
     <article>
         <h2>{post.data.title}</h2>
+        <kbd>{post.data.metadata}</kbd>
         <p>Von {post.data.author} am {post.data.date.toLocaleDateString("de-DE")} veröffentlicht</p>
         <a href={`/${post.id}`}>Weiterlesen</a>
     </article>
