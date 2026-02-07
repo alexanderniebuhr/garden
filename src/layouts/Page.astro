@@ -8,9 +8,13 @@ const { title } = Astro.props;
 ---
 
 <Shell title={title}>
-	<nav>NAV</nav>
-	<main>
+	<header class="w-full max-w-4xl mx-auto px-fluid-gutter py-fluid-s">
+		<nav>NAV</nav>
+	</header>
+	<main class="flex-1 w-full max-w-4xl mx-auto px-fluid-gutter py-fluid-l">
 		<slot />
 	</main>
-	<footer>FOOTER</footer>
+	<footer class="w-full max-w-4xl mx-auto px-fluid-gutter py-fluid-s">
+		FOOTER
+	</footer>
 </Shell>

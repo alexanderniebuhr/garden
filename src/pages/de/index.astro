@@ -16,7 +16,7 @@ const posts = (
     <article>
         <h2>{post.data.title}</h2>
         <kbd>{post.data.metadata}</kbd>
-        <p>Von {post.data.author} am {post.data.date.toLocaleDateString("de-DE")} veröffentlicht</p>
+        <p>Von {post.data.author} am <time datetime={post.data.date.toISOString()}>{post.data.date.toLocaleDateString("de-DE")}</time> veröffentlicht</p>
         <a href={`/${post.id}`}>Weiterlesen</a>
     </article>
   ))}

@@ -1,0 +1,45 @@
+---
+import type { CollectionEntry } from "astro:content";
+import Developing from "../components/icons/Developing.astro";
+import Experimental from "../components/icons/Experimental.astro";
+import Final from "../components/icons/Final.astro";
+import Sharing from "../components/icons/Sharing.astro";
+import Understanding from "../components/icons/Understanding.astro";
+import Page from "./Page.astro";
+
+type Post = CollectionEntry<"blog">["data"];
+interface Props extends Post {
+	pageTitle: string;
+}
+const { pageTitle, title } = Astro.props;
+---
+
+<Page title={pageTitle}>
+	<article class="flex flex-col gap-fluid-m">
+		<header class="flex flex-col items-center gap-fluid-xs">
+			<time
+				class="text-sm text-neutral-500 dark:text-neutral-400"
+				datetime={Astro.props.date.toISOString()}
+			>
+				{Astro.props.date.toLocaleDateString("de-DE")}
+			</time>
+			<h1 class="text-fluid-heading font-bold text-center">{title}</h1>
+			<samp
+				class="flex flex-wrap items-center justify-center gap-1 select-none"
+			>
+				<Experimental type="multi" width="2rem" height="2rem" />
+				&centerdot;
+				<Developing type="duo" width="2rem" height="2rem" />
+				&centerdot;
+				<Understanding type="duo" width="2rem" height="2rem" />
+				&centerdot;
+				<Sharing type="duo" width="2rem" height="2rem" />
+				&centerdot;
+				<Final type="duo" width="2rem" height="2rem" />
+			</samp>
+		</header>
+		<section class="prose max-w-none">
+			<slot />
+		</section>
+	</article>
+</Page>
