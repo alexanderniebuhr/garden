@@ -20,7 +20,7 @@ export default defineConfig({
 		chromeDevtoolsWorkspace: true,
 	},
 	i18n: {
-		locales: ["de"],
+		locales: ["de", "en"],
 		defaultLocale: "de",
 		routing: {
 			prefixDefaultLocale: true,

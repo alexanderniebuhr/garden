@@ -38,7 +38,6 @@ const blog = defineCollection({
 		title: z.string(),
 		author: z.string(),
 		date: z.coerce.date(),
-		metadata: z.unknown().default({}),
 	}),
 });
 

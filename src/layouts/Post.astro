@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import { getAbsoluteLocaleUrlList } from "astro:i18n";
 import Developing from "../components/icons/Developing.astro";
 import Experimental from "../components/icons/Experimental.astro";
 import Final from "../components/icons/Final.astro";
@@ -12,34 +13,77 @@ interface Props extends Post {
 	pageTitle: string;
 }
 const { pageTitle, title } = Astro.props;
+const description = `${title} — by ${Astro.props.author}`;
+
+const absoluteLocaleUrlList = getAbsoluteLocaleUrlList(
+	Astro.url.pathname.split("/").toSpliced(1, 1).join("/"),
+	{},
+);
+
+const lang = Astro.currentLocale || "de";
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 ---
 
-<Page title={pageTitle}>
-	<article class="flex flex-col gap-fluid-m">
-		<header class="flex flex-col items-center gap-fluid-xs">
-			<time
-				class="text-sm text-neutral-500 dark:text-neutral-400"
-				datetime={Astro.props.date.toISOString()}
-			>
-				{Astro.props.date.toLocaleDateString("de-DE")}
-			</time>
-			<h1 class="text-fluid-heading font-bold text-center">{title}</h1>
-			<samp
-				class="flex flex-wrap items-center justify-center gap-1 select-none"
-			>
-				<Experimental type="multi" width="2rem" height="2rem" />
-				&centerdot;
-				<Developing type="duo" width="2rem" height="2rem" />
-				&centerdot;
-				<Understanding type="duo" width="2rem" height="2rem" />
-				&centerdot;
-				<Sharing type="duo" width="2rem" height="2rem" />
-				&centerdot;
-				<Final type="duo" width="2rem" height="2rem" />
-			</samp>
-		</header>
-		<section class="prose max-w-none">
-			<slot />
-		</section>
-	</article>
+<Page title={pageTitle} description={description}>
+	<Fragment slot="head">
+		<title>{title}</title>
+		<meta name="description" content={description}>
+		<link rel="canonical" href={canonicalUrl.href}>
+		{absoluteLocaleUrlList.map((url) => {
+				const locale = new URL(url).pathname.split("/").at(1);
+				return <link rel="alternate" hreflang={locale} href={url} />;
+			})}
+		<!-- Open Graph -->
+		<meta property="og:type" content="website">
+		<meta property="og:url" content={canonicalUrl.href}>
+		<meta property="og:title" content={title}>
+		<meta property="og:description" content={description}>
+		<meta property="og:locale" content={lang}>
+		<meta property="og:site_name" content="Alexander Niebuhr's Garden">
+		<!-- Twitter -->
+		<meta name="twitter:card" content="summary">
+		<meta name="twitter:title" content={title}>
+		<meta name="twitter:description" content={description}>
+	</Fragment>
+	<Fragment slot="main">
+		<article class="flex flex-col gap-fluid-m">
+			<header class="flex flex-col items-center gap-fluid-xs">
+				<time
+					class="text-sm text-neutral-500 dark:text-neutral-400"
+					datetime={Astro.props.date.toISOString()}
+				>
+					{Astro.props.date.toLocaleDateString("de-DE")}
+				</time>
+				<h1 class="text-fluid-heading font-bold text-center">{title}</h1>
+				<div
+					role="group"
+					aria-label="Post maturity stages"
+					class="flex flex-wrap items-center justify-center gap-1 select-none"
+				>
+					<Experimental type="multi" width="2rem" height="2rem" />
+					&centerdot;
+					<Developing
+						type="multi"
+						width="2rem"
+						height="2rem"
+						class="grayscale"
+					/>
+					&centerdot;
+					<Understanding
+						type="multi"
+						width="2rem"
+						height="2rem"
+						class="grayscale"
+					/>
+					&centerdot;
+					<Sharing type="multi" width="2rem" height="2rem" class="grayscale" />
+					&centerdot;
+					<Final type="multi" width="2rem" height="2rem" class="grayscale" />
+				</div>
+			</header>
+			<div class="prose max-w-none">
+				<slot />
+			</div>
+		</article>
+	</Fragment>
 </Page>

@@ -1,17 +1,14 @@
 ---
 import "../styles/global.css";
-interface Props {
-	title: string;
-}
-const { title } = Astro.props;
+const lang = Astro.currentLocale;
 ---
 
-<html lang="en">
+<html lang={lang}>
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="generator" content={Astro.generator}>
-		<title>{title}</title>
+		<slot name="head" />
 		<link rel="sitemap" href="/sitemap-index.xml">
 		<link
 			rel="alternate"
@@ -23,15 +20,14 @@ const { title } = Astro.props;
 	<body
 		class="min-h-dvh flex flex-col bg-amber-50 dark:bg-neutral-900 text-black dark:text-white antialiased"
 	>
-		<slot />
+		<slot name="body" />
 		<!-- Cloudflare Web Analytics -->
 		<script
 			is:inline
 			defer
 			src="https://static.cloudflareinsights.com/beacon.min.js"
 			data-cf-beacon='{"token": "639b1b00814b4516b1b7b72306510f3d"}'
-		>
-		</script>
+		></script>
 		<!-- End Cloudflare Web Analytics -->
 	</body>
 </html>

@@ -6,7 +6,7 @@ import { getCollection } from "astro:content";
 import rss from "@astrojs/rss";
 
 export const GET = (async ({ site }) => {
-	const article = await getCollection("article");
+	const article = await getCollection("blog");
 	return rss({
 		title: "Alexander Niebuhr's Garden",
 		description:

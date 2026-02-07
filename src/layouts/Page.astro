@@ -1,20 +1,91 @@
 ---
+import GraphIcon from "../assets/pixel/chart-network.svg";
 import Shell from "./Shell.astro";
-
-interface Props {
-	title: string;
-}
-const { title } = Astro.props;
 ---
 
-<Shell title={title}>
-	<header class="w-full max-w-4xl mx-auto px-fluid-gutter py-fluid-s">
-		<nav>NAV</nav>
-	</header>
-	<main class="flex-1 w-full max-w-4xl mx-auto px-fluid-gutter py-fluid-l">
-		<slot />
-	</main>
-	<footer class="w-full max-w-4xl mx-auto px-fluid-gutter py-fluid-s">
-		FOOTER
-	</footer>
+<Shell>
+	<Fragment slot="head">
+		<slot name="head" />
+	</Fragment>
+	<Fragment slot="body">
+		<header
+			id="site-header"
+			class="sticky top-0 z-50 flex justify-center py-fluid-xs"
+		>
+			<nav
+				id="site-nav"
+				class="
+      rounded-full px-fluid-gutter py-1
+      bg-amber-50/(--nav-bg-a) dark:bg-neutral-800/(--nav-bg-a)
+      backdrop-blur-(--nav-blur)
+      shadow-lg shadow-black/(--nav-shadow-a) dark:shadow-black/(--nav-shadow-dark-a)
+      ring-1 ring-black/(--nav-ring-a) dark:ring-white/(--nav-ring-dark-a)
+      [--nav-bg-a:0] [--nav-blur:0px] [--nav-shadow-a:0] [--nav-shadow-dark-a:0] [--nav-ring-a:0] [--nav-ring-dark-a:0]
+    "
+			>
+				<ul class="flex flex-wrap items-center justify-center gap-fluid-s">
+					<li>
+						<a
+							href="https://alexanderniebuhr.me"
+							class="inline-block rounded-full px-fluid-xs py-1 text-sm font-medium text-neutral-600 dark:text-neutral-400 transition-all duration-200 ease-out hover:bg-black/5 dark:hover:bg-white/10 hover:text-black dark:hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
+						>
+							me
+						</a>
+					</li>
+					<li>
+						<a
+							href="/de"
+							class="inline-flex items-center justify-center rounded-full px-fluid-xs py-1 text-sm font-medium text-neutral-600 dark:text-neutral-400 transition-all duration-200 ease-out hover:bg-black/5 dark:hover:bg-white/10 hover:text-black dark:hover:text-white hover:scale-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
+						>
+							<GraphIcon />
+						</a>
+					</li>
+					<li>
+						<a
+							href="/"
+							class="inline-block rounded-full px-fluid-xs py-1 text-sm font-medium text-neutral-600 dark:text-neutral-400 transition-all duration-200 ease-out hover:bg-black/5 dark:hover:bg-white/10 hover:text-black dark:hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
+						>
+							x
+						</a>
+					</li>
+				</ul>
+			</nav>
+		</header>
+
+		<main class="flex-1 w-full max-w-4xl mx-auto px-fluid-gutter py-fluid-l">
+			<slot name="main" />
+		</main>
+		<footer class="w-full max-w-4xl mx-auto px-fluid-gutter py-fluid-s">
+			FOOTER
+		</footer>
+	</Fragment>
 </Shell>
+
+<style>
+	@keyframes navReveal {
+		from {
+			--nav-bg-a: 0;
+			--nav-blur: 0px;
+			--nav-shadow-a: 0;
+			--nav-shadow-dark-a: 0;
+			--nav-ring-a: 0;
+			--nav-ring-dark-a: 0;
+		}
+		to {
+			--nav-bg-a: 0.8;
+			--nav-blur: 12px;
+			--nav-shadow-a: 0.05;
+			--nav-shadow-dark-a: 0.2;
+			--nav-ring-a: 0.05;
+			--nav-ring-dark-a: 0.1;
+		}
+	}
+
+	@supports (animation-timeline: scroll()) {
+		#site-nav {
+			animation: navReveal linear both;
+			animation-timeline: scroll(root block);
+			animation-range: 0px 50px;
+		}
+	}
+</style>
