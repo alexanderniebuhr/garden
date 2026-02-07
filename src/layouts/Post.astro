@@ -60,25 +60,105 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 					aria-label="Post maturity stages"
 					class="flex flex-wrap items-center justify-center gap-1 select-none"
 				>
-					<Experimental type="multi" width="2rem" height="2rem" />
+					<button
+						class="inline-flex cursor-help rounded-sm p-0.5 outline-none focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-neutral-400 focus-visible:outline-offset-2"
+						style="anchor-name: --stage-experimental"
+						popovertarget="tip-experimental"
+					>
+						<Experimental type="multi" width="2rem" height="2rem" />
+					</button>
+					<div
+						id="tip-experimental"
+						popover
+						class="fixed [position-area:block-end] m-0 w-max max-w-56 px-3 py-2 border border-neutral-200 rounded-lg bg-white text-neutral-700 text-[0.8125rem] leading-[1.4] shadow-[0_4px_12px_rgb(0_0_0/0.08)] opacity-0 -translate-y-1 [transition:opacity_150ms_ease,translate_150ms_ease,overlay_150ms_ease_allow-discrete,display_150ms_ease_allow-discrete] open:opacity-100 open:translate-y-1 starting:open:opacity-0 starting:open:-translate-y-1 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:shadow-[0_4px_12px_rgb(0_0_0/0.3)] [&_strong]:block [&_strong]:font-semibold [&_strong]:text-neutral-900 [&_strong]:mb-0.5 dark:[&_strong]:text-white [&_p]:m-0"
+						style="position-anchor: --stage-experimental"
+					>
+						<strong>Experimental</strong>
+						<p>Early seedling — a raw idea, just planted.</p>
+					</div>
 					&centerdot;
-					<Developing
-						type="multi"
-						width="2rem"
-						height="2rem"
-						class="grayscale"
-					/>
+					<button
+						class="inline-flex cursor-help rounded-sm p-0.5 outline-none focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-neutral-400 focus-visible:outline-offset-2"
+						style="anchor-name: --stage-developing"
+						popovertarget="tip-developing"
+					>
+						<Developing
+							type="multi"
+							width="2rem"
+							height="2rem"
+							class="grayscale"
+						/>
+					</button>
+					<div
+						id="tip-developing"
+						popover
+						class="fixed [position-area:block-end] m-0 w-max max-w-56 px-3 py-2 border border-neutral-200 rounded-lg bg-white text-neutral-700 text-[0.8125rem] leading-[1.4] shadow-[0_4px_12px_rgb(0_0_0/0.08)] opacity-0 -translate-y-1 [transition:opacity_150ms_ease,translate_150ms_ease,overlay_150ms_ease_allow-discrete,display_150ms_ease_allow-discrete] open:opacity-100 open:translate-y-1 starting:open:opacity-0 starting:open:-translate-y-1 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:shadow-[0_4px_12px_rgb(0_0_0/0.3)] [&_strong]:block [&_strong]:font-semibold [&_strong]:text-neutral-900 [&_strong]:mb-0.5 dark:[&_strong]:text-white [&_p]:m-0"
+						style="position-anchor: --stage-developing"
+					>
+						<strong>Developing</strong>
+						<p>Growing — being actively worked on.</p>
+					</div>
 					&centerdot;
-					<Understanding
-						type="multi"
-						width="2rem"
-						height="2rem"
-						class="grayscale"
-					/>
+					<button
+						class="inline-flex cursor-help rounded-sm p-0.5 outline-none focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-neutral-400 focus-visible:outline-offset-2"
+						style="anchor-name: --stage-understanding"
+						popovertarget="tip-understanding"
+					>
+						<Understanding
+							type="multi"
+							width="2rem"
+							height="2rem"
+							class="grayscale"
+						/>
+					</button>
+					<div
+						id="tip-understanding"
+						popover
+						class="fixed [position-area:block-end] m-0 w-max max-w-56 px-3 py-2 border border-neutral-200 rounded-lg bg-white text-neutral-700 text-[0.8125rem] leading-[1.4] shadow-[0_4px_12px_rgb(0_0_0/0.08)] opacity-0 -translate-y-1 [transition:opacity_150ms_ease,translate_150ms_ease,overlay_150ms_ease_allow-discrete,display_150ms_ease_allow-discrete] open:opacity-100 open:translate-y-1 starting:open:opacity-0 starting:open:-translate-y-1 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:shadow-[0_4px_12px_rgb(0_0_0/0.3)] [&_strong]:block [&_strong]:font-semibold [&_strong]:text-neutral-900 [&_strong]:mb-0.5 dark:[&_strong]:text-white [&_p]:m-0"
+						style="position-anchor: --stage-understanding"
+					>
+						<strong>Understanding</strong>
+						<p>Maturing — deepening insight on the topic.</p>
+					</div>
 					&centerdot;
-					<Sharing type="multi" width="2rem" height="2rem" class="grayscale" />
+					<button
+						class="inline-flex cursor-help rounded-sm p-0.5 outline-none focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-neutral-400 focus-visible:outline-offset-2"
+						style="anchor-name: --stage-sharing"
+						popovertarget="tip-sharing"
+					>
+						<Sharing
+							type="multi"
+							width="2rem"
+							height="2rem"
+							class="grayscale"
+						/>
+					</button>
+					<div
+						id="tip-sharing"
+						popover
+						class="fixed [position-area:block-end] m-0 w-max max-w-56 px-3 py-2 border border-neutral-200 rounded-lg bg-white text-neutral-700 text-[0.8125rem] leading-[1.4] shadow-[0_4px_12px_rgb(0_0_0/0.08)] opacity-0 -translate-y-1 [transition:opacity_150ms_ease,translate_150ms_ease,overlay_150ms_ease_allow-discrete,display_150ms_ease_allow-discrete] open:opacity-100 open:translate-y-1 starting:open:opacity-0 starting:open:-translate-y-1 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:shadow-[0_4px_12px_rgb(0_0_0/0.3)] [&_strong]:block [&_strong]:font-semibold [&_strong]:text-neutral-900 [&_strong]:mb-0.5 dark:[&_strong]:text-white [&_p]:m-0"
+						style="position-anchor: --stage-sharing"
+					>
+						<strong>Sharing</strong>
+						<p>Ready to share — polished enough for others.</p>
+					</div>
 					&centerdot;
-					<Final type="multi" width="2rem" height="2rem" class="grayscale" />
+					<button
+						class="inline-flex cursor-help rounded-sm p-0.5 outline-none focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-neutral-400 focus-visible:outline-offset-2"
+						style="anchor-name: --stage-final"
+						popovertarget="tip-final"
+					>
+						<Final type="multi" width="2rem" height="2rem" class="grayscale" />
+					</button>
+					<div
+						id="tip-final"
+						popover
+						class="fixed [position-area:block-end] m-0 w-max max-w-56 px-3 py-2 border border-neutral-200 rounded-lg bg-white text-neutral-700 text-[0.8125rem] leading-[1.4] shadow-[0_4px_12px_rgb(0_0_0/0.08)] opacity-0 -translate-y-1 [transition:opacity_150ms_ease,translate_150ms_ease,overlay_150ms_ease_allow-discrete,display_150ms_ease_allow-discrete] open:opacity-100 open:translate-y-1 starting:open:opacity-0 starting:open:-translate-y-1 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:shadow-[0_4px_12px_rgb(0_0_0/0.3)] [&_strong]:block [&_strong]:font-semibold [&_strong]:text-neutral-900 [&_strong]:mb-0.5 dark:[&_strong]:text-white [&_p]:m-0"
+						style="position-anchor: --stage-final"
+					>
+						<strong>Final</strong>
+						<p>Evergreen — considered complete.</p>
+					</div>
 				</div>
 			</header>
 			<div class="prose max-w-none">
