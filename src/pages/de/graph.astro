@@ -1,0 +1,725 @@
+---
+export const prerender = false;
+
+import { getCollection } from "astro:content";
+import Page from "../../layouts/Page.astro";
+
+const locale = Astro.currentLocale ?? "de";
+const posts = await getCollection("blog", ({ id }) =>
+	id.startsWith(`${locale}/`),
+);
+
+const stateConfig = {
+	experimental: { pixi: 0xf59e0b, hex: "#F59E0B", label: "Experimental" },
+	building: { pixi: 0x3b82f6, hex: "#3B82F6", label: "Building" },
+	idea: { pixi: 0xa855f7, hex: "#A855F7", label: "Idea" },
+	sharing: { pixi: 0x22c55e, hex: "#22C55E", label: "Sharing" },
+	final: { pixi: 0x06b6d4, hex: "#06B6D4", label: "Final" },
+} as const;
+
+type State = keyof typeof stateConfig;
+
+interface NodeData {
+	id: string;
+	label: string;
+	state: State;
+	radius: number;
+	color: number;
+	href: string;
+}
+
+interface LinkData {
+	source: string;
+	target: string;
+}
+
+const nodes: NodeData[] = posts.map((post) => ({
+	id: post.id,
+	label: post.data.title,
+	state: post.data.state as State,
+	radius: 30,
+	color: stateConfig[post.data.state as State].pixi,
+	href: `/${post.id}`,
+}));
+
+const links: LinkData[] = [];
+
+// Connect posts that link to each other in their content
+const postSlugs = new Map(posts.map((p) => [p.data.slug, p.id]));
+const postIds = new Set(posts.map((p) => p.id));
+const linkRegex = /\[.*?\]\((.*?)\)/g;
+
+for (const post of posts) {
+	const matches = post.body?.matchAll(linkRegex) ?? [];
+	for (const match of matches) {
+		const href = match[1];
+		if (!href) continue;
+		const normalized = href.replace(/^\/|\/$/g, "");
+		const targetId =
+			postSlugs.get(normalized) ??
+			(postIds.has(normalized) ? normalized : undefined);
+		if (targetId && targetId !== post.id) {
+			const exists = links.some(
+				(l) =>
+					(l.source === post.id && l.target === targetId) ||
+					(l.source === targetId && l.target === post.id),
+			);
+			if (!exists) {
+				links.push({ source: post.id, target: targetId });
+			}
+		}
+	}
+}
+
+const graphData = { nodes, links };
+
+const legendItems = Object.entries(stateConfig).map(([key, val]) => ({
+	key,
+	label: val.label,
+	hex: val.hex,
+}));
+---
+
+<Page>
+	<Fragment slot="head">
+		<title>Graph — Garden</title>
+	</Fragment>
+	<Fragment slot="main">
+		<div
+			id="graph-container"
+			class="relative flex-1 min-h-0 mx-fluid-gutter my-fluid-xs rounded-xl overflow-hidden"
+		>
+			<canvas id="graph" class="absolute inset-0 w-full h-full"></canvas>
+
+			<!-- Legend / Filter -->
+			<div
+				id="legend"
+				class="absolute bottom-4 right-4 z-40
+				rounded-xl px-3 py-2
+				bg-amber-50/80 dark:bg-neutral-800/80 backdrop-blur-sm
+				shadow-lg shadow-black/5 dark:shadow-black/20
+				ring-1 ring-black/5 dark:ring-white/10"
+			>
+				<div
+					class="text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider mb-2"
+				>
+					Filter
+				</div>
+				<div class="flex flex-col gap-1.5">
+					{legendItems.map((s) => (
+					<button
+						data-state={s.key}
+						class="legend-filter flex items-center gap-2 cursor-pointer transition-opacity duration-200"
+					>
+						<span
+							class="legend-dot w-3 h-3 rounded-full ring-1 ring-black/10 dark:ring-white/10 transition-all duration-200"
+							style={`background:${s.hex}`}
+							data-color={s.hex}
+						/>
+						<span class="text-sm text-neutral-700 dark:text-neutral-300">{s.label}</span>
+					</button>
+				))}
+				</div>
+			</div>
+
+			<!-- Reset button -->
+			<button
+				id="reset-view"
+				class="absolute bottom-4 left-4 z-40
+				inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium
+				bg-amber-50/80 dark:bg-neutral-800/80 backdrop-blur-sm
+				text-neutral-600 dark:text-neutral-300
+				shadow-lg shadow-black/5 dark:shadow-black/20
+				ring-1 ring-black/5 dark:ring-white/10
+				hover:bg-amber-100 dark:hover:bg-neutral-700
+				transition-colors duration-200 cursor-pointer"
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="14"
+					height="14"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
+					<path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
+					<path d="M21 3v5h-5" />
+				</svg>
+				Reset
+			</button>
+		</div>
+
+		<script
+			is:inline
+			id="__graphData"
+			type="application/json"
+			set:html={JSON.stringify(graphData)}
+		></script>
+
+		<script>
+			import type { SimulationLinkDatum, SimulationNodeDatum } from "d3";
+			import {
+				forceCenter,
+				forceCollide,
+				forceLink,
+				forceManyBody,
+				forceSimulation,
+			} from "d3";
+			import {
+				Application,
+				ColorMatrixFilter,
+				Container,
+				FederatedPointerEvent,
+				Graphics,
+				Text,
+			} from "pixi.js";
+
+			(async () => {
+				// ---- Types ----
+				interface GraphNode extends SimulationNodeDatum {
+					id: string;
+					label: string;
+					state: string;
+					radius: number;
+					color: number;
+					href: string;
+				}
+
+				interface GraphLink extends SimulationLinkDatum<GraphNode> {
+					source: GraphNode;
+					target: GraphNode;
+				}
+
+				// ---- Data ----
+				const { nodes, links } = JSON.parse(
+					document.getElementById("__graphData")!.innerText,
+				);
+				console.log("Loaded graph data:", { nodes, links });
+				// ---- State colors ----
+				const stateColors: Record<string, number> = {
+					experimental: 0xf59e0b,
+					building: 0x3b82f6,
+					idea: 0xa855f7,
+					sharing: 0x22c55e,
+					final: 0x06b6d4,
+				};
+
+				// ---- SVG strings for each state ----
+				const stateSvgStrings: Record<string, string> = {
+					experimental:
+						'<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 40 40"><g fill="none"><path fill="#48eeff" stroke="#231f20" stroke-miterlimit="10" d="M17.23.76c-.83-.28-4.81.18-7.79.58s-6.95 1-7.67 1.51A2.47 2.47 0 0 0 .51 5.17a2.44 2.44 0 0 0 1.83 1.9q.324.084.66.08c.21 2.13.48 4.37.75 6.37C4.51 19.2 5.73 26.72 7 28c.75 1.4 3.88 2.47 6.3 2.15s5.16-2.2 5.51-3.74c.9-1.62.09-9.19-.68-14.88-.27-2-.6-4.23-1-6.33a2.7 2.7 0 0 0 .67-.2 2.46 2.46 0 0 0 1.26-2.31A2.47 2.47 0 0 0 17.23.76Z"/><path fill="#ffe236" stroke="#231f20" stroke-miterlimit="10" d="M7.44 16.3c.09 1 .2 2 .33 2.88.35 2.58.92 6 1.62 6.57.4.62 2.11 1.07 3.46.89s2.89-1.07 3.1-1.78c.52-.75.18-4.18-.17-6.76-.12-.91-.28-1.91-.45-2.87z"/><path stroke="#231f20" stroke-linecap="round" stroke-miterlimit="10" d="M6 6.62a62 62 0 0 0 8.19-1.12M12.6 9.22a16 16 0 0 0 2.06-.28M13 12.36q1.039-.072 2.06-.28"/><path fill="#231f20" d="M11.79 18.72a1.04 1.04 0 1 0 2.08 0 1.04 1.04 0 0 0-2.08 0m-1.5 4.39a1.04 1.04 0 1 0 2.08 0 1.04 1.04 0 0 0-2.08 0"/><path stroke="#fff" stroke-linecap="round" stroke-miterlimit="10" d="M14.66 2.54c1.6-.17 1.95 0 2.15.19"/><path fill="#ff52a1" stroke="#231f20" stroke-linecap="round" stroke-miterlimit="10" d="M29.33 4.17a2.21 2.21 0 1 0 4.42 0 2.21 2.21 0 0 0-4.42 0Zm-5.97 3.46a1.58 1.58 0 1 0 3.16 0 1.58 1.58 0 0 0-3.16 0Zm12.98 4.45a1.58 1.58 0 1 0 3.16 0 1.58 1.58 0 0 0-3.16 0Z"/><path fill="#ff52a1" stroke="#231f20" stroke-miterlimit="10" d="M25.47 27.93c4.45.13 9.76-4.43 10.29-4.88 1-.89 2.36-2.12 2.37-2.65a3 3 0 0 0-.82-2 3 3 0 0 0-1.88-1.12 3.76 3.76 0 0 0-1.74.94c-.33-.47-.69-1-1.06-1.38s-.78-.85-1.19-1.25c.64-.63 1.17-1.24 1.18-1.57a2.87 2.87 0 0 0-.82-2 3 3 0 0 0-1.88-1.12c-.52-.06-1.94 1.06-3 1.95-.54.46-5.85 5-6.38 9.44-4.45-.14-9.76 4.42-10.29 4.88-1 .89-2.35 2.12-2.37 2.64a3 3 0 0 0 .82 2c.56.65 1.5 1.2 1.89 1.11a3.8 3.8 0 0 0 1.75-.92c.33.47.69.94 1.06 1.37s.78.85 1.2 1.25c-.65.63-1.18 1.25-1.19 1.58a3 3 0 0 0 .82 2 3 3 0 0 0 1.89 1.12c.52.06 1.94-1.06 3-2 .51-.41 5.81-4.97 6.35-9.39Z"/><path stroke="#231f20" stroke-miterlimit="10" d="M14.73 30a8.4 8.4 0 0 1 2.21 2.56l.26-.22a8.4 8.4 0 0 1-2.2-2.6zm2.7-2.35a8.4 8.4 0 0 1 2.2 2.57l.26-.23a8.5 8.5 0 0 1-2.2-2.56zm13.87-7.46a8.5 8.5 0 0 1-2.2-2.57l-.26.23A8.4 8.4 0 0 1 31 20.41zm-2.69 2.31a8.2 8.2 0 0 1-2.21-2.56l-.26.23a8.2 8.2 0 0 1 2.21 2.56z"/><path stroke="#231f20" stroke-linecap="round" stroke-miterlimit="10" d="M25.47 27.93a11.4 11.4 0 0 1-4.37-1.2m-.53-4.5a11.4 11.4 0 0 1 4.37 1.2"/><path stroke="#fff" stroke-linecap="round" stroke-miterlimit="10" d="M28.29 13.83c1.49-1.37 1.58-1.38 2.16-1"/><path stroke="#231f20" stroke-miterlimit="10" d="m23.33 22.77.69-.59c.205.483.52.91.92 1.25m-2.37 3.91L22 28a5.8 5.8 0 0 0-.85-1.22"/></g></svg>',
+					building:
+						'<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 40 40"><g fill="none"><path fill="#48eeff" stroke="#231f20" stroke-miterlimit="10" d="M15.85 17.31c-.1-.88-.26-1.89-.41-2.82-.13-.74-.27-1.55-.42-2.28q.385-.108.74-.29c1-.39 1.07-1.5.93-2.32s-.53-1.86-1.64-1.89a32 32 0 0 0-5.87.56 31.3 31.3 0 0 0-5.72 1.4c-1 .4-1.06 1.51-.92 2.33s.52 1.86 1.63 1.88q.4.039.8 0c.1.74.23 1.55.36 2.29.15.93.33 1.94.53 2.8-3 4-5.73 10-5.28 12.63.23 1.37.89 3.13 2.81 3.16 1 .2 6-.55 10.07-1.24s9.05-1.63 9.92-2.14c1.8-.67 1.84-2.54 1.61-3.91-.45-2.6-4.99-7.4-9.14-10.16Z"/><path fill="#ffe236" stroke="#231f20" stroke-miterlimit="10" d="M7.2 23.05c-1.56 2.18-2.78 4.81-2.56 6.06.13.78.53 1.78 1.76 1.78a45 45 0 0 0 6.47-.83c2.155-.3 4.286-.748 6.38-1.34a1.82 1.82 0 0 0 1.08-2.26c-.21-1.25-2.23-3.34-4.41-4.89z"/><path stroke="#231f20" stroke-linecap="round" stroke-miterlimit="10" d="M7.27 13.64a40.5 40.5 0 0 0 5.48-.93m-1.37 3.23a14.5 14.5 0 0 0 1.86-.32m-1.42 2.93a13 13 0 0 0 1.86-.32"/><path fill="#231f20" d="M12.85 24.54a.88.88 0 1 0 1.761 0 .88.88 0 0 0-1.761 0m-3.19 2.33a.88.88 0 1 0 1.76 0 .88.88 0 0 0-1.76 0"/><path stroke="#fff" stroke-linecap="round" stroke-miterlimit="10" d="M13 9.42c1.36-.19 1.66-.07 1.83.1"/><path fill="#ff52a1" stroke="#231f20" stroke-linejoin="round" d="M39.1 29.39c1.38-5.86-1.07-10.55-7.81-12.15s-11 1.52-12.42 7.37a10.23 10.23 0 0 0 .6 7.18 12 12 0 0 0-.34 3.54c.07.79 1.22 1.45 2.15 1.67s2.26.15 2.67-.53q.114-.14.2-.3a1 1 0 0 0 0 .35c.07.8 1.22 1.46 2.15 1.68s2.25.14 2.67-.54q.115-.137.19-.3 0 .184.05.36c.07.79 1.21 1.45 2.15 1.67s2.25.14 2.66-.53a11.6 11.6 0 0 0 1.29-3.32 10.25 10.25 0 0 0 3.79-6.15Z"/><path fill="#fff" stroke="#231f20" stroke-miterlimit="10" d="M21.93 24.89a2.97 2.97 0 1 0 5.94 0 2.97 2.97 0 0 0-5.94 0Zm8.67 2.05a2.969 2.969 0 1 0 5.938 0 2.969 2.969 0 0 0-5.938 0Z"/><path stroke="#231f20" stroke-linecap="round" stroke-miterlimit="10" d="M26.43 31.35c1.06-1.27 2.51-.93 2.89.68"/><path stroke="#fff" stroke-linecap="round" stroke-miterlimit="10" d="M32.89 19.55a8.56 8.56 0 0 1 3.24 2.24"/><path stroke="#231f20" stroke-linecap="round" stroke-miterlimit="10" d="m24.15 36.17.19-.81m4.86 2 .2-.81"/><path fill="#ffe236" stroke="#231f20" stroke-miterlimit="10" d="M31.22.55c1 .13 2.59.36 1.51 4.68s-2.13 4.22-2.65 4.15-1.56-.2-1.51-4.68S30.18.41 31.22.55Zm-3.16 11.83a1.57 1.57 0 1 0 3.14 0 1.57 1.57 0 0 0-3.14 0Zm-5.99-8.6c.81-.17 2-.4 2.35 3.1s-.48 3.71-.89 3.79-1.21.26-2.35-3.1.08-3.57.89-3.79Zm.9 9.56a1.24 1.24 0 1 0 2.48 0 1.24 1.24 0 0 0-2.48 0Z"/></g></svg>',
+					idea: '<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 40 40"><g fill="none" stroke-miterlimit="10"><path fill="#ffe236" stroke="#231f20" d="M33.44 20.49c3.54.87 6-1.38 7-5.43.21-.84-.68-1.6-2.68-2.31 0-.12.07-.23.1-.35.49-1.91-2.08-3.52-7.69-5s-8.64-1.26-9.13.65c0 .12-.05.23-.08.35-2.09-.33-3.24-.09-3.46.74-1 4.05 0 7.21 3.55 8.14a7.3 7.3 0 0 0 2.49 3.3 1 1 0 0 0-.05.18 20.6 20.6 0 0 0-.62 3.24 3.45 3.45 0 0 0-3.28 2.61c-.16.61 1.56 1.35 5.12 2.26s5.43 1.09 5.58.49a3.44 3.44 0 0 0-1.61-3.87c.399-1.006.717-2.043.95-3.1a1 1 0 0 0 .05-.19 7.17 7.17 0 0 0 3.76-1.71Z"/><path stroke="#231f20" stroke-linecap="round" d="M21.18 10.83a16 16 0 0 0-.21 4m15.5-.08a16 16 0 0 1-1.74 3.63"/><path stroke="#fff" stroke-linecap="round" d="M33.16 10c2.25.83 2.83 1.3 2.88 2"/><path fill="#ff52a1" stroke="#231f20" d="m21 26.7-.32-.32c.054-.916 0-1.836-.16-2.74-.9-5.25-4.42-8.26-10.25-7.26s-8.14 5-7.27 10.26a12 12 0 0 0 .77 2.68c0 .12-.11.24-.17.36-1 2.17-2.34 4.85-2.1 5.46.66 1.65 4.41.29 4.41.29s1.4 3.75 3.09 3.19c.56-.19 1.6-2.5 2.55-4.55a12 12 0 0 0 1.72-.18 12 12 0 0 0 1.73-.42c1.58 1.63 3.33 3.46 3.93 3.45 1.78 0 1.82-4 1.82-4s4 0 4.07-1.74c.03-.68-2.12-2.76-3.82-4.48Z"/><path fill="#fff" stroke="#231f20" d="M6.85 25.14a4.93 4.93 0 1 0 9.86 0 4.93 4.93 0 0 0-9.86 0Z"/><path stroke="#231f20" stroke-linecap="round" d="M5.59 31a8 8 0 0 0 3.57 2.17m10.43-4.55a8 8 0 0 1-2.65 3.24"/><path stroke="#fff" stroke-linecap="round" d="M13 17.9a4.27 4.27 0 0 1 3.42 1.25"/><path fill="#ffe236" stroke="#231f20" d="M16.5 5.18c0-.65-.67-1.2-2.48-1.38-.18-1.8-.72-2.47-1.38-2.47S11.45 2 11.27 3.8c-1.81.2-2.48.73-2.48 1.38s.67 1.2 2.48 1.38C11.45 8.37 12 9 12.64 9s1.2-.66 1.38-2.47c1.81-.15 2.48-.7 2.48-1.35Zm-6.73 6.09c0-.53-.54-1-2-1.13-.15-1.48-.59-2-1.13-2s-1 .55-1.13 2c-1.48.15-2 .6-2 1.13s.55 1 2 1.13c.15 1.49.6 2 1.13 2s1-.54 1.13-2c1.46-.15 2-.59 2-1.13Z"/></g></svg>',
+					sharing:
+						'<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 40 40"><g fill="none" stroke-miterlimit="10"><path fill="#ffe236" stroke="#231f20" d="M25.29 5.18c-.43-1.41-3.94-1.87-6-2a12.54 12.54 0 0 0-5.69 1.2 12.64 12.64 0 0 0-5.42-2.11C6.12 2.11 2.58 2 1.94 3.33 1.36 4 1 7.62.77 10.64s-.47 6.68 0 7.41c.42 1.41 3.48.45 6.09.66 1.123.122 2.236.326 3.33.61.16 1.07 1.38 1.31 2.11 1.37s2 0 2.3-1a25 25 0 0 1 3.39-.1c2.83.22 5.48 1.63 6.12.31.59-.64.93-4.29 1.17-7.31s.48-6.68.01-7.41Z"/><path stroke="#231f20" stroke-linecap="round" d="M10.14 6.54a24.3 24.3 0 0 0-5.72-.45m5.4 4.53a25.5 25.5 0 0 0-5.72-.45m5.38 4.71a25 25 0 0 0-5.72-.46M22.4 7.51a24.4 24.4 0 0 0-5.72-.45m5.4 4.54a25 25 0 0 0-5.72-.46m5.38 4.71a25 25 0 0 0-5.74-.46M13.61 4.35l-.91 11.44"/><path stroke="#fff" stroke-linecap="round" d="M22.36 5C24 5.43 24 5.88 24 6.63"/><path fill="#ff52a1" stroke="#231f20" d="M30.85 20.38c-2.56-1-6.14-2.14-7.82-1.61-1.18.14-4.58 2-6.85 3.72s-4.34 4.08-4.2 4.73c0 0 .17 1.57.34 2.79A12.2 12.2 0 0 0 13 33a1.13 1.13 0 0 0 2-.29 11.6 11.6 0 0 0-.21-3.07c0-.16-.17-.08 1.81.72.46 2.73.89 4.53 1.43 5.32 1 2.53 5.34 2.25 7.83 1.89s6.72-1.3 7-4c.29-.91.2-2.76-.12-5.52 2-1.65 3.66-3.61 3.53-4.19.32-1.04-2.87-2.49-5.42-3.48Z"/><path stroke="#231f20" stroke-linecap="round" d="M19.71 31c2.06.65 4.2 1.12 5.39.75a16.9 16.9 0 0 0 4.75-2.28"/><path fill="#fff" stroke="#231f20" d="M22.008 25.42a.76.76 0 0 0 .218.421c.122.126.29.232.494.313s.44.133.694.156c.255.023.523.015.79-.023a3.4 3.4 0 0 0 .763-.2c.238-.093.45-.21.623-.345q.261-.204.386-.44a.76.76 0 0 0 .09-.465.76.76 0 0 0-.218-.42 1.4 1.4 0 0 0-.494-.313 2.5 2.5 0 0 0-.694-.157 3.4 3.4 0 0 0-.789.024 3.4 3.4 0 0 0-.764.2c-.238.093-.45.21-.622.345a1.4 1.4 0 0 0-.386.439.76.76 0 0 0-.09.465Z"/><path stroke="#fff" stroke-linecap="round" d="M24.81 20.47a9.2 9.2 0 0 1 3.13.73"/><path fill="#48eeff" stroke="#231f20" d="M32.53 3.33c.94.26 2.33.67.77 4.49s-2.5 3.59-3 3.46-1.41-.38-.77-4.49 2.06-3.72 3-3.46Zm-4.46 10.65a1.46 1.46 0 1 0 2.92 0 1.46 1.46 0 0 0-2.92 0Zm10.66-5.25c.64.43 1.58 1.09-.54 3.57s-2.77 2.08-3.09 1.86-1-.64.54-3.56 2.45-2.29 3.09-1.87Zm-6.11 7.61a1.15 1.15 0 1 0 2.3 0 1.15 1.15 0 0 0-2.3 0Z"/></g></svg>',
+					final:
+						'<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 40 40"><g fill="none"><path fill="#ff52a1" stroke="#231f20" stroke-miterlimit="10" d="M22.53 38.32c.53-.89.23-6.52 0-9.8s-.67-8.9-1.31-9.71c-.33-.81-1.9-.81-3.22-.72s-2.85.27-3.09 1.14c-.53.89-.23 6.52 0 9.8s.67 8.9 1.31 9.71c.35.82 1.92.81 3.22.72s2.85-.27 3.09-1.14Z"/><path fill="#fff" stroke="#231f20" stroke-miterlimit="10" d="M17 34.82a6.5 6.5 0 0 0 2.11.06 6.4 6.4 0 0 0 2.07-.34c.18-.1.17-.57.14-1s-.08-.85-.26-.93a6.5 6.5 0 0 0-2.06-.02 6.4 6.4 0 0 0-2.07.34c-.18.1-.17.57-.14 1s.06.81.21.89Z"/><path stroke="#231f20" stroke-linecap="round" stroke-miterlimit="10" d="M20.63 22.63a22.6 22.6 0 0 0-4.58.31m4.68 1.22a23.4 23.4 0 0 0-4.58.3"/><path stroke="#fff" stroke-linecap="round" stroke-miterlimit="10" d="M18.18 19.45c1.85 0 1.7-.06 1.88.45"/><path fill="#ffe236" stroke="#231f20" stroke-miterlimit="10" d="M30.16 37.81c.53-.88.24-6.51 0-9.79s-.66-8.9-1.31-9.71c-.35-.83-1.92-.81-3.21-.73s-2.86.28-3.09 1.15c-.54.88-.24 6.51 0 9.79s.66 8.9 1.31 9.71c.35.83 1.92.81 3.21.73s2.86-.28 3.09-1.15Z"/><path fill="#fff" stroke="#231f20" stroke-miterlimit="10" d="M24.67 34.32a6.7 6.7 0 0 0 2.1.06 6.5 6.5 0 0 0 2.08-.38c.17-.1.16-.57.13-1s-.07-.86-.26-.93a6.1 6.1 0 0 0-2.1-.06 6.2 6.2 0 0 0-2.08.33c-.17.1-.16.57-.14 1s.08.9.27.98Z"/><path stroke="#231f20" stroke-linecap="round" stroke-miterlimit="10" d="M28.26 22.13a22.7 22.7 0 0 0-4.58.3m4.68 1.22a22.7 22.7 0 0 0-4.58.31"/><path stroke="#fff" stroke-linecap="round" stroke-miterlimit="10" d="M25.81 18.94c1.85 0 1.7-.05 1.89.45"/><path fill="#ff52a1" stroke="#231f20" stroke-miterlimit="10" d="M37.8 37.31c.53-.89.23-6.52 0-9.8s-.66-8.9-1.3-9.71c-.35-.83-1.92-.81-3.22-.72s-2.85.27-3.09 1.14c-.53.89-.24 6.52 0 9.8s.67 8.9 1.31 9.71c.35.83 1.92.81 3.21.72s2.85-.27 3.09-1.14Z"/><path fill="#fff" stroke="#231f20" stroke-miterlimit="10" d="M32.3 33.81a6.4 6.4 0 0 0 2.1.06 6.4 6.4 0 0 0 2.08-.34c.18-.1.16-.57.14-1s-.08-.85-.27-.93a6.7 6.7 0 0 0-2.1-.06 6.5 6.5 0 0 0-2.08.34c-.17.1-.16.57-.13 1s.07.85.26.93Z"/><path stroke="#231f20" stroke-linecap="round" stroke-miterlimit="10" d="M35.89 21.62a22.7 22.7 0 0 0-4.58.31M36 23.15c-1.533-.05-3.067.05-4.58.3"/><path stroke="#fff" stroke-linecap="round" stroke-miterlimit="10" d="M33.44 18.44c1.86 0 1.7-.05 1.89.45"/><path fill="#48eeff" stroke="#231f20" stroke-miterlimit="10" d="M23.38 17.81c1.3-4.21-.24-7.76-5.05-9.24s-8.09.58-9.39 4.79c-.84 2.71.16 5.53 1.26 7.74a3.4 3.4 0 0 1 .39 1.9 1.12 1.12 0 0 0-.89.76 1.08 1.08 0 0 0 .41 1.19c-.49 2.46.28 3.63 1.9 4.13s2.92 0 3.9-2.33a1.09 1.09 0 0 0 .71-1.89A3.43 3.43 0 0 1 18 23.5c2.13-1.21 4.55-2.98 5.38-5.69Z"/><path stroke="#231f20" stroke-linecap="round" stroke-miterlimit="10" d="M12.49 23.59c.757.141 1.495.37 2.2.68M12 25.29c.76.13 1.5.36 2.2.68"/><path fill="#fff" stroke="#231f20" stroke-miterlimit="10" d="M13.78 16.2s-.19.37.16 1.79a6.2 6.2 0 0 0 .55 1.51.67.67 0 0 0 .84.26 6.3 6.3 0 0 0 1.32-.93 4.9 4.9 0 0 0 1.13-1.4.62.62 0 0 0-.24-.74q-.728-.438-1.54-.69a6.6 6.6 0 0 0-1.61-.31.64.64 0 0 0-.62.47z"/><path stroke="#231f20" stroke-linecap="round" stroke-linejoin="round" d="m14.87 19.79-.38 1.23"/><path stroke="#fff" stroke-linecap="round" stroke-linejoin="round" d="M20.53 11.54a3.53 3.53 0 0 1 1.23 1.68"/><path fill="#ffe236" stroke="#231f20" stroke-miterlimit="10" d="M16.787 5.005a.7.7 0 0 0 .467-.076 1.5 1.5 0 0 0 .471-.405 3 3 0 0 0 .402-.673 4.3 4.3 0 0 0 .273-.837c.064-.294.099-.592.101-.875a3 3 0 0 0-.085-.78 1.5 1.5 0 0 0-.258-.564.7.7 0 0 0-.393-.264.7.7 0 0 0-.467.076c-.16.083-.32.22-.47.405s-.287.414-.403.673a4.3 4.3 0 0 0-.272.837 4.3 4.3 0 0 0-.102.875c-.003.284.026.549.085.78s.147.422.259.564a.7.7 0 0 0 .392.264Zm-8.804-.333c.26.549.62 1.023 1 1.318.379.295.747.387 1.022.256s.436-.475.446-.955-.13-1.059-.392-1.607a4.3 4.3 0 0 0-.455-.754 3 3 0 0 0-.545-.563 1.5 1.5 0 0 0-.55-.288.7.7 0 0 0-.472.031.7.7 0 0 0-.323.347c-.076.164-.118.37-.123.609a3 3 0 0 0 .094.778c.067.275.168.557.298.828ZM3.8 12.632c.288.088.581.146.864.172s.549.019.783-.021c.235-.04.433-.112.584-.212a.7.7 0 0 0 .296-.37.7.7 0 0 0-.038-.471 1.5 1.5 0 0 0-.366-.502 3 3 0 0 0-.638-.456 4.3 4.3 0 0 0-.812-.34 4.3 4.3 0 0 0-.864-.172 3 3 0 0 0-.783.02c-.235.04-.433.113-.584.212a.7.7 0 0 0-.295.37.7.7 0 0 0 .038.472c.069.167.193.338.365.502s.39.32.638.456c.249.136.525.252.812.34Zm19.28-4.451c.208.223.584.274 1.045.14.461-.135.97-.442 1.416-.856.445-.413.79-.898.957-1.348.168-.45.146-.83-.062-1.053a.7.7 0 0 0-.427-.203 1.5 1.5 0 0 0-.618.064 3 3 0 0 0-.713.323 4.3 4.3 0 0 0-.702.532 4.3 4.3 0 0 0-.583.66 3 3 0 0 0-.375.689c-.083.223-.12.43-.11.61q.018.274.172.442Zm2.839 5.137c.024.304.288.576.733.757s1.035.256 1.64.208c.606-.048 1.177-.215 1.588-.464s.629-.56.604-.864c-.024-.304-.287-.576-.733-.757-.445-.181-1.035-.256-1.64-.208-.606.048-1.177.215-1.588.464s-.628.56-.604.864Z"/></g></svg>',
+				};
+
+				// ---- Pixi App ----
+				const canvas = document.getElementById("graph") as HTMLCanvasElement;
+				const container = document.getElementById(
+					"graph-container",
+				) as HTMLElement;
+				console.log("Initializing PixiJS app...");
+				const app = new Application();
+				console.log("PixiJS Application created.");
+				await app.init({
+					canvas: canvas,
+					resizeTo: container,
+					antialias: true,
+					backgroundAlpha: 0,
+					powerPreference: "low-power",
+					resolution: window.devicePixelRatio || 1,
+					autoDensity: true,
+					preference: "webgpu",
+				});
+				console.log("PixiJS app initialized.");
+				// World container for pan/zoom
+				const world = new Container();
+				app.stage.addChild(world);
+
+				// Layer ordering: links → glows → nodes → labels
+				const linkLayer = new Graphics();
+				world.addChild(linkLayer);
+
+				const glowLayer = new Container();
+				world.addChild(glowLayer);
+
+				const nodeLayer = new Container();
+				world.addChild(nodeLayer);
+
+				const labelLayer = new Container();
+				world.addChild(labelLayer);
+
+				// ---- Detect dark mode ----
+				const isDark = window.matchMedia(
+					"(prefers-color-scheme: dark)",
+				).matches;
+				const labelColor = isDark ? 0xd4d4d4 : 0x404040;
+				const linkColor = isDark ? 0x666666 : 0xaaaaaa;
+
+				// ---- Create visual elements for each node ----
+				interface NodeVisuals {
+					glow: Graphics;
+					graphic: Graphics;
+					label: Text;
+					node: GraphNode;
+					baseScale: number;
+				}
+
+				const nodeVisualsById = new Map<string, NodeVisuals>();
+
+				// ---- Grayscale filter for disabled states ----
+				const grayscaleFilter = new ColorMatrixFilter();
+				grayscaleFilter.desaturate();
+
+				const disabledStates = new Set<string>();
+
+				for (const n of nodes) {
+					// Colored glow circle behind icon
+					const glow = new Graphics();
+					glow.circle(0, 0, n.radius + 2);
+					glow.fill({ color: n.color, alpha: 0.15 });
+					glow.circle(0, 0, n.radius - 4);
+					glow.fill({ color: n.color, alpha: 0.25 });
+					glowLayer.addChild(glow);
+
+					// SVG as Graphics (inline rendering per PixiJS 8.x docs)
+					const svgString =
+						stateSvgStrings[n.state as keyof typeof stateSvgStrings] ??
+						'<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"></svg>';
+					const graphic = new Graphics().svg(svgString);
+					// The SVG viewBox is 40x40, scale to desired size
+					const desiredSize = n.radius * 1.2;
+					const svgSize = 40; // viewBox dimensions, not width/height attributes
+					const scale = desiredSize / svgSize;
+					graphic.scale.set(scale);
+					// Center the graphic (SVG origin is top-left, offset by half the viewBox size)
+					graphic.pivot.set(svgSize / 2, svgSize / 2);
+					graphic.eventMode = "static";
+					graphic.cursor = "pointer";
+					const graphicWithId = graphic as Graphics & { __nodeId: string };
+					graphicWithId.__nodeId = n.id;
+					const baseScale = graphic.scale.x;
+					nodeLayer.addChild(graphic);
+
+					// Label
+					const label = new Text({
+						text: n.label,
+						style: {
+							fontSize: 12,
+							fill: labelColor,
+							fontFamily: "system-ui, -apple-system, sans-serif",
+							fontWeight: "500",
+							align: "center",
+						},
+					});
+					label.anchor.set(0.5, -0.5);
+					labelLayer.addChild(label);
+
+					nodeVisualsById.set(n.id, {
+						glow,
+						graphic,
+						label,
+						node: n,
+						baseScale,
+					});
+				}
+
+				// ---- D3 Force Simulation ----
+				const cx = container.clientWidth / 2;
+				const cy = container.clientHeight / 2;
+
+				const sim = forceSimulation<GraphNode>(nodes)
+					.force(
+						"link",
+						forceLink<GraphNode, GraphLink>(links)
+							.id((d) => d.id)
+							.distance(140),
+					)
+					.force("charge", forceManyBody().strength(-250))
+					.force(
+						"collide",
+						forceCollide<GraphNode>().radius((d) => d.radius + 16),
+					)
+					.force("center", forceCenter(cx, cy))
+					.alphaDecay(0.02);
+
+				// ---- Pan & Zoom ----
+				let pan = { x: 0, y: 0 };
+				let zoom = 1;
+
+				function clampPan() {
+					const vw = container.clientWidth;
+					const vh = container.clientHeight;
+					// Compute world-space bounding box of all nodes
+					let minX = Infinity,
+						minY = Infinity,
+						maxX = -Infinity,
+						maxY = -Infinity;
+					for (const nv of nodeVisualsById.values()) {
+						const r = nv.node.radius + 20;
+						const nx = nv.node.x ?? 0;
+						const ny = nv.node.y ?? 0;
+						minX = Math.min(minX, nx - r);
+						minY = Math.min(minY, ny - r);
+						maxX = Math.max(maxX, nx + r);
+						maxY = Math.max(maxY, ny + r);
+					}
+					// Add margin so content doesn't sit flush against edges
+					const margin = 100;
+					// In screen space: screen_x = world_x * zoom + pan.x
+					// Constrain so that the right edge of the content is at least at margin,
+					// and the left edge is at most at vw - margin (and similarly for y).
+					const contentRight = maxX * zoom + pan.x;
+					const contentLeft = minX * zoom + pan.x;
+					const contentBottom = maxY * zoom + pan.y;
+					const contentTop = minY * zoom + pan.y;
+
+					if (contentRight < margin) pan.x += margin - contentRight;
+					if (contentLeft > vw - margin) pan.x -= contentLeft - (vw - margin);
+					if (contentBottom < margin) pan.y += margin - contentBottom;
+					if (contentTop > vh - margin) pan.y -= contentTop - (vh - margin);
+				}
+
+				function applyTransform() {
+					clampPan();
+					world.position.set(pan.x, pan.y);
+					world.scale.set(zoom);
+				}
+
+				// Wheel zoom centered on cursor
+				canvas.addEventListener(
+					"wheel",
+					(e) => {
+						e.preventDefault();
+						const rect = canvas.getBoundingClientRect();
+						const mx = e.clientX - rect.left;
+						const my = e.clientY - rect.top;
+
+						const oldZoom = zoom;
+						const factor = e.deltaY < 0 ? 1.08 : 1 / 1.08;
+						zoom = Math.min(Math.max(zoom * factor, 0.15), 6);
+
+						const wxBefore = (mx - pan.x) / oldZoom;
+						const wyBefore = (my - pan.y) / oldZoom;
+						pan.x = mx - wxBefore * zoom;
+						pan.y = my - wyBefore * zoom;
+
+						applyTransform();
+						requestRender();
+					},
+					{ passive: false },
+				);
+
+				// ---- Panning (background drag) ----
+				let isPanning = false;
+				let isDraggingNode = false;
+				let panStart = { x: 0, y: 0 };
+				let panMouseStart = { x: 0, y: 0 };
+
+				canvas.addEventListener("pointerdown", (e) => {
+					if (isDraggingNode) return;
+					isPanning = true;
+					panStart = { ...pan };
+					panMouseStart = { x: e.clientX, y: e.clientY };
+					canvas.style.cursor = "grabbing";
+				});
+
+				canvas.addEventListener("pointermove", (e) => {
+					if (isPanning && !isDraggingNode) {
+						pan.x = panStart.x + (e.clientX - panMouseStart.x);
+						pan.y = panStart.y + (e.clientY - panMouseStart.y);
+						applyTransform();
+						requestRender();
+					}
+				});
+
+				canvas.addEventListener("pointerup", () => {
+					if (isPanning) {
+						isPanning = false;
+						if (!isDraggingNode) canvas.style.cursor = "grab";
+					}
+				});
+
+				canvas.addEventListener("pointerleave", () => {
+					if (isPanning) {
+						isPanning = false;
+						canvas.style.cursor = "grab";
+					}
+				});
+
+				// ---- Node Drag ----
+				let dragged: GraphNode | null = null;
+				let pointerDownPos = { x: 0, y: 0 };
+
+				for (const { graphic } of nodeVisualsById.values()) {
+					graphic.on("pointerdown", (ev: FederatedPointerEvent) => {
+						ev.stopPropagation();
+						isDraggingNode = true;
+						const graphicRef = graphic as Graphics & { __nodeId: string };
+						const nodeId = graphicRef.__nodeId;
+						const nv = nodeVisualsById.get(nodeId);
+						if (!nv) return;
+						dragged = nv.node;
+
+						const wp = world.toLocal(ev.global);
+						dragged.fx = wp.x;
+						dragged.fy = wp.y;
+						pointerDownPos = { x: ev.globalX, y: ev.globalY };
+						sim.alphaTarget(0.3).restart();
+						canvas.style.cursor = "grabbing";
+					});
+				}
+
+				app.stage.eventMode = "static";
+				app.stage.hitArea = app.screen;
+
+				app.stage.on("pointermove", (ev: FederatedPointerEvent) => {
+					if (!dragged) return;
+					const wp = world.toLocal(ev.global);
+					dragged.fx = wp.x;
+					dragged.fy = wp.y;
+					sim.alpha(0.3).restart();
+				});
+
+				function releaseNode() {
+					if (!dragged) return;
+					dragged.fx = null;
+					dragged.fy = null;
+					dragged = null;
+					isDraggingNode = false;
+					sim.alphaTarget(0);
+					canvas.style.cursor = "grab";
+				}
+
+				app.stage.on("pointerup", releaseNode);
+				app.stage.on("pointerupoutside", releaseNode);
+
+				// ---- Click to navigate ----
+				for (const { graphic, node } of nodeVisualsById.values()) {
+					graphic.on("pointerup", (ev: FederatedPointerEvent) => {
+						const dx = ev.globalX - pointerDownPos.x;
+						const dy = ev.globalY - pointerDownPos.y;
+						const dist = Math.sqrt(dx * dx + dy * dy);
+						if (dist < 5) {
+							// Click — not a drag
+							releaseNode();
+							window.location.href = node.href;
+						}
+					});
+				}
+
+				// ---- Hover effects ----
+				let hoveredNodeId: string | null = null;
+
+				for (const { graphic, node } of nodeVisualsById.values()) {
+					graphic.on("pointerenter", () => {
+						hoveredNodeId = node.id;
+						const nv = nodeVisualsById.get(node.id);
+						if (!nv) return;
+
+						// Scale up graphic
+						nv.graphic.scale.set(nv.baseScale * 1.2);
+
+						// Brighten glow
+						nv.glow.clear();
+						nv.glow.circle(0, 0, node.radius + 8);
+						nv.glow.fill({ color: node.color, alpha: 0.3 });
+						nv.glow.circle(0, 0, node.radius);
+						nv.glow.fill({ color: node.color, alpha: 0.5 });
+
+						requestRender();
+					});
+
+					graphic.on("pointerleave", () => {
+						hoveredNodeId = null;
+						const nv = nodeVisualsById.get(node.id);
+						if (!nv) return;
+
+						// Reset scale
+						nv.graphic.scale.set(nv.baseScale);
+
+						// Reset glow
+						nv.glow.clear();
+						nv.glow.circle(0, 0, node.radius + 2);
+						nv.glow.fill({ color: node.color, alpha: 0.15 });
+						nv.glow.circle(0, 0, node.radius - 4);
+						nv.glow.fill({ color: node.color, alpha: 0.25 });
+
+						requestRender();
+					});
+				}
+
+				// ---- Rendering ----
+				let needsRender = true;
+				function requestRender() {
+					needsRender = true;
+				}
+
+				function draw() {
+					if (!needsRender) return;
+					needsRender = false;
+
+					// Draw links
+					linkLayer.clear();
+					for (const l of links) {
+						const s = l.source;
+						const t = l.target;
+						const sx = s.x ?? 0;
+						const sy = s.y ?? 0;
+						const tx = t.x ?? 0;
+						const ty = t.y ?? 0;
+
+						const isHighlighted =
+							hoveredNodeId !== null &&
+							(s.id === hoveredNodeId || t.id === hoveredNodeId);
+
+						linkLayer.moveTo(sx, sy);
+						linkLayer.lineTo(tx, ty);
+						const strokeColor = isHighlighted
+							? (stateColors[hoveredNodeId === s.id ? s.state : t.state] ??
+								linkColor)
+							: linkColor;
+						linkLayer.stroke({
+							width: isHighlighted ? 2.5 : 1.5,
+							color: strokeColor,
+							alpha: isHighlighted ? 0.7 : 0.2,
+						});
+					}
+
+					// Position nodes, glows, labels
+					for (const [id, nv] of nodeVisualsById) {
+						const x = nv.node.x ?? 0;
+						const y = nv.node.y ?? 0;
+						const isDisabled = disabledStates.has(nv.node.state);
+
+						nv.glow.position.set(x, y);
+						nv.graphic.position.set(x, y);
+						nv.label.position.set(x, y + nv.node.radius + 4);
+
+						// Apply grayscale filter to disabled state nodes
+						nv.graphic.filters = isDisabled ? [grayscaleFilter] : [];
+
+						// Fade labels based on zoom
+						nv.label.alpha = Math.min(1, Math.max(0, (zoom - 0.3) * 1.5));
+						nv.label.scale.set(1 / zoom);
+
+						// Dim nodes not connected to hovered node
+						if (hoveredNodeId !== null) {
+							const isHovered = id === hoveredNodeId;
+							const isConnected = links.some(
+								(l) =>
+									(l.source.id === hoveredNodeId && l.target.id === id) ||
+									(l.target.id === hoveredNodeId && l.source.id === id),
+							);
+							nv.graphic.alpha =
+								isHovered || isConnected ? (isDisabled ? 0.5 : 1) : 0.2;
+							nv.glow.alpha =
+								isHovered || isConnected ? (isDisabled ? 0.3 : 1) : 0.15;
+							nv.label.alpha = isHovered
+								? 1
+								: isConnected
+									? nv.label.alpha * 0.8
+									: 0;
+						} else {
+							nv.graphic.alpha = isDisabled ? 0.4 : 1;
+							nv.glow.alpha = isDisabled ? 0.2 : 1;
+							nv.label.alpha = isDisabled
+								? Math.min(0.3, nv.label.alpha)
+								: nv.label.alpha;
+						}
+					}
+				}
+
+				// Boundary clamping + render on tick
+				sim.on("tick", () => {
+					const bw = container.clientWidth;
+					const bh = container.clientHeight;
+					const pad = 40;
+					for (const n of nodes) {
+						const r = n.radius;
+						n.x = Math.max(r + pad, Math.min(bw - r - pad, n.x ?? 0));
+						n.y = Math.max(r + pad, Math.min(bh - r - pad, n.y ?? 0));
+					}
+					requestRender();
+				});
+
+				// Drive drawing from Pixi ticker
+				app.ticker.add(draw);
+
+				// Initial cursor
+				canvas.style.cursor = "grab";
+
+				// Handle resize
+				window.addEventListener("resize", () => {
+					sim.force(
+						"center",
+						forceCenter(container.clientWidth / 2, container.clientHeight / 2),
+					);
+					sim.alpha(0.3).restart();
+				});
+
+				// ---- Reset view button ----
+				function resetView() {
+					const rcx = container.clientWidth / 2;
+					const rcy = container.clientHeight / 2;
+
+					// Release pinned nodes and re-cluster near center
+					for (const n of nodes) {
+						n.fx = null;
+						n.fy = null;
+						n.x = rcx + (Math.random() - 0.5) * 200;
+						n.y = rcy + (Math.random() - 0.5) * 200;
+						n.vx = 0;
+						n.vy = 0;
+					}
+
+					// Reset force simulation
+					sim.force("center", forceCenter(rcx, rcy));
+					sim.alpha(1).restart();
+
+					// Reset pan & zoom
+					pan = { x: 0, y: 0 };
+					zoom = 1;
+					applyTransform();
+					requestRender();
+				}
+
+				const resetBtn = document.getElementById("reset-view");
+				if (resetBtn) {
+					resetBtn.addEventListener("click", resetView);
+				}
+
+				// ---- Legend filter toggle ----
+				const legendBtns =
+					document.querySelectorAll<HTMLButtonElement>(".legend-filter");
+				for (const btn of legendBtns) {
+					btn.addEventListener("click", () => {
+						const state = btn.dataset.state;
+						if (!state) return;
+
+						const dot = btn.querySelector<HTMLSpanElement>(".legend-dot");
+
+						if (disabledStates.has(state)) {
+							disabledStates.delete(state);
+							btn.style.opacity = "1";
+							if (dot) dot.style.background = dot.dataset.color ?? "";
+						} else {
+							disabledStates.add(state);
+							btn.style.opacity = "0.4";
+							if (dot) dot.style.background = "#999";
+						}
+
+						requestRender();
+					});
+				}
+			})();
+		</script>
+	</Fragment>
+</Page>

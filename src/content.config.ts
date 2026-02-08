@@ -38,6 +38,7 @@ const blog = defineCollection({
 		title: z.string(),
 		author: z.string(),
 		date: z.coerce.date(),
+		state: z.literal(["experimental", "building", "idea", "sharing", "final"]),
 	}),
 });
 

@@ -1,6 +1,6 @@
 [tools]
 node = "latest"
-pnpm = "latest"
+pnpm = "10.28.2"
 
 [hooks]
 postinstall = "pnpm install"

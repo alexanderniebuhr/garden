@@ -34,7 +34,7 @@ import Shell from "./Shell.astro";
 					</li>
 					<li>
 						<a
-							href="/de"
+							href={`/${Astro.currentLocale}/graph`}
 							class="inline-flex items-center justify-center rounded-full px-fluid-xs py-1 text-sm font-medium text-neutral-600 dark:text-neutral-400 transition-all duration-200 ease-out hover:bg-black/5 dark:hover:bg-white/10 hover:text-black dark:hover:text-white hover:scale-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
 						>
 							<GraphIcon />
@@ -52,12 +52,10 @@ import Shell from "./Shell.astro";
 			</nav>
 		</header>
 
-		<main class="flex-1 w-full max-w-4xl mx-auto px-fluid-gutter py-fluid-l">
+		<main class="flex-1 w-full flex flex-col min-h-0">
 			<slot name="main" />
 		</main>
-		<footer class="w-full max-w-4xl mx-auto px-fluid-gutter py-fluid-s">
-			FOOTER
-		</footer>
+		<footer class="w-full">FOOTER</footer>
 	</Fragment>
 </Shell>
 
