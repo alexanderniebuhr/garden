@@ -22,7 +22,7 @@
 		"tailwindcss": "4.1.18",
 		"update-browserslist-db": "1.2.3"
 	},
-	"packageManager": "pnpm@10.28.2",
+	"packageManager": "pnpm@10.29.1",
 	"dependencies": {
 		"@astrojs/check": "beta",
 		"@astrojs/cloudflare": "beta",
