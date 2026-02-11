@@ -17,7 +17,7 @@
 	"devDependencies": {
 		"@tailwindcss/vite": "4.1.18",
 		"@types/node": "25.2.2",
-		"@typescript/native-preview": "7.0.0-dev.20260207.1",
+		"@typescript/native-preview": "7.0.0-dev.20260208.1",
 		"lefthook": "2.1.0",
 		"tailwindcss": "4.1.18",
 		"update-browserslist-db": "1.2.3"
