@@ -1,9 +1,6 @@
-[tools]
-node = "latest"
-pnpm = "10.28.2"
-
 [hooks]
 postinstall = "pnpm install"
 
 [settings]
 experimental = true
+idiomatic_version_file_enable_tools = ["node", "pnpm"]
