@@ -55,7 +55,18 @@ import Shell from "./Shell.astro";
 		<main class="flex-1 w-full flex flex-col min-h-0">
 			<slot name="main" />
 		</main>
-		<footer class="w-full">FOOTER</footer>
+		<footer
+			class="w-full py-fluid-s text-center text-sm text-neutral-500 dark:text-neutral-400"
+		>
+			<p>
+				© {new Date().getFullYear()}
+				<a
+					href="https://alexanderniebuhr.me"
+					class="hover:text-neutral-700 dark:hover:text-neutral-300 transition-colors"
+					>Alexander Niebuhr</a
+				>
+			</p>
+		</footer>
 	</Fragment>
 </Shell>
 
