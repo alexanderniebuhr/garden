@@ -11,10 +11,10 @@
 		"check": "wrangler types --include-runtime --include-env && astro check",
 		"build": "astro build",
 		"preview": "astro build && astro preview",
-		"deploy": "astro build && wrangler deploy",
-		"update": "update-browserslist-db latest"
+		"deploy": "astro build && wrangler deploy"
 	},
 	"devDependencies": {
+		"@astrojs/compiler-rs": "0.1.4",
 		"@tailwindcss/vite": "4.1.18",
 		"@types/d3": "7.4.3",
 		"@types/node": "25.3.5",
@@ -23,15 +23,14 @@
 		"tailwindcss": "4.1.18",
 		"update-browserslist-db": "1.2.3"
 	},
-	"packageManager": "pnpm@10.31.0",
 	"dependencies": {
-		"@astrojs/check": "beta",
-		"@astrojs/cloudflare": "beta",
-		"@astrojs/rss": "beta",
-		"@astrojs/sitemap": "beta",
+		"@astrojs/check": "0.9.7",
+		"@astrojs/cloudflare": "13.1.0",
+		"@astrojs/rss": "4.0.17",
+		"@astrojs/sitemap": "3.7.1",
 		"@biomejs/biome": "2.4.6",
 		"@expressive-code/plugin-collapsible-sections": "0.41.7",
-		"astro": "beta",
+		"astro": "6.0.3",
 		"astro-expressive-code": "0.41.6",
 		"browserslist": "4.28.1",
 		"d3": "7.9.0",
@@ -43,7 +42,7 @@
 	"devEngines": {
 		"runtime": {
 			"name": "node",
-			"version": "25.6.1"
+			"version": "25.8.1"
 		}
 	}
 }

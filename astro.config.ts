@@ -18,6 +18,11 @@ export default defineConfig({
 		contentIntellisense: true,
 		svgo: true,
 		chromeDevtoolsWorkspace: true,
+		rustCompiler: true,
+		queuedRendering: {
+			enabled: true,
+			contentCache: true,
+		},
 	},
 	i18n: {
 		locales: ["de", "en"],

@@ -1,6 +1,9 @@
+[tools]
+"github:pnpm/pnpm" = "v11.0.0-alpha.14"
+
 [hooks]
 postinstall = "pnpm install"
 
 [settings]
 experimental = true
-idiomatic_version_file_enable_tools = ["node", "pnpm"]
+idiomatic_version_file_enable_tools = ["node"]
