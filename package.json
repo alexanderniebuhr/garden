@@ -30,7 +30,7 @@
 		"@astrojs/rss": "beta",
 		"@astrojs/sitemap": "beta",
 		"@biomejs/biome": "2.4.6",
-		"@expressive-code/plugin-collapsible-sections": "0.41.6",
+		"@expressive-code/plugin-collapsible-sections": "0.41.7",
 		"astro": "beta",
 		"astro-expressive-code": "0.41.6",
 		"browserslist": "4.28.1",
