@@ -39,8 +39,8 @@ importers:
         specifier: 1.32.0
         version: 1.32.0
       pixi.js:
-        specifier: 8.16.0
-        version: 8.16.0
+        specifier: 8.17.0
+        version: 8.17.0
       tiny-decode:
         specifier: 0.1.3
         version: 0.1.3
@@ -2427,8 +2427,8 @@ packages:
     resolution: {integrity: sha512-5gTmgEY/sqK6gFXLIsQNH19lWb4ebPDLA4SdLP7dsWkIXHWlG66oPuVvXSGFPppYZz8ZDZq0dYYrbHfBCVUb1Q==}
     engines: {node: '>=12'}
 
-  pixi.js@8.16.0:
-    resolution: {integrity: sha512-gu2xw3sZGAn3cWBtk0HqTQT+v19YAfiaYXwUGgWoJl5NKz4cEZJUgWrwkmdfDszGyYBAGqOvJNbd2M9+vzLLMg==}
+  pixi.js@8.17.0:
+    resolution: {integrity: sha512-A6AhxbNG8Abo5xyNRJx//ETefTCcwWx2sw9e/E57YCGQ8MuvS5o2mbofBOPCdf1J+z6VKd7MZjictS9EkMXiuw==}
 
   postcss-nested@6.2.0:
     resolution: {integrity: sha512-HQbt28KulC5AJzG+cZtj9kvKB93CFCdLvog1WFLf1D+xmMvPGlBstkpTEZfK5+AN9hfJocyBFCNiqyS48bpgzQ==}
@@ -5467,7 +5467,7 @@ snapshots:
 
   picomatch@4.0.3: {}
 
-  pixi.js@8.16.0:
+  pixi.js@8.17.0:
     dependencies:
       '@pixi/colord': 2.9.6
       '@types/earcut': 3.0.0
