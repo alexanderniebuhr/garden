@@ -15,6 +15,7 @@
 	},
 	"devDependencies": {
 		"@astrojs/compiler-rs": "0.1.4",
+		"@biomejs/biome": "2.4.7",
 		"@tailwindcss/vite": "4.2.1",
 		"@types/d3": "7.4.3",
 		"@types/node": "25.3.5",
@@ -28,7 +29,6 @@
 		"@astrojs/cloudflare": "13.1.0",
 		"@astrojs/rss": "4.0.17",
 		"@astrojs/sitemap": "3.7.1",
-		"@biomejs/biome": "2.4.6",
 		"@expressive-code/plugin-collapsible-sections": "0.41.7",
 		"astro": "6.0.3",
 		"astro-expressive-code": "0.41.7",
