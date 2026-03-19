@@ -1,5 +1,5 @@
 [tools]
-"github:pnpm/pnpm" = "v11.0.0-alpha.14"
+"github:pnpm/pnpm" = "v11.0.0-beta.0"
 
 [hooks]
 postinstall = "pnpm install"
