@@ -4,16 +4,16 @@
 		"config:best-practices",
 		":enableVulnerabilityAlerts",
 		":separateMultipleMajorReleases",
-		"customManagers:biomeVersions",
 		":rebaseStalePrs",
 		":timezone(Europe/Berlin)",
 		":disableRateLimiting",
 		":configMigration",
-		"replacements:all"
+		"replacements:all",
+		":reviewer(alexanderniebuhr)",
+		":gitSignOff",
+		":maintainLockFilesWeekly",
+		":semanticCommitsDisabled"
 	],
 	"osvVulnerabilityAlerts": true,
 	"postUpdateOptions": ["pnpmDedupe"],
-	"lockFileMaintenance": {
-		"enabled": true
-	}
 }
