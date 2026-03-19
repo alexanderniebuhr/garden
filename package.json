@@ -14,7 +14,7 @@
 		"deploy": "astro build && wrangler deploy"
 	},
 	"devDependencies": {
-		"@astrojs/compiler-rs": "0.1.4",
+		"@astrojs/compiler-rs": "0.1.6",
 		"@biomejs/biome": "2.4.7",
 		"@tailwindcss/vite": "4.2.1",
 		"@types/d3": "7.4.3",
