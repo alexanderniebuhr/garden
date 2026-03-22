@@ -8,12 +8,12 @@ import Page from "../layouts/Page.astro";
 ---
 
 <Page title="Dashboard">
-	<Fragment slot="head">
-		<title>Dashboard</title>
-	</Fragment>
+	<Fragment slot="head"> <title>Dashboard</title> </Fragment>
 	<Fragment slot="main">
 		<h1>Dashboard</h1>
 		<!-- https://v6.docs.astro.build/en/guides/prefetch/#prefetch-strategies -->
-		<a href={getRelativeLocaleUrl("de")} data-astro-prefetch>Deutsch</a>
+		<a href={getRelativeLocaleUrl("de")}>Deutsch</a>
+		<!-- https://v6.docs.astro.build/en/guides/prefetch/#prefetch-strategies -->
+		<a href={getRelativeLocaleUrl("en")} data-astro-prefetch>English</a>
 	</Fragment>
 </Page>

@@ -25,13 +25,16 @@ export default defineConfig({
 		},
 	},
 	i18n: {
-		locales: ["de", "en"],
-		defaultLocale: "de",
+		locales: ["en", "de"],
+		defaultLocale: "en",
 		routing: {
 			prefixDefaultLocale: true,
 			fallbackType: "redirect",
+			redirectToDefaultLocale: false,
 		},
-		fallback: {},
+		fallback: {
+			de: "en",
+		},
 	},
 	prefetch: {
 		defaultStrategy: "hover",

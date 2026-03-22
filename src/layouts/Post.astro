@@ -20,7 +20,7 @@ const absoluteLocaleUrlList = getAbsoluteLocaleUrlList(
 	{},
 );
 
-const lang = Astro.currentLocale || "de";
+const lang = Astro.currentLocale || "en";
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 ---
 
@@ -46,7 +46,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 		<meta name="twitter:description" content={description}>
 	</Fragment>
 	<Fragment slot="main">
-		<article class="flex flex-col gap-fluid-m">
+		<article class="flex flex-col gap-fluid-m px-fluid-l">
 			<header class="flex flex-col items-center gap-fluid-xs">
 				<time
 					class="text-sm text-neutral-500 dark:text-neutral-400"
@@ -64,6 +64,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 						class="inline-flex cursor-help rounded-sm p-0.5 outline-none focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-neutral-400 focus-visible:outline-offset-2"
 						style="anchor-name: --stage-experimental"
 						popovertarget="tip-experimental"
+						type="button"
 					>
 						<Experimental type="multi" width="2rem" height="2rem" />
 					</button>
@@ -81,6 +82,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 						class="inline-flex cursor-help rounded-sm p-0.5 outline-none focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-neutral-400 focus-visible:outline-offset-2"
 						style="anchor-name: --stage-developing"
 						popovertarget="tip-developing"
+						type="button"
 					>
 						<Developing
 							type="multi"
@@ -103,6 +105,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 						class="inline-flex cursor-help rounded-sm p-0.5 outline-none focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-neutral-400 focus-visible:outline-offset-2"
 						style="anchor-name: --stage-understanding"
 						popovertarget="tip-understanding"
+						type="button"
 					>
 						<Understanding
 							type="multi"
@@ -125,6 +128,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 						class="inline-flex cursor-help rounded-sm p-0.5 outline-none focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-neutral-400 focus-visible:outline-offset-2"
 						style="anchor-name: --stage-sharing"
 						popovertarget="tip-sharing"
+						type="button"
 					>
 						<Sharing
 							type="multi"
@@ -147,6 +151,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 						class="inline-flex cursor-help rounded-sm p-0.5 outline-none focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-neutral-400 focus-visible:outline-offset-2"
 						style="anchor-name: --stage-final"
 						popovertarget="tip-final"
+						type="button"
 					>
 						<Final type="multi" width="2rem" height="2rem" class="grayscale" />
 					</button>
@@ -161,9 +166,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 					</div>
 				</div>
 			</header>
-			<div class="prose max-w-none">
-				<slot />
-			</div>
+			<div class="prose max-w-none"><slot /></div>
 		</article>
 	</Fragment>
 </Page>
