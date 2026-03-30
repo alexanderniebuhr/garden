@@ -20,7 +20,7 @@
 		"@tailwindcss/vite": "4.2.2",
 		"@types/d3": "7.4.3",
 		"@types/node": "25.5.0",
-		"@typescript/native-preview": "7.0.0-dev.20260328.1",
+		"@typescript/native-preview": "7.0.0-dev.20260330.1",
 		"lefthook": "2.1.4",
 		"tailwindcss": "4.2.2",
 		"update-browserslist-db": "1.2.3"
