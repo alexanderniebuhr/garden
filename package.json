@@ -18,9 +18,11 @@
 		"@astrojs/compiler-rs": "0.1.6",
 		"@biomejs/biome": "2.4.10",
 		"@tailwindcss/vite": "4.2.2",
+		"@types/cssesc": "3.0.2",
 		"@types/d3": "7.4.3",
 		"@types/node": "25.5.0",
 		"@typescript/native-preview": "7.0.0-dev.20260401.1",
+		"cssesc": "3.0.0",
 		"lefthook": "2.1.4",
 		"tailwindcss": "4.2.2",
 		"update-browserslist-db": "1.2.3"

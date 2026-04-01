@@ -7,6 +7,8 @@ import Final from "../components/icons/Final.astro";
 import Sharing from "../components/icons/Sharing.astro";
 import Understanding from "../components/icons/Understanding.astro";
 import Page from "./Page.astro";
+import cssesc from 'cssesc';
+
 
 type Post = CollectionEntry<"blog">["data"];
 interface Props extends Post {}
@@ -53,10 +55,11 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 					{Astro.props.date.toLocaleDateString("de-DE")}
 				</time>
 				<h1
-					transition:name={encodeURIComponent(title)}
 					class="text-fluid-heading font-bold text-center w-fit"
-					>{title}</h1
+					style={{ "view-transition-name": cssesc(title, { isIdentifier: true }) }}
 				>
+					{title}
+				</h1>
 				<div
 					role="group"
 					aria-label="Post maturity stages"
