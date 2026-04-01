@@ -1,8 +1,8 @@
 [tools]
-"github:pnpm/pnpm" = "v11.0.0-beta.3"
+"npm:pnpm" = "v11.0.0-beta.6"
 
 [hooks]
-postinstall = "pnpm install"
+postinstall = "pn install"
 
 [settings]
 experimental = true
