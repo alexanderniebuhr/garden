@@ -13,12 +13,6 @@
 	--font-size-fluid-heading--line-height: 1.2;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-	@view-transition {
-		navigation: auto;
-	}
-}
-
 /* Custom prose styles — replaces @tailwindcss/typography */
 .prose {
 	color: var(--color-neutral-800);

@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import { getAbsoluteLocaleUrlList } from "astro:i18n";
+import cssesc from "cssesc";
 import Developing from "../components/icons/Developing.astro";
 import Experimental from "../components/icons/Experimental.astro";
 import Final from "../components/icons/Final.astro";
@@ -53,10 +54,11 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 					{Astro.props.date.toLocaleDateString("de-DE")}
 				</time>
 				<h1
-					transition:name={encodeURIComponent(title)}
 					class="text-fluid-heading font-bold text-center w-fit"
-					>{title}</h1
+					style={{ "view-transition-name": cssesc(title, { isIdentifier: true }) }}
 				>
+					{title}
+				</h1>
 				<div
 					role="group"
 					aria-label="Post maturity stages"

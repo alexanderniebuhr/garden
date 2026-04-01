@@ -4,6 +4,7 @@ export const prerender = false;
 
 import { getCollection } from "astro:content";
 import Picture from "astro/components/Picture.astro";
+import cssesc from "cssesc";
 import Page from "../../layouts/Page.astro";
 
 const posts = (
@@ -28,14 +29,14 @@ const posts = (
 							>
 								<span>
 									{post.data.date.toLocaleDateString(Astro.currentLocale, {
-										year: "numeric",
+											year: "numeric",
 									})}
 								</span>
 								<span class="w-px flex-1 bg-gray-900/10 dark:bg-white/10" />
 								<span>
 									{post.data.date.toLocaleDateString(Astro.currentLocale, {
-										month: "short",
-										day: "2-digit",
+											month: "short",
+											day: "2-digit",
 									})}
 								</span>
 							</time>
@@ -54,9 +55,13 @@ const posts = (
 						<div class="flex flex-1 flex-col justify-between">
 							<div class="border-gray-900/10 border-s p-4 sm:border-l-transparent sm:p-6 dark:border-white/10">
 								<a
-									href={`/${post.id}`}
+									href={`/${post.id}/`}
 								>
-									<h3 transition:name={encodeURIComponent(post.data.title)} class="font-bold text-gray-900 uppercase dark:text-white w-fit">
+									<h3	class="font-bold text-gray-900 uppercase dark:text-white w-fit"
+									style={{
+											"view-transition-name": cssesc(post.data.title, { isIdentifier: true }),
+									}}
+									>
 										{post.data.title}
 									</h3>
 								</a>
