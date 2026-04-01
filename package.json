@@ -30,7 +30,7 @@
 		"@astrojs/cloudflare": "13.1.6",
 		"@astrojs/rss": "4.0.18",
 		"@astrojs/sitemap": "3.7.2",
-		"@cloudflare/vite-plugin": "1.30.2",
+		"@cloudflare/vite-plugin": "1.30.3",
 		"@expressive-code/plugin-collapsible-sections": "0.41.7",
 		"astro": "6.1.2",
 		"astro-expressive-code": "0.41.7",
