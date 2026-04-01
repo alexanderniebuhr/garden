@@ -4,8 +4,8 @@ export const prerender = false;
 
 import { getCollection } from "astro:content";
 import Picture from "astro/components/Picture.astro";
-import Page from "../../layouts/Page.astro";
 import cssesc from "cssesc";
+import Page from "../../layouts/Page.astro";
 
 const posts = (
 	await getCollection("blog", ({ id }) => {

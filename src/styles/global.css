@@ -13,8 +13,6 @@
 	--font-size-fluid-heading--line-height: 1.2;
 }
 
-
-
 /* Custom prose styles — replaces @tailwindcss/typography */
 .prose {
 	color: var(--color-neutral-800);

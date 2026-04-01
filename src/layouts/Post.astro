@@ -1,14 +1,13 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import { getAbsoluteLocaleUrlList } from "astro:i18n";
+import cssesc from "cssesc";
 import Developing from "../components/icons/Developing.astro";
 import Experimental from "../components/icons/Experimental.astro";
 import Final from "../components/icons/Final.astro";
 import Sharing from "../components/icons/Sharing.astro";
 import Understanding from "../components/icons/Understanding.astro";
 import Page from "./Page.astro";
-import cssesc from 'cssesc';
-
 
 type Post = CollectionEntry<"blog">["data"];
 interface Props extends Post {}
