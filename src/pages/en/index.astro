@@ -29,14 +29,14 @@ const posts = (
 							>
 								<span>
 									{post.data.date.toLocaleDateString(Astro.currentLocale, {
-											year: "numeric",
+										year: "numeric",
 									})}
 								</span>
 								<span class="w-px flex-1 bg-gray-900/10 dark:bg-white/10" />
 								<span>
 									{post.data.date.toLocaleDateString(Astro.currentLocale, {
-											month: "short",
-											day: "2-digit",
+										month: "short",
+										day: "2-digit",
 									})}
 								</span>
 							</time>
@@ -45,22 +45,27 @@ const posts = (
 						<div class="hidden sm:block sm:basis-56">
 							<Picture
 								class="aspect-square h-full w-full object-cover"
-								formats={["avif", "webp"]}
 								src={post.data.cover}
+								formats={["avif", "webp"]}
+								quality={"high"}
+								widths={[160, 320, 480, 640, 960, post.data.cover.width]}
 								layout="constrained"
 								alt={post.data.coverAlt}
+								sizes="auto"
+								loading="lazy"
 							/>
 						</div>
 
 						<div class="flex flex-1 flex-col justify-between">
 							<div class="border-gray-900/10 border-s p-4 sm:border-l-transparent sm:p-6 dark:border-white/10">
-								<a
-									href={`/${post.id}/`}
-								>
-									<h3	class="font-bold text-gray-900 uppercase dark:text-white w-fit"
-									style={{
-											"view-transition-name": cssesc(post.data.title, { isIdentifier: true }),
-									}}
+								<a href={`/${post.id}/`}>
+									<h3
+										class="font-bold text-gray-900 uppercase dark:text-white w-fit"
+										style={{
+											"view-transition-name": cssesc(post.data.title, {
+												isIdentifier: true,
+											}),
+										}}
 									>
 										{post.data.title}
 									</h3>
