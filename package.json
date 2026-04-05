@@ -21,7 +21,7 @@
 		"@types/cssesc": "3.0.2",
 		"@types/d3": "7.4.3",
 		"@types/node": "25.5.2",
-		"@typescript/native-preview": "7.0.0-dev.20260404.1",
+		"@typescript/native-preview": "7.0.0-dev.20260405.1",
 		"cssesc": "3.0.0",
 		"lefthook": "2.1.4",
 		"tailwindcss": "4.2.2",
