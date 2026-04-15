@@ -41,7 +41,7 @@
 		"lightningcss": "1.32.0",
 		"pixi.js": "8.18.1",
 		"tiny-decode": "0.1.3",
-		"wrangler": "4.82.2"
+		"wrangler": "4.83.0"
 	},
 	"devEngines": {
 		"runtime": {
