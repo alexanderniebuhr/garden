@@ -16,7 +16,7 @@
 	},
 	"devDependencies": {
 		"@astrojs/compiler-rs": "0.1.6",
-		"@biomejs/biome": "2.4.11",
+		"@biomejs/biome": "2.4.12",
 		"@tailwindcss/vite": "4.2.2",
 		"@types/cssesc": "3.0.2",
 		"@types/d3": "7.4.3",
