@@ -35,7 +35,7 @@
 		"@cloudflare/vite-plugin": "1.39.2",
 		"@expressive-code/plugin-collapsible-sections": "0.42.0",
 		"astro": "6.4.3",
-		"astro-expressive-code": "0.42.0",
+		"astro-expressive-code": "0.43.1",
 		"browserslist": "4.28.2",
 		"d3": "7.9.0",
 		"lightningcss": "1.32.0",
