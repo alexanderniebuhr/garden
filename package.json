@@ -20,7 +20,7 @@
 		"@tailwindcss/vite": "4.3.0",
 		"@types/cssesc": "3.0.2",
 		"@types/d3": "7.4.3",
-		"@types/node": "25.9.2",
+		"@types/node": "25.9.3",
 		"@typescript/native-preview": "7.0.0-dev.20260613.1",
 		"cssesc": "3.0.0",
 		"lefthook": "2.1.4",
