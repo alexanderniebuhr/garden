@@ -17,14 +17,14 @@
 	"devDependencies": {
 		"@astrojs/compiler-rs": "0.2.2",
 		"@biomejs/biome": "2.5.0",
-		"@tailwindcss/vite": "4.3.0",
+		"@tailwindcss/vite": "4.3.1",
 		"@types/cssesc": "3.0.2",
 		"@types/d3": "7.4.3",
 		"@types/node": "25.9.2",
 		"@typescript/native-preview": "7.0.0-dev.20260613.1",
 		"cssesc": "3.0.0",
 		"lefthook": "2.1.4",
-		"tailwindcss": "4.3.0",
+		"tailwindcss": "4.3.1",
 		"update-browserslist-db": "1.2.3"
 	},
 	"dependencies": {
