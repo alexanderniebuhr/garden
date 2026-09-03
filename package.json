@@ -29,7 +29,7 @@
 	},
 	"dependencies": {
 		"@astrojs/check": "0.9.9",
-		"@astrojs/cloudflare": "13.7.0",
+		"@astrojs/cloudflare": "14.3.0",
 		"@astrojs/rss": "4.0.18",
 		"@astrojs/sitemap": "3.7.3",
 		"@cloudflare/vite-plugin": "1.40.1",
