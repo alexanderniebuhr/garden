@@ -7,6 +7,7 @@ export default defineConfig({
 		compatibilityDate: "2026-11-08", // newest date the adapter's pinned plugin supports; raise once it pins a newer one
 		compatibilityFlags: [
 			"pipe_to_backward_propagation", // default from 2026-11-17; drop once compatibilityDate reaches it
+			"enable_request_signal", // default from 2026-11-17; drop once compatibilityDate reaches it
 		],
 		entrypoint: "./src/worker.ts",
 		workersDev: false,
