@@ -11,67 +11,74 @@ const { wide } = Astro.props;
 <Shell>
 	<Fragment slot="head"> <slot name="head" /> </Fragment>
 	<Fragment slot="body">
-		<header
-			id="site-header"
-			class="sticky top-0 z-50 flex justify-center py-fluid-xs"
-		>
-			<nav
-				id="site-nav"
-				class="rounded-full px-fluid-gutter py-1 bg-amber-50/(--nav-bg-a) dark:bg-neutral-800/(--nav-bg-a) backdrop-blur-(--nav-blur) shadow-lg shadow-black/(--nav-shadow-a) dark:shadow-black/(--nav-shadow-dark-a) ring-1 ring-black/(--nav-ring-a) dark:ring-white/(--nav-ring-dark-a) [--nav-bg-a:0] [--nav-blur:0px] [--nav-shadow-a:0] [--nav-shadow-dark-a:0] [--nav-ring-a:0] [--nav-ring-dark-a:0]"
-			>
-				<ul class="flex flex-wrap items-center justify-center gap-fluid-s">
+		<header id="site-header">
+			<nav id="site-nav">
+				<ul>
 					<li>
-						<a
-							href="https://alexanderniebuhr.me"
-							class="inline-block rounded-full px-fluid-xs py-1 text-sm font-medium text-neutral-600 dark:text-neutral-400 transition-all duration-200 ease-out hover:bg-black/5 dark:hover:bg-white/10 hover:text-black dark:hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
-						>
-							me
-						</a>
+						<a href="https://alexanderniebuhr.me" class="nav-link"> me </a>
 					</li>
 					<li>
 						<a
 							href={`/${Astro.currentLocale}/graph`}
 							aria-label="Graph"
-							class="inline-flex items-center justify-center rounded-full px-fluid-xs py-1 text-sm font-medium text-neutral-600 dark:text-neutral-400 transition-all duration-200 ease-out hover:bg-black/5 dark:hover:bg-white/10 hover:text-black dark:hover:text-white hover:scale-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
+							class="nav-link nav-link-icon"
 						>
 							<GraphIcon />
 						</a>
 					</li>
 					<li>
-						<a
-							href="/"
-							class="inline-block rounded-full px-fluid-xs py-1 text-sm font-medium text-neutral-600 dark:text-neutral-400 transition-all duration-200 ease-out hover:bg-black/5 dark:hover:bg-white/10 hover:text-black dark:hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
-						>
-							x
-						</a>
+						<a href="/" class="nav-link"> x </a>
 					</li>
 				</ul>
 			</nav>
 		</header>
 
-		<main
-			class:list={[{ "px-fluid-l": !wide }]}
-			class="flex-1 w-full flex flex-col min-h-0"
-		>
+		<main class:list={["site-main", { padded: !wide }]}>
 			<slot name="main" />
 		</main>
-		<footer
-			class="w-full py-fluid-s text-center text-sm text-neutral-500 dark:text-neutral-400"
-		>
+		<footer class="site-footer">
 			<p>
 				© {new Date().getFullYear()}
-				<a
-					href="https://alexanderniebuhr.me"
-					class="hover:text-neutral-700 dark:hover:text-neutral-300 transition-colors"
-				>
-					Alexander Niebuhr
-				</a>
+				<a href="https://alexanderniebuhr.me"> Alexander Niebuhr </a>
 			</p>
 		</footer>
 	</Fragment>
 </Shell>
 
 <style>
+	@import "../styles/media.css";
+
+	#site-header {
+		position: sticky;
+		top: 0;
+		z-index: 50;
+		display: flex;
+		justify-content: center;
+		padding-block: var(--spacing-fluid-xs);
+	}
+
+	#site-nav {
+		--nav-bg-a: 0;
+		--nav-blur: 0px;
+		--nav-shadow-a: 0;
+		--nav-shadow-dark-a: 0;
+		--nav-ring-a: 0;
+		--nav-ring-dark-a: 0;
+
+		border-radius: var(--radius-full);
+		padding-inline: var(--spacing-fluid-gutter);
+		padding-block: 0.25rem;
+		backdrop-filter: blur(var(--nav-blur));
+
+		& ul {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			justify-content: center;
+			gap: var(--spacing-fluid-s);
+		}
+	}
+
 	@keyframes navReveal {
 		from {
 			--nav-bg-a: 0;
@@ -96,6 +103,102 @@ const { wide } = Astro.props;
 			animation: navReveal linear both;
 			animation-timeline: scroll(root block);
 			animation-range: 0px 50px;
+		}
+	}
+
+	.nav-link {
+		display: inline-block;
+		border-radius: var(--radius-full);
+		padding-inline: var(--spacing-fluid-xs);
+		padding-block: 0.25rem;
+		font-size: var(--text-sm);
+		line-height: var(--text-sm--line-height);
+		font-weight: var(--font-weight-medium);
+		color: var(--color-neutral-600);
+		transition-property: all;
+		transition-timing-function: var(--ease-out);
+		transition-duration: 200ms;
+
+		@media (--hover) {
+			&:hover {
+				background-color: var(--color-black-a5);
+				color: var(--color-black);
+			}
+		}
+
+		&:focus-visible {
+			outline-style: solid;
+			outline-width: 2px;
+			outline-offset: 2px;
+			outline-color: currentcolor;
+		}
+
+		@media (--dark) {
+			color: var(--color-neutral-400);
+
+			@media (--hover) {
+				&:hover {
+					background-color: var(--color-white-a10);
+					color: var(--color-white);
+				}
+			}
+		}
+	}
+
+	.nav-link-icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+
+		@media (--hover) {
+			&:hover {
+				scale: 110% 110%;
+			}
+		}
+	}
+
+	.site-main {
+		flex: 1;
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		min-height: 0;
+
+		&.padded {
+			padding-inline: var(--spacing-fluid-l);
+		}
+	}
+
+	.site-footer {
+		width: 100%;
+		padding-block: var(--spacing-fluid-s);
+		text-align: center;
+		font-size: var(--text-sm);
+		line-height: var(--text-sm--line-height);
+		color: var(--color-neutral-500);
+
+		& a {
+			transition-property:
+				color, background-color, border-color, outline-color,
+				text-decoration-color, fill, stroke;
+			transition-timing-function: var(--default-transition-timing-function);
+			transition-duration: var(--default-transition-duration);
+
+			@media (--hover) {
+				&:hover {
+					color: var(--color-neutral-700);
+				}
+			}
+		}
+
+		@media (--dark) {
+			color: var(--color-neutral-400);
+
+			@media (--hover) {
+				& a:hover {
+					color: var(--color-neutral-300);
+				}
+			}
 		}
 	}
 </style>
