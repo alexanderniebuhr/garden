@@ -36,6 +36,15 @@
 		"lightningcss": "1.33.0",
 		"pixi.js": "8.23.0"
 	},
+	"browserslist": [
+		"> 0.5%",
+		"last 2 versions",
+		"Firefox ESR",
+		"cover 80% in CN",
+		"unreleased versions",
+		"not dead",
+		"not op_mini all"
+	],
 	"devEngines": {
 		"packageManager": {
 			"name": "aube",

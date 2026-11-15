@@ -44,16 +44,8 @@ export default defineConfig({
 		css: {
 			transformer: "lightningcss",
 			lightningcss: {
-				targets: browserslistToTargets(
-					browserslist([
-						"> 0.5%",
-						"last 2 versions",
-						"Firefox ESR",
-						"not dead",
-						"cover 80% in CN",
-						"unreleased versions",
-					]),
-				),
+				targets: browserslistToTargets(browserslist()),
+				drafts: { customMedia: true },
 			},
 		},
 		build: {
