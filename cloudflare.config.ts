@@ -23,7 +23,6 @@ export default defineConfig({
 		env: {
 			ASSETS: bindings.assets(),
 			IMAGES: bindings.images({ dev: { remote: true } }),
-			CF_VERSION_METADATA: bindings.versionMetadata(),
 		},
 	},
 });
