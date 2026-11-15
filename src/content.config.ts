@@ -32,7 +32,11 @@ import { z } from "astro/zod";
 // };
 
 const blog = defineCollection({
-	loader: glob({ base: "./src/content/blog", pattern: "**/*.md" }),
+	loader: glob({
+		base: "./src/content/blog",
+		pattern: "**/*.md",
+		deferRender: true,
+	}),
 	schema: ({ image }) =>
 		z.object({
 			slug: z.string(),
