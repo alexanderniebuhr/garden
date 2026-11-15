@@ -1,7 +1,7 @@
 import cloudflare from "@astrojs/cloudflare";
 import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
-import { defineConfig, svgoOptimizer } from "astro/config";
+import { defineConfig, logHandlers, svgoOptimizer } from "astro/config";
 import expressiveCode from "astro-expressive-code";
 import browserslist from "browserslist";
 import { browserslistToTargets } from "lightningcss";
@@ -10,6 +10,7 @@ export default defineConfig({
 	site: "https://alexanderniebuhr.garden",
 	output: "server",
 	session: false,
+	logger: logHandlers.json(),
 	adapter: cloudflare({
 		imageService: "cloudflare-binding",
 	}),
