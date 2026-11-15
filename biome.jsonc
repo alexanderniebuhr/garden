@@ -28,9 +28,9 @@
 	"assist": {
 		"enabled": true,
 		"actions": {
-			"recommended": true,
+			"preset": "recommended",
 			"source": {
-				"recommended": true,
+				"preset": "recommended",
 				"organizeImports": {
 					"level": "on",
 					"options": {
@@ -43,9 +43,9 @@
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"recommended": true,
+			"preset": "recommended",
 			"nursery": {
-				"useSortedClasses": "warn"
+				"useTailwindSortedClasses": "warn"
 			}
 		},
 		"domains": {
