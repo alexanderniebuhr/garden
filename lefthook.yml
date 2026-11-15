@@ -1,6 +1,0 @@
-rc: ~/.lefthookrc
-
-pre-commit:
-  commands:
-    check:
-      run: aube exec biome check --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files}

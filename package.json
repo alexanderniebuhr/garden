@@ -5,7 +5,6 @@
 	"scripts": {
 		"astro": "astro",
 		"biome": "biome",
-		"prepare": "lefthook install",
 		"dev": "astro dev",
 		"types": "wrangler types --include-runtime --include-env",
 		"check": "wrangler types --include-runtime --include-env && astro check",
@@ -23,7 +22,6 @@
 		"@types/node": "25.9.2",
 		"@typescript/native-preview": "7.0.0-dev.20260613.1",
 		"cssesc": "3.0.0",
-		"lefthook": "2.1.4",
 		"tailwindcss": "4.3.0",
 		"update-browserslist-db": "1.2.3"
 	},

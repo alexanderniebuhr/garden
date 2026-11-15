@@ -1,0 +1,28 @@
+amends "package://github.com/jdx/hk/releases/download/v2.12.0/hk@2.12.0#/Config.pkl"
+
+local biome_flags = "--no-errors-on-unmatched --files-ignore-unknown=true --colors=off"
+
+local linters = new Mapping<String, Step> {
+    ["biome"] {
+        glob = List("**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx,json,jsonc,css,graphql,gql,html,astro,vue,svelte,grit,svg}")
+        exclude = List("worker-configuration.d.ts")
+        check = "node_modules/.bin/biome check \(biome_flags) {{files}}"
+        fix = "node_modules/.bin/biome check --write \(biome_flags) {{files}}"
+    }
+}
+
+hooks {
+    ["pre-commit"] {
+        fix = false
+        stage = false
+        stash = "none"
+        steps = linters
+    }
+    ["check"] {
+        steps = linters
+    }
+    ["fix"] {
+        fix = true
+        steps = linters
+    }
+}
