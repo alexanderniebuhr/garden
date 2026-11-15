@@ -9,6 +9,7 @@ import { browserslistToTargets } from "lightningcss";
 export default defineConfig({
 	site: "https://alexanderniebuhr.garden",
 	output: "server",
+	session: false,
 	adapter: cloudflare({
 		imageService: "cloudflare-binding",
 	}),

@@ -39,10 +39,5 @@
 	"limits": {
 		"cpu_ms": 60000 // default is 30000 (30 seconds)
 	},
-	"kv_namespaces": [
-		{
-			"binding": "SESSION"
-		}
-	],
 	"upload_source_maps": true
 }
