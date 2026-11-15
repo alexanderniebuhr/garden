@@ -189,15 +189,26 @@ const legendItems = Object.entries(stateConfig).map(([key, val]) => ({
 					href: string;
 				}
 
+				// The serialized links reference nodes by id; forceLink below
+				// replaces source/target with the node objects when the
+				// simulation is created, before anything reads them.
 				interface GraphLink extends SimulationLinkDatum<GraphNode> {
 					source: GraphNode;
 					target: GraphNode;
 				}
 
+				interface GraphData {
+					nodes: GraphNode[];
+					links: GraphLink[];
+				}
+
 				// ---- Data ----
-				const { nodes, links } = JSON.parse(
-					document.getElementById("__graphData")?.innerText,
-				);
+				const graphDataJson =
+					document.getElementById("__graphData")?.textContent;
+				if (!graphDataJson) {
+					throw new Error("Missing #__graphData payload");
+				}
+				const { nodes, links }: GraphData = JSON.parse(graphDataJson);
 				console.log("Loaded graph data:", { nodes, links });
 				// ---- State colors ----
 				const stateColors: Record<string, number> = {
