@@ -1,4 +1,5 @@
 ---
+
 slug: "en/pigsty"
 title: "Deploy Pigsty on Proxmox VE"
 author: "Alexander Niebuhr"
@@ -17,22 +18,22 @@ This is a WIP document documenting my steps and learning and trying to make it m
 It also doesn't cover all possible options and is opiniated based on our own use-case. Always conduct latest official documentation for all options.
 ```
 
-Requirements: 
+Requirements:
 
 - _at least_ [4](https://pigsty.io/docs/deploy/planning/#four-node-setup) ssh [accesible](https://pigsty.io/docs/deploy/admin/#check-accessibility) bare Linux OS `x86_64` or `aarch64` nodes (physical machines _bare metal_ or VMs) (1 INFRA, 3 WORKER)
 - one of 14 [supported](https://pigsty.io/docs/ref/linux/) maintream distributions, [use recommendations first](https://pigsty.io/docs/ref/linux/#overview). I do prefer ubuntu, than debian, than rocky.
 - all nodes use the same Linux distribution, architecture, and version.
-- at least 1 core and 2 gig ram (no upper limit, *parameters are automaticly tuned based on available ressources*)
+- at least 1 core and 2 gig ram (no upper limit, _parameters are automaticly tuned based on available ressources_)
 - `xfs` file system
 - `/data` owned by `root:root` with `755`
 - attional disks mounted as `/data`, `/dataN`
-- static network with fixed *internal* IPv4 address
+- static network with fixed _internal_ IPv4 address
 - outbund internet access
 - locale set to `en_US` with collation to `C.UTF-8` (PostgreSQL logs are in English)
 
 First, prepare hardware, nodes, disks, network, VIP, domain, software, and filesystems _["Preparation"](https://pigsty.io/docs/deploy/prepare/)_
 
-Steps: 
+Steps:
 
 1.  Create VMs (e.g. 2c8ram)
 
@@ -47,10 +48,10 @@ Steps:
 
     ```shell
     curl -fsSL https://repo.pigsty.io/get | bash;
-    cd ~/pigsty 
+    cd ~/pigsty
     ```
 
-6.  Configure deployment *needs manual adjustment*
+6.  Configure deployment _needs manual adjustment_
 
     _Pigsty provides a configure script as a configuration wizard that automatically generates an appropriate pigsty.yml configuration file based on your current environment.
 
@@ -61,7 +62,7 @@ Steps:
     sudo vi pigsty.yml
     ```
 
-    *Edit IP addresses, Network Interfaces, PG Cluster & PG Database*
+    _Edit IP addresses, Network Interfaces, PG Cluster & PG Database_
 
 <!-- SETUP ROOT SSH KEY FOR ALL NODES -->
 
@@ -76,20 +77,18 @@ Steps:
 
 7. Deploy to VMs
 
-    ```shell
-    ./deploy.yml
-    # ./deploy.yml -k -K
-    ```
+   ```shell
+   ./deploy.yml
+   # ./deploy.yml -k -K
+   ```
 
 8.  Access [Endpoints](https://pigsty.io/docs/setup/webui/#endpoints)
-
     - [Web GUI](http://192.168.1.61:80)
     - [Grafana](http://192.168.1.61:80/ui)
 
 9. _(Optional)_ configure [custom domain](https://pigsty.io/docs/setup/webui/#domain-access)
 
 10. Use [Service](https://pigsty.io/docs/pgsql/service/#service-overview) to access PG
-
     - Read-write service (primary): Write data: Only carried by the primary.
     - Read-only service (replica): Read data: Can be carried by replicas, but can also be carried by the primary if no replicas are available
     - Default direct access service (default): Service that allows (admin) users to bypass the connection pool and directly access the database
@@ -97,9 +96,9 @@ Steps:
     - Synchronous replica service (standby): Read-only service with no replication delay, handled by [synchronous standby](https://pigsty.io/docs/pgsql/config#sync-standby)/primary for read-only queries
     - Delayed replica service (delayed): Access older data from the same cluster from a certain time ago, handled by [delayed replicas](https://pigsty.io/docs/pgsql/config#delayed-cluster)
 
-    https://pigsty.io/docs/pgsql/service/#default-service.  
+    https://pigsty.io/docs/pgsql/service/#default-service.
 
 Notes:
 
-- [IaC](https://pigsty.io/docs/concept/iac/)  
-- [Inventory](https://pigsty.io/docs/concept/iac/inventory/)  
+- [IaC](https://pigsty.io/docs/concept/iac/)
+- [Inventory](https://pigsty.io/docs/concept/iac/inventory/)
