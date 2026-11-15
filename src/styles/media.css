@@ -1,0 +1,4 @@
+/* Shared media queries. @import this file wherever they are used (each <style> block is bundled on its own). */
+@custom-media --sm (width >= 40rem);
+@custom-media --dark (prefers-color-scheme: dark);
+@custom-media --hover (hover: hover);
