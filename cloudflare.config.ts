@@ -9,6 +9,7 @@ export default defineConfig({
 		workersDev: false,
 		previewUrls: true, // workers.dev Preview URLs, the only ones until a custom domain serves previews
 		domains: ["alexanderniebuhr.garden"],
+		placement: { mode: "smart" },
 		limits: { cpuMs: 60_000 }, // default is 30000 (30 seconds)
 		observability: {
 			issues: { enabled: true },
