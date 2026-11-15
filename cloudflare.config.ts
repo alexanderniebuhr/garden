@@ -37,7 +37,7 @@ export default defineConfig({
 		},
 		env: {
 			ASSETS: bindings.assets(),
-			IMAGES: bindings.images({ dev: { remote: true } }),
+			IMAGES: bindings.images(),
 		},
 	},
 });

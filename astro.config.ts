@@ -10,7 +10,7 @@ export default defineConfig({
 	output: "server",
 	session: false,
 	adapter: cloudflare({
-		imageService: "cloudflare-binding",
+		imageService: { build: "compile", runtime: "cloudflare-binding" },
 	}),
 	compressHTML: false,
 	experimental: {
