@@ -1,8 +1,8 @@
 [tools]
-"npm:pnpm" = "11.6.0"
+aube = "2.10.0"
 
 [hooks]
-postinstall = "pn install"
+postinstall = "aube install"
 
 [settings]
 experimental = true

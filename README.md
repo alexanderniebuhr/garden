@@ -1,7 +1,7 @@
 ```zsh
-pnpm exec update-browserslist-db latest
+aube exec update-browserslist-db latest
 ```
 
 ```zsh
-pnpm run deploy
+aube run deploy
 ```
