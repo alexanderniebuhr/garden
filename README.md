@@ -26,4 +26,20 @@ Manual deploys still work after `cf auth login`:
 aube run deploy
 ```
 
+## Previews
+
+Production is served only on `alexanderniebuhr.garden`; the Worker has no `workers.dev` URL, for production or for Previews (`workersDev` and `previewUrls` are off). Previews use the custom domain `preview.alexanderniebuhr.garden` (`production: false, previews: true` in `domains`):
+
+```zsh
+# creates or updates the Preview named after the current git branch
+aube exec cf previews deploy
+```
+
+- `https://<preview-name>.preview.alexanderniebuhr.garden` always serves the latest deployment of a Preview.
+- `https://<deployment-id>-<preview-name>.preview.alexanderniebuhr.garden` pins one deployment.
+
+Domain settings are applied by a production deploy (`cf deploy`), not by `cf previews deploy`, so the preview hostname exists only after the config has reached `main`. On the first Preview, Cloudflare creates a wildcard DNS record and certificate for `*.preview.alexanderniebuhr.garden`. That wildcard is two levels below the zone, which Universal SSL on the Free plan does not cover, so it may need Advanced Certificate Manager (Total TLS): check that the first Preview URL loads over HTTPS. Provisioning can also take a few minutes after the deploy. The CI token above may need extra zone permissions (DNS, SSL and Certificates) for that DNS and certificate work; if the deploy fails on the domain step, add them.
+
+Previews are public, and unlike `workers.dev` Previews they get no automatic `X-Robots-Tag: noindex`; put Cloudflare Access in front of `preview.alexanderniebuhr.garden` to make them private.
+
 `cf` has no `tail` or `secret put` yet; use `npx wrangler tail alexanderniebuhr-garden` and `npx wrangler secret put <NAME> --name alexanderniebuhr-garden`.
