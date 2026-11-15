@@ -1,7 +1,7 @@
 import cloudflare from "@astrojs/cloudflare";
 import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
-import { defineConfig } from "astro/config";
+import { defineConfig, svgoOptimizer } from "astro/config";
 import expressiveCode from "astro-expressive-code";
 import browserslist from "browserslist";
 import { browserslistToTargets } from "lightningcss";
@@ -16,7 +16,7 @@ export default defineConfig({
 	experimental: {
 		clientPrerender: true,
 		contentIntellisense: true,
-		svgo: true,
+		svgOptimizer: svgoOptimizer(),
 		rustCompiler: true,
 		queuedRendering: {
 			enabled: true,
