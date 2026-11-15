@@ -1,0 +1,48 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# one production deploy at a time; a newer push waits instead of cancelling a running upload
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    # workflow_dispatch can be started from any branch; only main deploys
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: production
+      url: https://alexanderniebuhr.garden
+    env:
+      CF_SEND_TELEMETRY: "false"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # node (package.json devEngines), aube and hk (mise.toml)
+      - uses: jdx/mise-action@d5574b52816a478f9d4e6529a3f6ff17a8a36785 # v5.2.8
+
+      - run: aube install --frozen-lockfile
+      - run: aube run --no-install check
+      - run: aube exec --no-install biome ci .
+
+      # the build prerenders through the remote IMAGES binding, so it needs the token too
+      - name: Build
+        run: aube exec --no-install cf build
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+      - name: Deploy
+        run: aube exec --no-install cf deploy --prebuilt --mode production
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

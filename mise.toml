@@ -3,7 +3,8 @@ aube = "2.10.0"
 hk = { version = "2.12.0", workflow = "release.yml" }
 
 [hooks]
-postinstall = "aube install && hk install --mise"
+# skipped in CI, where the workflows install with a frozen lockfile and need no git hooks
+postinstall = '[ -n "$CI" ] || { aube install && hk install --mise; }'
 
 [settings]
 experimental = true
