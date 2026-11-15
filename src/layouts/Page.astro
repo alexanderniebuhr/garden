@@ -59,23 +59,19 @@ const { wide } = Astro.props;
 
 	#site-nav {
 		/* Revealed state of the nav, faded in while the page scrolls its first 50px */
-		--nav-revealed-bg: var(--color-amber-50-a80);
+		--nav-revealed-bg: light-dark(
+			var(--color-amber-50-a80),
+			var(--color-neutral-800-a80)
+		);
 		--nav-revealed-shadow:
-			0 0 0 1px var(--color-black-a5), 0 10px 15px -3px var(--color-black-a5),
-			0 4px 6px -4px var(--color-black-a5);
+			0 0 0 1px light-dark(var(--color-black-a5), var(--color-white-a10)),
+			0 10px 15px -3px light-dark(var(--color-black-a5), var(--color-black-a20)),
+			0 4px 6px -4px light-dark(var(--color-black-a5), var(--color-black-a20));
 
 		border-radius: var(--radius-full);
 		padding-inline: var(--spacing-fluid-gutter);
 		padding-block: 0.25rem;
 		backdrop-filter: blur(0px);
-
-		@media (--dark) {
-			--nav-revealed-bg: var(--color-neutral-800-a80);
-			--nav-revealed-shadow:
-				0 0 0 1px var(--color-white-a10),
-				0 10px 15px -3px var(--color-black-a20),
-				0 4px 6px -4px var(--color-black-a20);
-		}
 
 		& ul {
 			display: flex;
@@ -124,15 +120,18 @@ const { wide } = Astro.props;
 		font-size: var(--text-sm);
 		line-height: var(--text-sm--line-height);
 		font-weight: var(--font-weight-medium);
-		color: var(--color-neutral-600);
+		color: light-dark(var(--color-neutral-600), var(--color-neutral-400));
 		transition-property: all;
 		transition-timing-function: var(--ease-out);
 		transition-duration: 200ms;
 
 		@media (--hover) {
 			&:hover {
-				background-color: var(--color-black-a5);
-				color: var(--color-black);
+				background-color: light-dark(
+					var(--color-black-a5),
+					var(--color-white-a10)
+				);
+				color: light-dark(var(--color-black), var(--color-white));
 			}
 		}
 
@@ -141,17 +140,6 @@ const { wide } = Astro.props;
 			outline-width: 2px;
 			outline-offset: 2px;
 			outline-color: currentcolor;
-		}
-
-		@media (--dark) {
-			color: var(--color-neutral-400);
-
-			@media (--hover) {
-				&:hover {
-					background-color: var(--color-white-a10);
-					color: var(--color-white);
-				}
-			}
 		}
 	}
 
@@ -185,7 +173,7 @@ const { wide } = Astro.props;
 		text-align: center;
 		font-size: var(--text-sm);
 		line-height: var(--text-sm--line-height);
-		color: var(--color-neutral-500);
+		color: light-dark(var(--color-neutral-500), var(--color-neutral-400));
 
 		& a {
 			transition-property:
@@ -196,17 +184,7 @@ const { wide } = Astro.props;
 
 			@media (--hover) {
 				&:hover {
-					color: var(--color-neutral-700);
-				}
-			}
-		}
-
-		@media (--dark) {
-			color: var(--color-neutral-400);
-
-			@media (--hover) {
-				& a:hover {
-					color: var(--color-neutral-300);
+					color: light-dark(var(--color-neutral-700), var(--color-neutral-300));
 				}
 			}
 		}

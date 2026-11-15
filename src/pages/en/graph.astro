@@ -794,20 +794,15 @@ const legendItems = Object.entries(stateConfig).map(([key, val]) => ({
 		position: absolute;
 		bottom: 1rem;
 		z-index: 40;
-		background-color: var(--color-amber-50-a80);
+		background-color: light-dark(
+			var(--color-amber-50-a80),
+			var(--color-neutral-800-a80)
+		);
 		backdrop-filter: blur(var(--blur-sm));
 		box-shadow:
-			0 0 0 1px var(--color-black-a5),
-			0 10px 15px -3px var(--color-black-a5),
-			0 4px 6px -4px var(--color-black-a5);
-
-		@media (--dark) {
-			background-color: var(--color-neutral-800-a80);
-			box-shadow:
-				0 0 0 1px var(--color-white-a10),
-				0 10px 15px -3px var(--color-black-a20),
-				0 4px 6px -4px var(--color-black-a20);
-		}
+			0 0 0 1px light-dark(var(--color-black-a5), var(--color-white-a10)),
+			0 10px 15px -3px light-dark(var(--color-black-a5), var(--color-black-a20)),
+			0 4px 6px -4px light-dark(var(--color-black-a5), var(--color-black-a20));
 	}
 
 	#legend {
@@ -824,11 +819,7 @@ const legendItems = Object.entries(stateConfig).map(([key, val]) => ({
 		font-weight: var(--font-weight-semibold);
 		letter-spacing: var(--tracking-wider);
 		text-transform: uppercase;
-		color: var(--color-neutral-500);
-
-		@media (--dark) {
-			color: var(--color-neutral-400);
-		}
+		color: light-dark(var(--color-neutral-500), var(--color-neutral-400));
 	}
 
 	.legend-list {
@@ -851,24 +842,17 @@ const legendItems = Object.entries(stateConfig).map(([key, val]) => ({
 		height: 0.75rem;
 		width: 0.75rem;
 		border-radius: var(--radius-full);
-		box-shadow: 0 0 0 1px var(--color-black-a10);
+		box-shadow: 0 0 0 1px
+			light-dark(var(--color-black-a10), var(--color-white-a10));
 		transition-property: all;
 		transition-timing-function: var(--default-transition-timing-function);
 		transition-duration: 200ms;
-
-		@media (--dark) {
-			box-shadow: 0 0 0 1px var(--color-white-a10);
-		}
 	}
 
 	.legend-label {
 		font-size: var(--text-sm);
 		line-height: var(--text-sm--line-height);
-		color: var(--color-neutral-700);
-
-		@media (--dark) {
-			color: var(--color-neutral-300);
-		}
+		color: light-dark(var(--color-neutral-700), var(--color-neutral-300));
 	}
 
 	#reset-view {
@@ -882,7 +866,7 @@ const legendItems = Object.entries(stateConfig).map(([key, val]) => ({
 		font-size: var(--text-xs);
 		line-height: var(--text-xs--line-height);
 		font-weight: var(--font-weight-medium);
-		color: var(--color-neutral-600);
+		color: light-dark(var(--color-neutral-600), var(--color-neutral-300));
 		cursor: pointer;
 		transition-property:
 			color, background-color, border-color, outline-color,
@@ -892,17 +876,10 @@ const legendItems = Object.entries(stateConfig).map(([key, val]) => ({
 
 		@media (--hover) {
 			&:hover {
-				background-color: var(--color-amber-100);
-			}
-		}
-
-		@media (--dark) {
-			color: var(--color-neutral-300);
-
-			@media (--hover) {
-				&:hover {
-					background-color: var(--color-neutral-700);
-				}
+				background-color: light-dark(
+					var(--color-amber-100),
+					var(--color-neutral-700)
+				);
 			}
 		}
 	}

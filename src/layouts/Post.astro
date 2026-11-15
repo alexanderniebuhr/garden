@@ -196,11 +196,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 	.post-date {
 		font-size: var(--text-sm);
 		line-height: var(--text-sm--line-height);
-		color: var(--color-neutral-500);
-
-		@media (--dark) {
-			color: var(--color-neutral-400);
-		}
+		color: light-dark(var(--color-neutral-500), var(--color-neutral-400));
 	}
 
 	.post-title {
@@ -247,13 +243,14 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 		max-width: 14rem;
 		padding-inline: 0.75rem;
 		padding-block: 0.5rem;
-		border: 1px solid var(--color-neutral-200);
+		border: 1px solid
+			light-dark(var(--color-neutral-200), var(--color-neutral-700));
 		border-radius: var(--radius-lg);
-		background-color: var(--color-white);
-		color: var(--color-neutral-700);
+		background-color: light-dark(var(--color-white), var(--color-neutral-800));
+		color: light-dark(var(--color-neutral-700), var(--color-neutral-200));
 		font-size: 0.8125rem;
 		line-height: 1.4;
-		box-shadow: 0 4px 12px rgb(0 0 0 / 0.08);
+		box-shadow: 0 4px 12px light-dark(rgb(0 0 0 / 0.08), rgb(0 0 0 / 0.3));
 		opacity: 0;
 		translate: 0 -0.25rem;
 		transition:
@@ -271,22 +268,11 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 			display: block;
 			margin-bottom: 0.125rem;
 			font-weight: var(--font-weight-semibold);
-			color: var(--color-neutral-900);
+			color: light-dark(var(--color-neutral-900), var(--color-white));
 		}
 
 		& p {
 			margin: 0;
-		}
-
-		@media (--dark) {
-			border-color: var(--color-neutral-700);
-			background-color: var(--color-neutral-800);
-			color: var(--color-neutral-200);
-			box-shadow: 0 4px 12px rgb(0 0 0 / 0.3);
-
-			& strong {
-				color: var(--color-white);
-			}
 		}
 
 		@starting-style {

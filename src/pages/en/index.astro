@@ -112,15 +112,10 @@ const posts = (
 
 		@media (--hover) {
 			&:hover {
-				background-color: var(--color-neutral-200-a50);
-			}
-		}
-
-		@media (--dark) {
-			@media (--hover) {
-				&:hover {
-					background-color: var(--color-neutral-800-a50);
-				}
+				background-color: light-dark(
+					var(--color-neutral-200-a50),
+					var(--color-neutral-800-a50)
+				);
 			}
 		}
 	}
@@ -139,23 +134,18 @@ const posts = (
 			font-size: var(--text-xs);
 			line-height: var(--text-xs--line-height);
 			font-weight: var(--font-weight-bold);
-			color: var(--color-gray-900);
+			color: light-dark(var(--color-gray-900), var(--color-white));
 			text-transform: uppercase;
-
-			@media (--dark) {
-				color: var(--color-white);
-			}
 		}
 	}
 
 	.post-date-rule {
 		width: 1px;
 		flex: 1;
-		background-color: var(--color-gray-900-a10);
-
-		@media (--dark) {
-			background-color: var(--color-white-a10);
-		}
+		background-color: light-dark(
+			var(--color-gray-900-a10),
+			var(--color-white-a10)
+		);
 	}
 
 	.post-cover {
@@ -185,28 +175,21 @@ const posts = (
 	.post-text {
 		border-inline-start-style: solid;
 		border-inline-start-width: 1px;
-		border-color: var(--color-gray-900-a10);
+		border-color: light-dark(var(--color-gray-900-a10), var(--color-white-a10));
 		padding: 1rem;
 
 		@media (--sm) {
-			border-left-color: transparent;
+			/* In dark mode the left border stays visible from sm up, as it always has */
+			border-left-color: light-dark(transparent, var(--color-white-a10));
 			padding: 1.5rem;
-		}
-
-		@media (--dark) {
-			border-color: var(--color-white-a10);
 		}
 	}
 
 	.post-title {
 		font-weight: var(--font-weight-bold);
-		color: var(--color-gray-900);
+		color: light-dark(var(--color-gray-900), var(--color-white));
 		text-transform: uppercase;
 		width: fit-content;
-
-		@media (--dark) {
-			color: var(--color-white);
-		}
 	}
 
 	.post-excerpt {
@@ -215,13 +198,9 @@ const posts = (
 		-webkit-box-orient: vertical;
 		display: -webkit-box;
 		overflow: hidden;
-		color: var(--color-gray-700);
+		color: light-dark(var(--color-gray-700), var(--color-gray-200));
 		font-size: var(--text-sm);
 		line-height: var(--leading-relaxed);
-
-		@media (--dark) {
-			color: var(--color-gray-200);
-		}
 	}
 
 	.post-actions {
