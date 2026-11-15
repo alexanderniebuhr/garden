@@ -30,6 +30,11 @@ export default defineConfig({
 			de: "en",
 		},
 	},
+	// /de/ has no page of its own and falls back to /en/, which is prerendered; Astro would
+	// write that fallback as a static meta-refresh page, so keep it an HTTP 302 (_redirects)
+	redirects: {
+		"/de/": { status: 302, destination: "/en/" },
+	},
 	prefetch: {
 		defaultStrategy: "hover",
 	},
