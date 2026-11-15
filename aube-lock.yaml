@@ -13,7 +13,7 @@ importers:
         version: 0.9.9(prettier@3.8.3)(typescript@6.0.3)
       '@astrojs/cloudflare':
         specifier: 13.7.0
-        version: 13.7.0(@types/node@25.9.2)(astro@6.4.5(@types/node@25.9.2)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.61.1)(yaml@2.9.0))(jiti@2.7.0)(lightningcss@1.32.0)(workerd@1.20260611.1)(wrangler@4.100.0)(yaml@2.9.0)
+        version: 13.7.0(@types/node@25.9.2)(astro@6.4.5(@types/node@25.9.2)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.61.1)(supports-color@10.2.2)(yaml@2.9.0))(jiti@2.7.0)(lightningcss@1.32.0)(workerd@1.20260611.1)(wrangler@4.100.0)(yaml@2.9.0)
       '@astrojs/rss':
         specifier: 4.0.18
         version: 4.0.18
@@ -28,10 +28,10 @@ importers:
         version: 0.43.1
       astro:
         specifier: 6.4.5
-        version: 6.4.5(@types/node@25.9.2)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.61.1)(yaml@2.9.0)
+        version: 6.4.5(@types/node@25.9.2)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.61.1)(supports-color@10.2.2)(yaml@2.9.0)
       astro-expressive-code:
         specifier: 0.43.1
-        version: 0.43.1(astro@6.4.5(@types/node@25.9.2)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.61.1)(yaml@2.9.0))
+        version: 0.43.1(astro@6.4.5(@types/node@25.9.2)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.61.1)(supports-color@10.2.2)(yaml@2.9.0))
       browserslist:
         specifier: 4.28.2
         version: 4.28.2
@@ -75,6 +75,9 @@ importers:
       cssesc:
         specifier: 3.0.0
         version: 3.0.0
+      node:
+        specifier: runtime:25.8.1
+        version: runtime:25.8.1
       tailwindcss:
         specifier: 4.3.0
         version: 4.3.0
@@ -2287,6 +2290,127 @@ packages:
     resolution: {integrity: sha512-GYVXHE2KnrzAfsAjl4uP++evGFCrAU1jta4ubEjIG7YWt/64Gqv66a30yKwWczVjA6j3bM4nBwH7Pk1JmDHaxQ==}
     engines: {node: '>=18'}
 
+  node@runtime:25.8.1:
+    resolution:
+      type: variations
+      variants:
+      - resolution:
+          archive: tarball
+          bin:
+            node: bin/node
+          integrity: sha256-Sxx72cFkjP51EIjkXR8jO+C8ABOaZHMSpicbWlTbH3A=
+          type: binary
+          url: https://nodejs.org/download/release/v25.8.1/node-v25.8.1-aix-ppc64.tar.gz
+        targets:
+        - cpu: ppc64
+          os: aix
+      - resolution:
+          archive: tarball
+          bin:
+            node: bin/node
+          integrity: sha256-xmdikjbjITYW8JF7hOtScG4hPA6KIxJAIzX/9vx0Y8Q=
+          type: binary
+          url: https://nodejs.org/download/release/v25.8.1/node-v25.8.1-darwin-arm64.tar.gz
+        targets:
+        - cpu: arm64
+          os: darwin
+      - resolution:
+          archive: tarball
+          bin:
+            node: bin/node
+          integrity: sha256-Hl6/aZVeASFvXGC5yYnRvdqOUCLi9gx14brzCcW/9Q4=
+          type: binary
+          url: https://nodejs.org/download/release/v25.8.1/node-v25.8.1-darwin-x64.tar.gz
+        targets:
+        - cpu: x64
+          os: darwin
+      - resolution:
+          archive: tarball
+          bin:
+            node: bin/node
+          integrity: sha256-2ZDsPCHOi9tvdu1OHIddbj5LdaAtAY6F3wZiwLrYO1M=
+          type: binary
+          url: https://nodejs.org/download/release/v25.8.1/node-v25.8.1-linux-arm64.tar.gz
+        targets:
+        - cpu: arm64
+          os: linux
+      - resolution:
+          archive: tarball
+          bin:
+            node: bin/node
+          integrity: sha256-sUxD+6n9080s7t9VgjNQKh5vx6YEx7xjMBjW1h2SvR0=
+          type: binary
+          url: https://nodejs.org/download/release/v25.8.1/node-v25.8.1-linux-ppc64le.tar.gz
+        targets:
+        - cpu: ppc64le
+          os: linux
+      - resolution:
+          archive: tarball
+          bin:
+            node: bin/node
+          integrity: sha256-fHgm+ah50Rcg0caKyjasPR2e7Gl5ghOea0X0LiYNA5E=
+          type: binary
+          url: https://nodejs.org/download/release/v25.8.1/node-v25.8.1-linux-s390x.tar.gz
+        targets:
+        - cpu: s390x
+          os: linux
+      - resolution:
+          archive: tarball
+          bin:
+            node: bin/node
+          integrity: sha256-b+O4+kSFefco96Dlu7OrajUtLGMH4TrjeoYQaj5Mmq8=
+          type: binary
+          url: https://nodejs.org/download/release/v25.8.1/node-v25.8.1-linux-x64.tar.gz
+        targets:
+        - cpu: x64
+          os: linux
+      - resolution:
+          archive: zip
+          bin:
+            node: node.exe
+          integrity: sha256-DFvnk6Fp2wgS+FSbNn/BWRvT5MQBpccA3YuLLMLnTF4=
+          prefix: node-v25.8.1-win-arm64
+          type: binary
+          url: https://nodejs.org/download/release/v25.8.1/node-v25.8.1-win-arm64.zip
+        targets:
+        - cpu: arm64
+          os: win32
+      - resolution:
+          archive: zip
+          bin:
+            node: node.exe
+          integrity: sha256-CaWg27L0zvqACIABKBDi36rAAWpi518GTEq382BrLXg=
+          prefix: node-v25.8.1-win-x64
+          type: binary
+          url: https://nodejs.org/download/release/v25.8.1/node-v25.8.1-win-x64.zip
+        targets:
+        - cpu: x64
+          os: win32
+      - resolution:
+          archive: tarball
+          bin:
+            node: bin/node
+          integrity: sha256-4axvt8kAfUw30FdUcndkO7U9G3OOXIqxir+q06q6meg=
+          type: binary
+          url: https://unofficial-builds.nodejs.org/download/release/v25.8.1/node-v25.8.1-linux-arm64-musl.tar.gz
+        targets:
+        - cpu: arm64
+          libc: musl
+          os: linux
+      - resolution:
+          archive: tarball
+          bin:
+            node: bin/node
+          integrity: sha256-JMXr1UTJkfnZ8WZ4gkkXoproknc2Iu+ihgdIk2L8bbk=
+          type: binary
+          url: https://unofficial-builds.nodejs.org/download/release/v25.8.1/node-v25.8.1-linux-x64-musl.tar.gz
+        targets:
+        - cpu: x64
+          libc: musl
+          os: linux
+    version: 25.8.1
+    hasBin: true
+
   normalize-path@3.0.0:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
     engines: {node: '>=0.10.0'}
@@ -2979,12 +3103,12 @@ snapshots:
       - prettier
       - prettier-plugin-astro
 
-  '@astrojs/cloudflare@13.7.0(@types/node@25.9.2)(astro@6.4.5(@types/node@25.9.2)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.61.1)(yaml@2.9.0))(jiti@2.7.0)(lightningcss@1.32.0)(workerd@1.20260611.1)(wrangler@4.100.0)(yaml@2.9.0)':
+  '@astrojs/cloudflare@13.7.0(@types/node@25.9.2)(astro@6.4.5(@types/node@25.9.2)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.61.1)(supports-color@10.2.2)(yaml@2.9.0))(jiti@2.7.0)(lightningcss@1.32.0)(workerd@1.20260611.1)(wrangler@4.100.0)(yaml@2.9.0)':
     dependencies:
       '@astrojs/internal-helpers': 0.10.0
       '@astrojs/underscore-redirects': 1.0.3
       '@cloudflare/vite-plugin': 1.40.1(vite@7.3.5(@types/node@25.9.2)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.0))(workerd@1.20260611.1)(wrangler@4.100.0)
-      astro: 6.4.5(@types/node@25.9.2)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.61.1)(yaml@2.9.0)
+      astro: 6.4.5(@types/node@25.9.2)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.61.1)(supports-color@10.2.2)(yaml@2.9.0)
       piccolore: 0.1.3
       tinyglobby: 0.2.17
       vite: 7.3.5(@types/node@25.9.2)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.0)
@@ -3099,7 +3223,7 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  '@astrojs/markdown-remark@7.2.0':
+  '@astrojs/markdown-remark@7.2.0(supports-color@10.2.2)':
     dependencies:
       '@astrojs/internal-helpers': 0.10.0
       '@astrojs/prism': 4.0.2
@@ -3109,8 +3233,8 @@ snapshots:
       mdast-util-definitions: 6.0.0
       rehype-raw: 7.0.0
       rehype-stringify: 10.0.1
-      remark-gfm: 4.0.1
-      remark-parse: 11.0.0
+      remark-gfm: 4.0.1(supports-color@10.2.2)
+      remark-parse: 11.0.0(supports-color@10.2.2)
       remark-rehype: 11.1.2
       remark-smartypants: 3.0.2
       unified: 11.0.5
@@ -4130,16 +4254,16 @@ snapshots:
 
   array-iterate@2.0.1: {}
 
-  astro-expressive-code@0.43.1(astro@6.4.5(@types/node@25.9.2)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.61.1)(yaml@2.9.0)):
+  astro-expressive-code@0.43.1(astro@6.4.5(@types/node@25.9.2)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.61.1)(supports-color@10.2.2)(yaml@2.9.0)):
     dependencies:
-      astro: 6.4.5(@types/node@25.9.2)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.61.1)(yaml@2.9.0)
+      astro: 6.4.5(@types/node@25.9.2)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.61.1)(supports-color@10.2.2)(yaml@2.9.0)
       rehype-expressive-code: 0.43.1
 
-  astro@6.4.5(@types/node@25.9.2)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.61.1)(yaml@2.9.0):
+  astro@6.4.5(@types/node@25.9.2)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.61.1)(supports-color@10.2.2)(yaml@2.9.0):
     dependencies:
       '@astrojs/compiler': 4.0.0
       '@astrojs/internal-helpers': 0.10.0
-      '@astrojs/markdown-remark': 7.2.0
+      '@astrojs/markdown-remark': 7.2.0(supports-color@10.2.2)
       '@astrojs/telemetry': 3.3.2
       '@capsizecss/unpack': 4.0.1
       '@clack/prompts': 1.5.1
@@ -4478,9 +4602,11 @@ snapshots:
       d3-transition: 3.0.1(d3-selection@3.0.0)
       d3-zoom: 3.0.0
 
-  debug@4.4.3:
+  debug@4.4.3(supports-color@10.2.2):
     dependencies:
       ms: 2.1.3
+    optionalDependencies:
+      supports-color: 10.2.2
 
   decode-named-character-reference@1.3.0:
     dependencies:
@@ -4936,14 +5062,14 @@ snapshots:
       unist-util-is: 6.0.1
       unist-util-visit-parents: 6.0.2
 
-  mdast-util-from-markdown@2.0.3:
+  mdast-util-from-markdown@2.0.3(supports-color@10.2.2):
     dependencies:
       '@types/mdast': 4.0.4
       '@types/unist': 3.0.3
       decode-named-character-reference: 1.3.0
       devlop: 1.1.0
       mdast-util-to-string: 4.0.0
-      micromark: 4.0.2
+      micromark: 4.0.2(supports-color@10.2.2)
       micromark-util-decode-numeric-character-reference: 2.0.2
       micromark-util-decode-string: 2.0.1
       micromark-util-normalize-identifier: 2.0.1
@@ -4961,51 +5087,51 @@ snapshots:
       mdast-util-find-and-replace: 3.0.2
       micromark-util-character: 2.1.1
 
-  mdast-util-gfm-footnote@2.1.0:
+  mdast-util-gfm-footnote@2.1.0(supports-color@10.2.2):
     dependencies:
       '@types/mdast': 4.0.4
       devlop: 1.1.0
-      mdast-util-from-markdown: 2.0.3
+      mdast-util-from-markdown: 2.0.3(supports-color@10.2.2)
       mdast-util-to-markdown: 2.1.2
       micromark-util-normalize-identifier: 2.0.1
     transitivePeerDependencies:
       - supports-color
 
-  mdast-util-gfm-strikethrough@2.0.0:
+  mdast-util-gfm-strikethrough@2.0.0(supports-color@10.2.2):
     dependencies:
       '@types/mdast': 4.0.4
-      mdast-util-from-markdown: 2.0.3
+      mdast-util-from-markdown: 2.0.3(supports-color@10.2.2)
       mdast-util-to-markdown: 2.1.2
     transitivePeerDependencies:
       - supports-color
 
-  mdast-util-gfm-table@2.0.0:
+  mdast-util-gfm-table@2.0.0(supports-color@10.2.2):
     dependencies:
       '@types/mdast': 4.0.4
       devlop: 1.1.0
       markdown-table: 3.0.4
-      mdast-util-from-markdown: 2.0.3
+      mdast-util-from-markdown: 2.0.3(supports-color@10.2.2)
       mdast-util-to-markdown: 2.1.2
     transitivePeerDependencies:
       - supports-color
 
-  mdast-util-gfm-task-list-item@2.0.0:
+  mdast-util-gfm-task-list-item@2.0.0(supports-color@10.2.2):
     dependencies:
       '@types/mdast': 4.0.4
       devlop: 1.1.0
-      mdast-util-from-markdown: 2.0.3
+      mdast-util-from-markdown: 2.0.3(supports-color@10.2.2)
       mdast-util-to-markdown: 2.1.2
     transitivePeerDependencies:
       - supports-color
 
-  mdast-util-gfm@3.1.0:
+  mdast-util-gfm@3.1.0(supports-color@10.2.2):
     dependencies:
-      mdast-util-from-markdown: 2.0.3
+      mdast-util-from-markdown: 2.0.3(supports-color@10.2.2)
       mdast-util-gfm-autolink-literal: 2.0.1
-      mdast-util-gfm-footnote: 2.1.0
-      mdast-util-gfm-strikethrough: 2.0.0
-      mdast-util-gfm-table: 2.0.0
-      mdast-util-gfm-task-list-item: 2.0.0
+      mdast-util-gfm-footnote: 2.1.0(supports-color@10.2.2)
+      mdast-util-gfm-strikethrough: 2.0.0(supports-color@10.2.2)
+      mdast-util-gfm-table: 2.0.0(supports-color@10.2.2)
+      mdast-util-gfm-task-list-item: 2.0.0(supports-color@10.2.2)
       mdast-util-to-markdown: 2.1.2
     transitivePeerDependencies:
       - supports-color
@@ -5216,10 +5342,10 @@ snapshots:
 
   micromark-util-types@2.0.2: {}
 
-  micromark@4.0.2:
+  micromark@4.0.2(supports-color@10.2.2):
     dependencies:
       '@types/debug': 4.1.13
-      debug: 4.4.3
+      debug: 4.4.3(supports-color@10.2.2)
       decode-named-character-reference: 1.3.0
       devlop: 1.1.0
       micromark-core-commonmark: 2.0.3
@@ -5281,6 +5407,8 @@ snapshots:
   node-mock-http@1.0.4: {}
 
   node-releases@2.0.46: {}
+
+  node@runtime:25.8.1: {}
 
   normalize-path@3.0.0: {}
 
@@ -5430,21 +5558,21 @@ snapshots:
       rehype-stringify: 10.0.1
       unified: 11.0.5
 
-  remark-gfm@4.0.1:
+  remark-gfm@4.0.1(supports-color@10.2.2):
     dependencies:
       '@types/mdast': 4.0.4
-      mdast-util-gfm: 3.1.0
+      mdast-util-gfm: 3.1.0(supports-color@10.2.2)
       micromark-extension-gfm: 3.0.0
-      remark-parse: 11.0.0
+      remark-parse: 11.0.0(supports-color@10.2.2)
       remark-stringify: 11.0.0
       unified: 11.0.5
     transitivePeerDependencies:
       - supports-color
 
-  remark-parse@11.0.0:
+  remark-parse@11.0.0(supports-color@10.2.2):
     dependencies:
       '@types/mdast': 4.0.4
-      mdast-util-from-markdown: 2.0.3
+      mdast-util-from-markdown: 2.0.3(supports-color@10.2.2)
       micromark-util-types: 2.0.2
       unified: 11.0.5
     transitivePeerDependencies:
