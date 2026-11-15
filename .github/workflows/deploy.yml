@@ -42,7 +42,8 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
+      # --force: the repository is the source of truth, so the upload overrides remote changes (e.g. dashboard edits)
       - name: Deploy
-        run: aube exec --no-install cf deploy --prebuilt --mode production
+        run: aube exec --no-install cf deploy --prebuilt --mode production --force
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

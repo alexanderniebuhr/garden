@@ -5,7 +5,7 @@ aube update --latest browserslist
 
 ## Deploy
 
-Every push to `main` deploys production through GitHub Actions (`.github/workflows/deploy.yml`): it runs `aube run check` and `biome ci .`, builds with `cf build` and uploads that build with `cf deploy --prebuilt`. It can also be started by hand from the Actions tab (`workflow_dispatch`, `main` only). The build needs the token as well as the upload, because it prerenders through the remote `IMAGES` binding, so pull requests (`.github/workflows/ci.yml`) run only the checks, without a build or secrets.
+Every push to `main` deploys production through GitHub Actions (`.github/workflows/deploy.yml`): it runs `aube run check` and `biome ci .`, builds with `cf build` and uploads that build with `cf deploy --prebuilt --force`, so the upload overrides any configuration changed outside the repository (for example in the dashboard). It can also be started by hand from the Actions tab (`workflow_dispatch`, `main` only). The build needs the token as well as the upload, because it prerenders through the remote `IMAGES` binding, so pull requests (`.github/workflows/ci.yml`) run only the checks, without a build or secrets.
 
 One-time setup:
 
