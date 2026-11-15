@@ -58,17 +58,24 @@ const { wide } = Astro.props;
 	}
 
 	#site-nav {
-		--nav-bg-a: 0;
-		--nav-blur: 0px;
-		--nav-shadow-a: 0;
-		--nav-shadow-dark-a: 0;
-		--nav-ring-a: 0;
-		--nav-ring-dark-a: 0;
+		/* Revealed state of the nav, faded in while the page scrolls its first 50px */
+		--nav-revealed-bg: var(--color-amber-50-a80);
+		--nav-revealed-shadow:
+			0 0 0 1px var(--color-black-a5), 0 10px 15px -3px var(--color-black-a5),
+			0 4px 6px -4px var(--color-black-a5);
 
 		border-radius: var(--radius-full);
 		padding-inline: var(--spacing-fluid-gutter);
 		padding-block: 0.25rem;
-		backdrop-filter: blur(var(--nav-blur));
+		backdrop-filter: blur(0px);
+
+		@media (--dark) {
+			--nav-revealed-bg: var(--color-neutral-800-a80);
+			--nav-revealed-shadow:
+				0 0 0 1px var(--color-white-a10),
+				0 10px 15px -3px var(--color-black-a20),
+				0 4px 6px -4px var(--color-black-a20);
+		}
 
 		& ul {
 			display: flex;
@@ -81,28 +88,31 @@ const { wide } = Astro.props;
 
 	@keyframes navReveal {
 		from {
-			--nav-bg-a: 0;
-			--nav-blur: 0px;
-			--nav-shadow-a: 0;
-			--nav-shadow-dark-a: 0;
-			--nav-ring-a: 0;
-			--nav-ring-dark-a: 0;
+			background-color: transparent;
+			box-shadow: none;
 		}
 		to {
-			--nav-bg-a: 0.8;
-			--nav-blur: 12px;
-			--nav-shadow-a: 0.05;
-			--nav-shadow-dark-a: 0.2;
-			--nav-ring-a: 0.05;
-			--nav-ring-dark-a: 0.1;
+			background-color: var(--nav-revealed-bg);
+			box-shadow: var(--nav-revealed-shadow);
+			backdrop-filter: blur(12px);
 		}
 	}
 
 	@supports (animation-timeline: scroll()) {
 		#site-nav {
-			animation: navReveal linear both;
+			/* Starts after the first scrolled pixel, so the resting nav keeps its plain styles */
+			animation: navReveal linear forwards;
 			animation-timeline: scroll(root block);
-			animation-range: 0px 50px;
+			animation-range: 1px 51px;
+		}
+	}
+
+	/* Without scroll-driven animations, keep the nav in its revealed state */
+	@supports not (animation-timeline: scroll()) {
+		#site-nav {
+			background-color: var(--nav-revealed-bg);
+			box-shadow: var(--nav-revealed-shadow);
+			backdrop-filter: blur(12px);
 		}
 	}
 
