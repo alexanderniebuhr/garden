@@ -5,6 +5,9 @@ export default defineConfig({
 	worker: {
 		name: "alexanderniebuhr-garden",
 		compatibilityDate: "2026-11-08", // newest date the adapter's pinned plugin supports; raise once it pins a newer one
+		compatibilityFlags: [
+			"pipe_to_backward_propagation", // default from 2026-11-17; drop once compatibilityDate reaches it
+		],
 		entrypoint: "./src/worker.ts",
 		workersDev: false,
 		previewUrls: false, // Previews are served on preview.alexanderniebuhr.garden instead of workers.dev
