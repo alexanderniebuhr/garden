@@ -1,0 +1,3 @@
+# Preview URLs (<preview>.preview… and <deployment>-<preview>.preview…); src/worker.ts covers rendered responses
+https://:preview.preview.alexanderniebuhr.garden/*
+  X-Robots-Tag: noindex
