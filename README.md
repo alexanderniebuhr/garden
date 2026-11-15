@@ -1,5 +1,6 @@
 ```zsh
-aube exec update-browserslist-db latest
+# refreshes caniuse-lite along with browserslist
+aube update --latest browserslist
 ```
 
 ```zsh
