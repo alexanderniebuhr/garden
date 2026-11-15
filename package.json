@@ -6,12 +6,11 @@
 		"astro": "astro",
 		"biome": "biome",
 		"dev": "astro dev",
-		"types": "wrangler types --include-runtime --include-env",
-		"check": "wrangler types --include-runtime --include-env && astro check",
+		"types": "cf workers types",
+		"check": "cf workers types && astro check",
 		"build": "astro build",
 		"preview": "astro build && astro preview",
-		"preview:wrangler": "astro build && wrangler dev",
-		"deploy": "astro build && wrangler deploy"
+		"deploy": "cf deploy"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.6.7",
@@ -20,12 +19,13 @@
 		"@types/d3": "7.4.3",
 		"@types/node": "26.6.6",
 		"@typescript/native-preview": "7.0.0-dev.20260613.1",
+		"cf": "1.0.0-beta.32",
 		"cssesc": "3.0.0",
 		"tailwindcss": "4.3.0"
 	},
 	"dependencies": {
 		"@astrojs/check": "0.9.12",
-		"@astrojs/cloudflare": "14.4.8",
+		"@astrojs/cloudflare": "15.0.0-beta.5",
 		"@astrojs/rss": "4.0.19",
 		"@astrojs/sitemap": "3.7.5",
 		"@expressive-code/plugin-collapsible-sections": "0.44.3",
@@ -34,8 +34,7 @@
 		"browserslist": "4.29.5",
 		"d3": "7.9.2",
 		"lightningcss": "1.33.0",
-		"pixi.js": "8.23.0",
-		"wrangler": "4.162.0"
+		"pixi.js": "8.23.0"
 	},
 	"devEngines": {
 		"packageManager": {

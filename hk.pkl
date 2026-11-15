@@ -5,7 +5,6 @@ local biome_flags = "--no-errors-on-unmatched --files-ignore-unknown=true --colo
 local linters = new Mapping<String, Step> {
     ["biome"] {
         glob = List("**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx,json,jsonc,css,graphql,gql,html,astro,vue,svelte,grit,svg}")
-        exclude = List("worker-configuration.d.ts")
         check = "node_modules/.bin/biome check \(biome_flags) {{files}}"
         fix = "node_modules/.bin/biome check --write \(biome_flags) {{files}}"
     }
