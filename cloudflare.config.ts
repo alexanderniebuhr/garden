@@ -11,6 +11,7 @@ export default defineConfig({
 		domains: ["alexanderniebuhr.garden"],
 		limits: { cpuMs: 60_000 }, // default is 30000 (30 seconds)
 		observability: {
+			issues: { enabled: true },
 			logs: {
 				enabled: true,
 				invocationLogs: true,
