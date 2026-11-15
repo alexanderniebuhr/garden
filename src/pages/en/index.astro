@@ -17,22 +17,19 @@ const posts = (
 <Page>
 	<Fragment slot="head"> <title>Blog Übersicht</title> </Fragment>
 	<Fragment slot="main">
-		<h1 class="text-center text-4xl font-black">Posts</h1>
+		<h1 class="page-title">Posts</h1>
 
-		<section class="grid gap-fluid-s p-fluid-xs">
+		<section class="posts">
 			{posts.map((post) => (
-				<article class="flex transition dark:hover:bg-neutral-800/50 hover:bg-neutral-200/50">
-					<div class="rotate-180 p-2 [writing-mode:vertical-lr] select-none">
-						<time
-							datetime={post.data.date.toDateString()}
-							class="flex items-center justify-between gap-4 text-xs font-bold text-gray-900 uppercase dark:text-white"
-						>
+				<article class="post-card">
+					<div class="post-date">
+						<time datetime={post.data.date.toDateString()}>
 							<span>
 								{post.data.date.toLocaleDateString(Astro.currentLocale, {
 									year: "numeric",
 								})}
 							</span>
-							<span class="w-px flex-1 bg-gray-900/10 dark:bg-white/10" />
+							<span class="post-date-rule" />
 							<span>
 								{post.data.date.toLocaleDateString(Astro.currentLocale, {
 									month: "short",
@@ -42,9 +39,8 @@ const posts = (
 						</time>
 					</div>
 
-					<div class="hidden sm:block sm:basis-56">
+					<div class="post-cover">
 						<Picture
-							class="aspect-square h-full w-full object-cover"
 							src={post.data.cover}
 							formats={["avif", "webp"]}
 							quality={"high"}
@@ -56,11 +52,11 @@ const posts = (
 						/>
 					</div>
 
-					<div class="flex flex-1 flex-col justify-between">
-						<div class="border-gray-900/10 border-s p-4 sm:border-l-transparent sm:p-6 dark:border-white/10">
+					<div class="post-body">
+						<div class="post-text">
 							<a href={`/${post.id}/`}>
 								<h3
-									class="font-bold text-gray-900 uppercase dark:text-white w-fit"
+									class="post-title"
 									style={{
 										"view-transition-name": cssesc(post.data.title, {
 											isIdentifier: true,
@@ -72,17 +68,12 @@ const posts = (
 							</a>
 
 							{post.data.excerpt && (
-								<p class="mt-2 line-clamp-3 text-gray-700 text-sm/relaxed dark:text-gray-200">
-									{post.data.excerpt}
-								</p>
+								<p class="post-excerpt">{post.data.excerpt}</p>
 							)}
 						</div>
 
-						<div class="sm:flex sm:items-end sm:justify-end">
-							<a
-								href={`/${post.id}`}
-								class="block bg-yellow-400 px-5 py-3 text-center font-bold text-gray-900 text-xs uppercase transition hover:bg-yellow-500"
-							>
+						<div class="post-actions">
+							<a href={`/${post.id}`} class="read-more">
 								Read Post
 							</a>
 						</div>
@@ -92,3 +83,178 @@ const posts = (
 		</section>
 	</Fragment>
 </Page>
+
+<style>
+	@import "../../styles/media.css";
+
+	.page-title {
+		text-align: center;
+		font-size: var(--text-4xl);
+		line-height: var(--text-4xl--line-height);
+		font-weight: var(--font-weight-black);
+	}
+
+	.posts {
+		display: grid;
+		gap: var(--spacing-fluid-s);
+		padding: var(--spacing-fluid-xs);
+	}
+
+	.post-card {
+		display: flex;
+		transition-property:
+			color, background-color, border-color, outline-color,
+			text-decoration-color, fill, stroke, opacity, box-shadow, transform,
+			translate, scale, rotate, filter, backdrop-filter, display,
+			content-visibility, overlay, pointer-events;
+		transition-timing-function: var(--default-transition-timing-function);
+		transition-duration: var(--default-transition-duration);
+
+		@media (--hover) {
+			&:hover {
+				background-color: var(--color-neutral-200-a50);
+			}
+		}
+
+		@media (--dark) {
+			@media (--hover) {
+				&:hover {
+					background-color: var(--color-neutral-800-a50);
+				}
+			}
+		}
+	}
+
+	.post-date {
+		rotate: 180deg;
+		padding: 0.5rem;
+		writing-mode: vertical-lr;
+		user-select: none;
+
+		& time {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 1rem;
+			font-size: var(--text-xs);
+			line-height: var(--text-xs--line-height);
+			font-weight: var(--font-weight-bold);
+			color: var(--color-gray-900);
+			text-transform: uppercase;
+
+			@media (--dark) {
+				color: var(--color-white);
+			}
+		}
+	}
+
+	.post-date-rule {
+		width: 1px;
+		flex: 1;
+		background-color: var(--color-gray-900-a10);
+
+		@media (--dark) {
+			background-color: var(--color-white-a10);
+		}
+	}
+
+	.post-cover {
+		display: none;
+
+		@media (--sm) {
+			display: block;
+			flex-basis: 14rem;
+		}
+
+		& :global(img) {
+			aspect-ratio: 1;
+			height: 100%;
+			width: 100%;
+			object-fit: cover;
+		}
+	}
+
+	.post-body {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		justify-content: space-between;
+	}
+
+	/* Order matters: in dark mode the border colour also overrides the transparent left border at --sm. */
+	.post-text {
+		border-inline-start-style: solid;
+		border-inline-start-width: 1px;
+		border-color: var(--color-gray-900-a10);
+		padding: 1rem;
+
+		@media (--sm) {
+			border-left-color: transparent;
+			padding: 1.5rem;
+		}
+
+		@media (--dark) {
+			border-color: var(--color-white-a10);
+		}
+	}
+
+	.post-title {
+		font-weight: var(--font-weight-bold);
+		color: var(--color-gray-900);
+		text-transform: uppercase;
+		width: fit-content;
+
+		@media (--dark) {
+			color: var(--color-white);
+		}
+	}
+
+	.post-excerpt {
+		margin-top: 0.5rem;
+		-webkit-line-clamp: 3;
+		-webkit-box-orient: vertical;
+		display: -webkit-box;
+		overflow: hidden;
+		color: var(--color-gray-700);
+		font-size: var(--text-sm);
+		line-height: var(--leading-relaxed);
+
+		@media (--dark) {
+			color: var(--color-gray-200);
+		}
+	}
+
+	.post-actions {
+		@media (--sm) {
+			display: flex;
+			align-items: flex-end;
+			justify-content: flex-end;
+		}
+	}
+
+	.read-more {
+		display: block;
+		background-color: var(--color-yellow-400);
+		padding-inline: 1.25rem;
+		padding-block: 0.75rem;
+		text-align: center;
+		font-weight: var(--font-weight-bold);
+		color: var(--color-gray-900);
+		font-size: var(--text-xs);
+		line-height: var(--text-xs--line-height);
+		text-transform: uppercase;
+		transition-property:
+			color, background-color, border-color, outline-color,
+			text-decoration-color, fill, stroke, opacity, box-shadow, transform,
+			translate, scale, rotate, filter, backdrop-filter, display,
+			content-visibility, overlay, pointer-events;
+		transition-timing-function: var(--default-transition-timing-function);
+		transition-duration: var(--default-transition-duration);
+
+		@media (--hover) {
+			&:hover {
+				background-color: var(--color-yellow-500);
+			}
+		}
+	}
+</style>
