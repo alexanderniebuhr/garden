@@ -29,9 +29,9 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 		<meta name="description" content={description}>
 		<link rel="canonical" href={canonicalUrl.href}>
 		{absoluteLocaleUrlList.map((url) => {
-				const locale = new URL(url).pathname.split("/").at(1);
-				return <link rel="alternate" hreflang={locale} href={url} />;
-			})}
+			const locale = new URL(url).pathname.split("/").at(1);
+			return <link rel="alternate" hreflang={locale} href={url} />;
+		})}
 		<!-- Open Graph -->
 		<meta property="og:type" content="website">
 		<meta property="og:url" content={canonicalUrl.href}>
@@ -55,10 +55,13 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 				</time>
 				<h1
 					class="text-fluid-heading font-bold text-center w-fit"
-					style={{ "view-transition-name": cssesc(title, { isIdentifier: true }) }}
+					style={{
+						"view-transition-name": cssesc(title, { isIdentifier: true }),
+					}}
 				>
 					{title}
 				</h1>
+				{/* biome-ignore lint/a11y/useSemanticElements: a <fieldset> brings default border, padding and min-width styling and is meant for form controls; role="group" with aria-label is valid ARIA here */}
 				<div
 					role="group"
 					aria-label="Post maturity stages"
