@@ -29,7 +29,7 @@
 		"@astrojs/check": "0.9.9",
 		"@astrojs/cloudflare": "13.7.0",
 		"@astrojs/rss": "4.0.19",
-		"@astrojs/sitemap": "3.7.3",
+		"@astrojs/sitemap": "3.7.5",
 		"@cloudflare/vite-plugin": "1.40.1",
 		"@expressive-code/plugin-collapsible-sections": "0.43.1",
 		"astro": "6.4.5",
