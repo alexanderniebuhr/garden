@@ -8,6 +8,7 @@ export default defineConfig({
 		compatibilityFlags: [
 			"pipe_to_backward_propagation", // default from 2026-11-17; drop once compatibilityDate reaches it
 			"enable_request_signal", // default from 2026-11-17; drop once compatibilityDate reaches it
+			"global_fetch_strictly_public",
 		],
 		entrypoint: "./src/worker.ts",
 		workersDev: false,
