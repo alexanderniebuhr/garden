@@ -36,11 +36,8 @@ jobs:
       - run: aube run --no-install check
       - run: aube exec --no-install biome ci .
 
-      # the build prerenders through the remote IMAGES binding, so it needs the token too
       - name: Build
         run: aube exec --no-install cf build
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
       # --force: the repository is the source of truth, so the upload overrides remote changes (e.g. dashboard edits)
       - name: Deploy
