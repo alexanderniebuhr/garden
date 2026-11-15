@@ -15,8 +15,6 @@ export const getStaticPaths = (async () => {
 				id: id.join("/") || undefined,
 			},
 			props: post,
-			// lets experimental.incrementalBuild skip unchanged posts
-			...(post.digest !== undefined && { cacheKey: post.digest }),
 		};
 	});
 }) satisfies GetStaticPaths;
