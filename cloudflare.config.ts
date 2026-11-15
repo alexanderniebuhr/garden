@@ -10,6 +10,7 @@ export default defineConfig({
 			"enable_request_signal", // default from 2026-11-17; drop once compatibilityDate reaches it
 			"global_fetch_strictly_public",
 			"temporal", // default from 2026-12-01; drop once compatibilityDate reaches it
+			"new_module_registry", // default from 2026-11-17; drop once compatibilityDate reaches it
 		],
 		entrypoint: "./src/worker.ts",
 		workersDev: false,
