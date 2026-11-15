@@ -10,8 +10,7 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
-# no build: it prerenders through the remote IMAGES binding, which needs the
-# Cloudflare token, and pull requests get no secrets
+# the build needs no Cloudflare credentials, so pull requests build without secrets
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -27,3 +26,6 @@ jobs:
       - run: aube install --frozen-lockfile
       - run: aube run --no-install check
       - run: aube exec --no-install biome ci .
+      - run: aube exec --no-install cf build
+        env:
+          CF_SEND_TELEMETRY: "false"
