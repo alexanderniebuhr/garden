@@ -18,6 +18,21 @@
 	--font-size-fluid-heading--line-height: 1.2;
 }
 
+body {
+	min-height: 100dvh;
+	display: flex;
+	flex-direction: column;
+	background-color: var(--color-neutral-100);
+	color: var(--color-black);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+
+	@media (--dark) {
+		background-color: var(--color-neutral-900);
+		color: var(--color-white);
+	}
+}
+
 /* Custom prose styles — replaces @tailwindcss/typography */
 .prose {
 	color: var(--color-neutral-800);
