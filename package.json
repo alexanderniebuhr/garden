@@ -7,24 +7,24 @@
 		"biome": "biome",
 		"dev": "astro dev",
 		"types": "cf workers types",
-		"check": "cf workers types && astro check",
+		"check": "cf workers types && astro sync && tsc --noEmit --runExternalCode",
 		"build": "astro build",
 		"preview": "astro build && astro preview",
 		"deploy": "cf deploy"
 	},
 	"devDependencies": {
+		"@astrojs/ts-content-mapper": "0.2.0",
 		"@biomejs/biome": "2.6.7",
 		"@tailwindcss/vite": "4.3.0",
 		"@types/cssesc": "3.0.2",
 		"@types/d3": "7.4.3",
 		"@types/node": "26.6.6",
-		"@typescript/native-preview": "7.0.0-dev.20260613.1",
 		"cf": "1.0.0-beta.32",
 		"cssesc": "3.0.0",
-		"tailwindcss": "4.3.0"
+		"tailwindcss": "4.3.0",
+		"typescript": "7.1.0-beta"
 	},
 	"dependencies": {
-		"@astrojs/check": "0.9.12",
 		"@astrojs/cloudflare": "15.0.0-beta.5",
 		"@astrojs/rss": "4.0.19",
 		"@astrojs/sitemap": "3.7.5",

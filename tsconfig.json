@@ -3,6 +3,12 @@
 	"compilerOptions": {
 		"types": ["node"]
 	},
+	"contentMappers": [
+		{
+			"package": "@astrojs/ts-content-mapper",
+			"extensions": [".astro"]
+		}
+	],
 	"include": [".astro/types.d.ts", ".cloudflare/types", "**/*"],
 	"exclude": ["dist"]
 }
