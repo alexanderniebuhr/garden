@@ -6,8 +6,8 @@ export default defineConfig({
 		name: "alexanderniebuhr-garden",
 		compatibilityDate: "2026-11-08", // newest date the adapter's pinned plugin supports; raise once it pins a newer one
 		entrypoint: "./src/worker.ts",
-		workersDev: true,
-		previewUrls: true,
+		workersDev: false,
+		previewUrls: true, // workers.dev Preview URLs, the only ones until a custom domain serves previews
 		domains: ["alexanderniebuhr.garden"],
 		limits: { cpuMs: 60_000 }, // default is 30000 (30 seconds)
 		observability: {
