@@ -17,11 +17,6 @@ export default defineConfig({
 		clientPrerender: true,
 		contentIntellisense: true,
 		svgOptimizer: svgoOptimizer(),
-		rustCompiler: true,
-		queuedRendering: {
-			enabled: true,
-			contentCache: true,
-		},
 	},
 	i18n: {
 		locales: ["en", "de"],
