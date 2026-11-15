@@ -45,16 +45,13 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 		<meta name="twitter:description" content={description}>
 	</Fragment>
 	<Fragment slot="main">
-		<article class="flex flex-col gap-fluid-m px-fluid-l">
-			<header class="flex flex-col items-center gap-fluid-xs">
-				<time
-					class="text-sm text-neutral-500 dark:text-neutral-400"
-					datetime={Astro.props.date.toISOString()}
-				>
+		<article class="post">
+			<header class="post-header">
+				<time class="post-date" datetime={Astro.props.date.toISOString()}>
 					{Astro.props.date.toLocaleDateString("de-DE")}
 				</time>
 				<h1
-					class="text-fluid-heading font-bold text-center w-fit"
+					class="post-title"
 					style={{
 						"view-transition-name": cssesc(title, { isIdentifier: true }),
 					}}
@@ -62,13 +59,9 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 					{title}
 				</h1>
 				{/* biome-ignore lint/a11y/useSemanticElements: a <fieldset> brings default border, padding and min-width styling and is meant for form controls; role="group" with aria-label is valid ARIA here */}
-				<div
-					role="group"
-					aria-label="Post maturity stages"
-					class="flex flex-wrap items-center justify-center gap-1 select-none"
-				>
+				<div role="group" aria-label="Post maturity stages" class="stages">
 					<button
-						class="inline-flex cursor-help rounded-sm p-0.5 outline-none focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-neutral-400 focus-visible:outline-offset-2"
+						class="stage"
 						style="anchor-name: --stage-experimental"
 						popovertarget="tip-experimental"
 						type="button"
@@ -78,7 +71,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 					<div
 						id="tip-experimental"
 						popover
-						class="fixed [position-area:block-end] m-0 w-max max-w-56 px-3 py-2 border border-neutral-200 rounded-lg bg-white text-neutral-700 text-[0.8125rem] leading-[1.4] shadow-[0_4px_12px_rgb(0_0_0/0.08)] opacity-0 -translate-y-1 [transition:opacity_150ms_ease,translate_150ms_ease,overlay_150ms_ease_allow-discrete,display_150ms_ease_allow-discrete] open:opacity-100 open:translate-y-1 starting:open:opacity-0 starting:open:-translate-y-1 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:shadow-[0_4px_12px_rgb(0_0_0/0.3)] [&_strong]:block [&_strong]:font-semibold [&_strong]:text-neutral-900 [&_strong]:mb-0.5 dark:[&_strong]:text-white [&_p]:m-0"
+						class="stage-tip"
 						style="position-anchor: --stage-experimental"
 					>
 						<strong>Experimental</strong>
@@ -86,7 +79,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 					</div>
 					&centerdot;
 					<button
-						class="inline-flex cursor-help rounded-sm p-0.5 outline-none focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-neutral-400 focus-visible:outline-offset-2"
+						class="stage"
 						style="anchor-name: --stage-developing"
 						popovertarget="tip-developing"
 						type="button"
@@ -95,13 +88,13 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 							type="multi"
 							width="2rem"
 							height="2rem"
-							class="grayscale"
+							class="stage-icon-muted"
 						/>
 					</button>
 					<div
 						id="tip-developing"
 						popover
-						class="fixed [position-area:block-end] m-0 w-max max-w-56 px-3 py-2 border border-neutral-200 rounded-lg bg-white text-neutral-700 text-[0.8125rem] leading-[1.4] shadow-[0_4px_12px_rgb(0_0_0/0.08)] opacity-0 -translate-y-1 [transition:opacity_150ms_ease,translate_150ms_ease,overlay_150ms_ease_allow-discrete,display_150ms_ease_allow-discrete] open:opacity-100 open:translate-y-1 starting:open:opacity-0 starting:open:-translate-y-1 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:shadow-[0_4px_12px_rgb(0_0_0/0.3)] [&_strong]:block [&_strong]:font-semibold [&_strong]:text-neutral-900 [&_strong]:mb-0.5 dark:[&_strong]:text-white [&_p]:m-0"
+						class="stage-tip"
 						style="position-anchor: --stage-developing"
 					>
 						<strong>Developing</strong>
@@ -109,7 +102,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 					</div>
 					&centerdot;
 					<button
-						class="inline-flex cursor-help rounded-sm p-0.5 outline-none focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-neutral-400 focus-visible:outline-offset-2"
+						class="stage"
 						style="anchor-name: --stage-understanding"
 						popovertarget="tip-understanding"
 						type="button"
@@ -118,13 +111,13 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 							type="multi"
 							width="2rem"
 							height="2rem"
-							class="grayscale"
+							class="stage-icon-muted"
 						/>
 					</button>
 					<div
 						id="tip-understanding"
 						popover
-						class="fixed [position-area:block-end] m-0 w-max max-w-56 px-3 py-2 border border-neutral-200 rounded-lg bg-white text-neutral-700 text-[0.8125rem] leading-[1.4] shadow-[0_4px_12px_rgb(0_0_0/0.08)] opacity-0 -translate-y-1 [transition:opacity_150ms_ease,translate_150ms_ease,overlay_150ms_ease_allow-discrete,display_150ms_ease_allow-discrete] open:opacity-100 open:translate-y-1 starting:open:opacity-0 starting:open:-translate-y-1 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:shadow-[0_4px_12px_rgb(0_0_0/0.3)] [&_strong]:block [&_strong]:font-semibold [&_strong]:text-neutral-900 [&_strong]:mb-0.5 dark:[&_strong]:text-white [&_p]:m-0"
+						class="stage-tip"
 						style="position-anchor: --stage-understanding"
 					>
 						<strong>Understanding</strong>
@@ -132,7 +125,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 					</div>
 					&centerdot;
 					<button
-						class="inline-flex cursor-help rounded-sm p-0.5 outline-none focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-neutral-400 focus-visible:outline-offset-2"
+						class="stage"
 						style="anchor-name: --stage-sharing"
 						popovertarget="tip-sharing"
 						type="button"
@@ -141,13 +134,13 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 							type="multi"
 							width="2rem"
 							height="2rem"
-							class="grayscale"
+							class="stage-icon-muted"
 						/>
 					</button>
 					<div
 						id="tip-sharing"
 						popover
-						class="fixed [position-area:block-end] m-0 w-max max-w-56 px-3 py-2 border border-neutral-200 rounded-lg bg-white text-neutral-700 text-[0.8125rem] leading-[1.4] shadow-[0_4px_12px_rgb(0_0_0/0.08)] opacity-0 -translate-y-1 [transition:opacity_150ms_ease,translate_150ms_ease,overlay_150ms_ease_allow-discrete,display_150ms_ease_allow-discrete] open:opacity-100 open:translate-y-1 starting:open:opacity-0 starting:open:-translate-y-1 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:shadow-[0_4px_12px_rgb(0_0_0/0.3)] [&_strong]:block [&_strong]:font-semibold [&_strong]:text-neutral-900 [&_strong]:mb-0.5 dark:[&_strong]:text-white [&_p]:m-0"
+						class="stage-tip"
 						style="position-anchor: --stage-sharing"
 					>
 						<strong>Sharing</strong>
@@ -155,17 +148,22 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 					</div>
 					&centerdot;
 					<button
-						class="inline-flex cursor-help rounded-sm p-0.5 outline-none focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-neutral-400 focus-visible:outline-offset-2"
+						class="stage"
 						style="anchor-name: --stage-final"
 						popovertarget="tip-final"
 						type="button"
 					>
-						<Final type="multi" width="2rem" height="2rem" class="grayscale" />
+						<Final
+							type="multi"
+							width="2rem"
+							height="2rem"
+							class="stage-icon-muted"
+						/>
 					</button>
 					<div
 						id="tip-final"
 						popover
-						class="fixed [position-area:block-end] m-0 w-max max-w-56 px-3 py-2 border border-neutral-200 rounded-lg bg-white text-neutral-700 text-[0.8125rem] leading-[1.4] shadow-[0_4px_12px_rgb(0_0_0/0.08)] opacity-0 -translate-y-1 [transition:opacity_150ms_ease,translate_150ms_ease,overlay_150ms_ease_allow-discrete,display_150ms_ease_allow-discrete] open:opacity-100 open:translate-y-1 starting:open:opacity-0 starting:open:-translate-y-1 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:shadow-[0_4px_12px_rgb(0_0_0/0.3)] [&_strong]:block [&_strong]:font-semibold [&_strong]:text-neutral-900 [&_strong]:mb-0.5 dark:[&_strong]:text-white [&_p]:m-0"
+						class="stage-tip"
 						style="position-anchor: --stage-final"
 					>
 						<strong>Final</strong>
@@ -173,7 +171,127 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 					</div>
 				</div>
 			</header>
-			<div class="prose max-w-none"><slot /></div>
+			<div class="prose"><slot /></div>
 		</article>
 	</Fragment>
 </Page>
+
+<style>
+	@import "../styles/media.css";
+
+	.post {
+		display: flex;
+		flex-direction: column;
+		gap: var(--spacing-fluid-m);
+		padding-inline: var(--spacing-fluid-l);
+	}
+
+	.post-header {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: var(--spacing-fluid-xs);
+	}
+
+	.post-date {
+		font-size: var(--text-sm);
+		line-height: var(--text-sm--line-height);
+		color: var(--color-neutral-500);
+
+		@media (--dark) {
+			color: var(--color-neutral-400);
+		}
+	}
+
+	.post-title {
+		font-weight: var(--font-weight-bold);
+		text-align: center;
+		width: fit-content;
+	}
+
+	.stages {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: center;
+		gap: 0.25rem;
+		user-select: none;
+	}
+
+	.stage {
+		display: inline-flex;
+		cursor: help;
+		border-radius: var(--radius-sm);
+		padding: 0.125rem;
+		outline-style: none;
+
+		&:focus-visible {
+			outline-style: solid;
+			outline-width: 2px;
+			outline-offset: 2px;
+			outline-color: var(--color-neutral-400);
+		}
+	}
+
+	.stage-icon-muted {
+		filter: grayscale(100%);
+	}
+
+	.stage-tip {
+		position: fixed;
+		position-area: block-end;
+		margin: 0;
+		width: max-content;
+		max-width: 14rem;
+		padding-inline: 0.75rem;
+		padding-block: 0.5rem;
+		border: 1px solid var(--color-neutral-200);
+		border-radius: var(--radius-lg);
+		background-color: var(--color-white);
+		color: var(--color-neutral-700);
+		font-size: 0.8125rem;
+		line-height: 1.4;
+		box-shadow: 0 4px 12px rgb(0 0 0 / 0.08);
+		opacity: 0;
+		translate: 0 -0.25rem;
+		transition:
+			opacity 150ms ease,
+			translate 150ms ease,
+			overlay 150ms ease allow-discrete,
+			display 150ms ease allow-discrete;
+
+		&:is([open], :popover-open, :open) {
+			opacity: 1;
+			translate: 0 0.25rem;
+		}
+
+		& strong {
+			display: block;
+			margin-bottom: 0.125rem;
+			font-weight: var(--font-weight-semibold);
+			color: var(--color-neutral-900);
+		}
+
+		& p {
+			margin: 0;
+		}
+
+		@media (--dark) {
+			border-color: var(--color-neutral-700);
+			background-color: var(--color-neutral-800);
+			color: var(--color-neutral-200);
+			box-shadow: 0 4px 12px rgb(0 0 0 / 0.3);
+
+			& strong {
+				color: var(--color-white);
+			}
+		}
+
+		@starting-style {
+			&:is([open], :popover-open, :open) {
+				opacity: 0;
+				translate: 0 -0.25rem;
+			}
+		}
+	}
+</style>
