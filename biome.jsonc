@@ -44,7 +44,12 @@
 		"enabled": true,
 		"rules": {
 			"preset": "recommended",
+			"a11y": {
+				"noNoninteractiveElementInteractions": "error"
+			},
 			"nursery": {
+				"noMisplacedListElements": "error",
+				"noNonScalableViewport": "error",
 				"useTailwindSortedClasses": "warn"
 			}
 		},
