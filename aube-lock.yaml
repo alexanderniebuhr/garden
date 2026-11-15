@@ -15,8 +15,8 @@ importers:
         specifier: 13.7.0
         version: 13.7.0(@types/node@26.6.6)(astro@6.4.5(@types/node@26.6.6)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.61.1)(supports-color@10.2.2)(yaml@2.9.0))(jiti@2.7.0)(lightningcss@1.32.0)(workerd@1.20260611.1)(wrangler@4.100.0)(yaml@2.9.0)
       '@astrojs/rss':
-        specifier: 4.0.18
-        version: 4.0.18
+        specifier: 4.0.19
+        version: 4.0.19
       '@astrojs/sitemap':
         specifier: 3.7.3
         version: 3.7.3
@@ -191,8 +191,8 @@ packages:
     resolution: {integrity: sha512-KTivpmnz6lDsC6o9H4+DNm2SrE/GHzw8cNAvEJwAvUT+eoaEnn/4NtbDNfRRaxaJHdp15gf+tfHAWiXR4wB3BA==}
     engines: {node: '>=22.12.0'}
 
-  '@astrojs/rss@4.0.18':
-    resolution: {integrity: sha512-wc5DwKlbTEdgVAWnHy8krFTeQ42t1v/DJqeq5HtulYK3FYHE4krtRGjoyhS3eXXgfdV6Raoz2RU3wrMTFAitRg==}
+  '@astrojs/rss@4.0.19':
+    resolution: {integrity: sha512-e+z5wYeYtffQdHQO8c2tkSd2JEBdAuRXJV4ZEU5IxkYeE6e39woDd7nw1PH1Kk2tEYNCYuKdylnnbhGmt61awA==}
 
   '@astrojs/sitemap@3.7.3':
     resolution: {integrity: sha512-f8euLVsyeAmAkSm/1M2Kb8sL8byQmfgbvBNaHFItCheTj/IpiJYSEWVcqDHZ/yEHxiS7+w87mQkzwZaPHmk5GA==}
@@ -3266,7 +3266,7 @@ snapshots:
     dependencies:
       prismjs: 1.30.0
 
-  '@astrojs/rss@4.0.18':
+  '@astrojs/rss@4.0.19':
     dependencies:
       fast-xml-parser: 5.8.0
       piccolore: 0.1.3
