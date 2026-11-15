@@ -1,6 +1,5 @@
 import cloudflare from "@astrojs/cloudflare";
 import sitemap from "@astrojs/sitemap";
-import tailwindcss from "@tailwindcss/vite";
 import { defineConfig, logHandlers, svgoOptimizer } from "astro/config";
 import expressiveCode from "astro-expressive-code";
 import browserslist from "browserslist";
@@ -52,6 +51,5 @@ export default defineConfig({
 			minify: false,
 			cssMinify: false,
 		},
-		plugins: [tailwindcss()],
 	},
 });

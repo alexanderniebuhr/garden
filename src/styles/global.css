@@ -1,22 +1,7 @@
-@layer theme, base, components, utilities;
-@import "tailwindcss/theme.css" layer(theme);
-@import "./reset.css" layer(base);
-@import "tailwindcss/utilities.css" layer(utilities);
+@layer reset;
+@import "./reset.css" layer(reset);
 @import "./tokens.css";
 @import "./media.css";
-
-@theme {
-	/* Fluid space — Utopia-inspired (320px → 1280px, vi units) */
-	--spacing-fluid-xs: clamp(0.75rem, 0.667rem + 0.417vi, 1rem);
-	--spacing-fluid-s: clamp(1rem, 0.833rem + 0.833vi, 1.5rem);
-	--spacing-fluid-m: clamp(1.5rem, 1.167rem + 1.667vi, 2.5rem);
-	--spacing-fluid-l: clamp(2rem, 1.667rem + 1.667vi, 3rem);
-	--spacing-fluid-gutter: clamp(1rem, 0.667rem + 1.667vi, 2rem);
-
-	/* Fluid type — modular scale */
-	--font-size-fluid-heading: clamp(1.875rem, 1.75rem + 0.625vi, 2.25rem);
-	--font-size-fluid-heading--line-height: 1.2;
-}
 
 body {
 	min-height: 100dvh;
@@ -33,7 +18,7 @@ body {
 	}
 }
 
-/* Custom prose styles — replaces @tailwindcss/typography */
+/* Prose styles for rendered Markdown */
 .prose {
 	color: var(--color-neutral-800);
 	line-height: 1.75;

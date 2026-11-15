@@ -12,11 +12,6 @@
 	"formatter": {
 		"enabled": true
 	},
-	"css": {
-		"parser": {
-			"tailwindDirectives": true
-		}
-	},
 	"html": {
 		"experimentalFullSupportEnabled": true,
 		"formatter": {
@@ -49,8 +44,7 @@
 			},
 			"nursery": {
 				"noMisplacedListElements": "error",
-				"noNonScalableViewport": "error",
-				"useTailwindSortedClasses": "warn"
+				"noNonScalableViewport": "error"
 			}
 		},
 		"domains": {
