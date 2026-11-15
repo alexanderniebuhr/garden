@@ -5,7 +5,9 @@ aube update --latest browserslist
 
 ## Deploy
 
-Every push to `main` deploys production through GitHub Actions (`.github/workflows/deploy.yml`): it runs `aube run check` and `biome ci .`, builds with `cf build` and uploads that build with `cf deploy --prebuilt --force`, so the upload overrides any configuration changed outside the repository (for example in the dashboard). It can also be started by hand from the Actions tab (`workflow_dispatch`, `main` only). The build needs the token as well as the upload, because it prerenders through the remote `IMAGES` binding, so pull requests (`.github/workflows/ci.yml`) run only the checks, without a build or secrets.
+Every push to `main` deploys production through GitHub Actions (`.github/workflows/deploy.yml`): it runs `aube run check` and `biome ci .`, builds with `cf build` and uploads that build with `cf deploy --prebuilt --force`, so the upload overrides any configuration changed outside the repository (for example in the dashboard). It can also be started by hand from the Actions tab (`workflow_dispatch`, `main` only). Only the upload needs the token: the build needs no Cloudflare credentials, so pull requests (`.github/workflows/ci.yml`) run the checks and the build as well, without secrets.
+
+Images on prerendered pages are compiled at build time with sharp and served as static files; on-demand pages get theirs from the `IMAGES` binding at request time (`imageService: { build: "compile", runtime: "cloudflare-binding" }`). Local dev and preview use miniflare's simulation of that binding, which ignores the requested quality, so on-demand image output there differs from production.
 
 One-time setup:
 
