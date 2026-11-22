@@ -7,6 +7,7 @@ import Experimental from "../components/icons/Experimental.astro";
 import Final from "../components/icons/Final.astro";
 import Sharing from "../components/icons/Sharing.astro";
 import Understanding from "../components/icons/Understanding.astro";
+import PostCover from "../components/PostCover.astro";
 import Page from "./Page.astro";
 
 type Post = CollectionEntry<"blog">["data"];
@@ -14,7 +15,7 @@ interface Props extends Post {
 	postId: string;
 	alternateLocales: string[];
 }
-const { title, postId, alternateLocales } = Astro.props;
+const { title, postId, alternateLocales, cover, coverAlt } = Astro.props;
 const description = `${title} — by ${Astro.props.author}`;
 
 const [lang = "en", ...segments] = postId.split("/");
@@ -174,6 +175,15 @@ const canonicalUrl = new URL(`/${postId}/`, Astro.site);
 					</div>
 				</div>
 			</header>
+			<div class="post-cover">
+				<PostCover
+					postId={postId}
+					src={cover}
+					alt={coverAlt}
+					sizes="(max-width: 68rem) 88vw, 64rem"
+					priority
+				/>
+			</div>
 			<div class="prose"><slot /></div>
 		</article>
 	</Fragment>
@@ -200,6 +210,16 @@ const canonicalUrl = new URL(`/${postId}/`, Astro.site);
 		font-size: var(--text-sm);
 		line-height: var(--text-sm--line-height);
 		color: light-dark(var(--color-neutral-500), var(--color-neutral-400));
+	}
+
+	.post-cover {
+		width: min(100%, 64rem);
+		margin-inline: auto;
+
+		& :global(img) {
+			width: 100%;
+			height: auto;
+		}
 	}
 
 	.post-title {

@@ -15,6 +15,9 @@ export default defineConfig({
 	adapter: cloudflare({
 		imageService: { build: "compile", runtime: "cloudflare-binding" },
 	}),
+	image: {
+		breakpoints: [160, 320, 480, 640, 960],
+	},
 	compressHTML: false,
 	experimental: {
 		clientPrerender: true,
