@@ -14,7 +14,7 @@
 	},
 	"devDependencies": {
 		"@astrojs/ts-content-mapper": "0.2.0",
-		"@biomejs/biome": "2.6.7",
+		"@biomejs/biome": "2.6.8",
 		"@types/cssesc": "3.0.2",
 		"@types/d3": "7.4.3",
 		"@types/node": "26.6.6",
