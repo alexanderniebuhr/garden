@@ -67,6 +67,11 @@ run = "aube exec --no-install cf build --mode production"
 description = "Profile the Astro build"
 run = "aube exec --no-install astro build --timings"
 
+[tasks."build:csp"]
+description = "Build the opt-in Astro content security policy trial"
+env = { GARDEN_CSP = "1" }
+run = "aube exec --no-install astro build"
+
 [tasks.preview]
 description = "Build and serve a local Astro preview"
 env = { ASTRO_PREVIEW_BACKGROUND = "0" }

@@ -18,6 +18,30 @@ export default defineConfig({
 	image: {
 		breakpoints: [160, 320, 480, 640, 960],
 	},
+	security: {
+		csp:
+			process.env.GARDEN_CSP === "1"
+				? {
+						scriptDirective: {
+							resources: ["'self'", "https://static.cloudflareinsights.com"],
+						},
+						styleDirective: {
+							resources: [
+								{ resource: "'self'", kind: "element" },
+								// Expressive Code and native post transitions use CSS variables and style attributes.
+								{ resource: "'unsafe-inline'", kind: "attribute" },
+							],
+						},
+						directives: [
+							"default-src 'self'",
+							"object-src 'none'",
+							"base-uri 'self'",
+							"img-src 'self' data: blob:",
+							"connect-src 'self' https://cloudflareinsights.com",
+						],
+					}
+				: false,
+	},
 	compressHTML: false,
 	experimental: {
 		clientPrerender: true,

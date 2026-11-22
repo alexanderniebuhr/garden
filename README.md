@@ -46,6 +46,8 @@ Mise installs JavaScript dependencies when the manifests change or the local bin
 
 An alternative to foreground `mise run dev` is `mise daemons start astro`. Use `mise daemons urls` for the worktree's URL and `mise daemons stop astro` to stop it. Astro also supports `mise exec -- aube exec --no-install astro dev --background` and `mise exec -- aube exec --no-install astro preview --background` after an Astro build. Use the corresponding `stop` subcommand to shut those servers down.
 
+Use `mise run build:csp` to build the opt-in Astro content security policy trial, then run `mise exec -- aube exec --no-install astro preview` to inspect that build. The normal build leaves the trial disabled.
+
 ### Repository checks
 
 `mise run setup` installs check-only commit hooks and a type-checking pre-push hook. Use `mise run lint` for repository-wide checks, or `mise exec -- hk check --pr` for branch changes. Add `--plan` or `--why` to see which files and steps hk chooses. Use `mise exec -- hk check --all --slow` to include a Cloudflare build. CI attaches hk's SARIF and JUnit reports.

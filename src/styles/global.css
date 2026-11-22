@@ -3,6 +3,12 @@
 @import "./tokens.css";
 @import "./media.css";
 
+@media (prefers-reduced-motion: no-preference) {
+	@view-transition {
+		navigation: auto;
+	}
+}
+
 body {
 	min-height: 100dvh;
 	display: flex;
