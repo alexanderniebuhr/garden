@@ -2,7 +2,7 @@ name: Dependency report
 
 on:
   schedule:
-    - cron: '17 4 1 * *'
+    - cron: "17 4 1 * *"
   workflow_dispatch:
 
 permissions:
@@ -27,7 +27,7 @@ jobs:
           persist-credentials: false
       - uses: jdx/mise-action@924e7c586e33d7d4bae9c14e26c5d22e2beb6e78 # v5.3.0
         with:
-          version: '2026.11.12'
+          version: "2026.11.12"
           install_args: --locked node packslip:github.com/aubepkg/aube
       - name: Install dependencies
         run: aube ci

@@ -4,10 +4,92 @@ node = "26.13.1"
 "packslip:github.com/jdx/hk" = "2.13.0"
 "packslip:github.com/jdx/jactionlint" = "2.6.0"
 "aqua:koalaman/shellcheck" = "0.11.0"
+"packslip:github.com/jdx/fnox" = "1.50.0"
+"packslip:github.com/jdx/pitchfork" = "2.36.0"
 
-[hooks]
-# skipped in CI, where the workflows install with a frozen lockfile and need no git hooks
-postinstall = '[ -n "$CI" ] || { aube install && hk install --mise; }'
+[env]
+_.file = ".env.local"
+
+[secrets.fnox]
+
+[deps.aube]
+run = "aube install --frozen-lockfile"
+sources = ["package.json", "aube-lock.yaml", "aube-workspace.yaml", "mise.toml"]
+outputs = ["node_modules/.bin/astro", "node_modules/.bin/biome", "node_modules/.bin/cf"]
+auto = true
+
+[tasks.setup]
+description = "Install project Git hooks"
+run = "hk install --mise"
+
+[tasks.dev]
+description = "Run the Astro development server"
+run = "aubr --no-install dev"
+
+[tasks.check]
+description = "Generate Cloudflare and Astro types and check the project"
+run = "aubr --no-install check"
+
+[tasks.lint]
+description = "Check code with Biome"
+run = "aube exec --no-install biome ci ."
+
+[tasks.audit]
+description = "Check for high and critical dependency advisories"
+run = "aube audit --audit-level high"
+
+[tasks.dedupe]
+description = "Check for redundant dependency resolutions"
+run = "aube dedupe --check"
+
+[tasks.build]
+description = "Build the Cloudflare Worker and static assets"
+run = 'aube exec --no-install cf build --mode "${GARDEN_CF_MODE:-production}"'
+
+[tasks."build:cached"]
+description = "Reuse an up-to-date local production build"
+sources = ["src/**/*", "public/**/*", "*.config.*", "ec.config.mjs", "package.json", "aube-lock.yaml", "aube-workspace.yaml", "mise*.toml", ".env.local", "tsconfig.json"]
+outputs = [".cloudflare/output/v1/workers/default/worker.config.json", ".cloudflare/output/v1/workers/default/bundle/entry.mjs"]
+run = "aube exec --no-install cf build --mode production"
+
+[tasks."build:timings"]
+description = "Profile the Astro build"
+run = "aube exec --no-install astro build --timings"
+
+[tasks.preview]
+description = "Build and serve a local Astro preview"
+run = "aubr --no-install preview"
+
+[tasks."preview:deploy"]
+description = "Deploy a named Cloudflare branch preview"
+usage = 'arg "<name>" help="DNS label for the Worker Preview"'
+shell = "bash -euo pipefail -c"
+run = '''
+if [[ ! $usage_name =~ ^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$ ]]; then
+  printf '%s\n' 'Preview name must be a lowercase DNS label of 1–63 characters.' >&2
+  exit 2
+fi
+exec aube exec --no-install cf previews deploy --mode "${GARDEN_CF_MODE:-preview}" --preview-name "$usage_name"
+'''
+
+[tasks.deploy]
+description = "Build and deploy using the local Cloudflare login"
+run = 'aube exec --no-install cf deploy --mode "${GARDEN_CF_MODE:-production}"'
+
+[tasks."deploy:token"]
+description = "Deploy locally using a task-scoped fnox token"
+secrets = ["CLOUDFLARE_API_TOKEN"]
+run = 'aube exec --no-install cf deploy --mode "${GARDEN_CF_MODE:-production}"'
+
+[tasks.ci]
+description = "Run checks in parallel, then build the Cloudflare Worker"
+depends = ["check", "lint", "audit", "dedupe"]
+run = [{ task = "build" }]
+
+[daemons.astro]
+run = 'exec aubr --no-install dev --port "$ASTRO_PORT"'
+port = { auto = true, base = 4321 }
+ready_cmd = 'curl -fsS "http://127.0.0.1:$ASTRO_PORT/" >/dev/null'
 
 [settings]
 experimental = true

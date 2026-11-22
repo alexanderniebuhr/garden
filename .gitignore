@@ -9,7 +9,10 @@ node_modules/
 
 # environment variables
 .env
+.env.local
 .env.production
+fnox.toml
+fnox.local.toml
 
 # macOS-specific files
 .DS_Store

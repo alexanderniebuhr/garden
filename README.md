@@ -31,11 +31,26 @@ The workflow lint job annotates pull requests. To enable its separate SARIF uplo
 
 Put `.md` and `.mdx` posts under `src/content/blog/<locale>/`. Use the Astro VS Code extension for collection frontmatter hints and `mise exec -- aube exec --no-install astro sync` to refresh generated types. Use `draft: true` to keep a post out of the site and feed. Add `related: [en/pigsty]` to declare a relationship by collection ID. Published posts can reference only existing published posts.
 
+## Local development
+
+```zsh
+mise install --locked
+mise run setup
+mise run dev
+mise run check
+mise run build
+mise run preview
+```
+
+Mise installs JavaScript dependencies when the manifests change or the local binaries are missing. Use `mise deps --list` to inspect the provider and `.env.local` for per-machine settings. Use `mise run build:timings` to profile Astro or `mise run build:cached` to reuse a local production build when its inputs are unchanged. CI always builds fresh.
+
+An alternative to foreground `mise run dev` is `mise daemons start astro`. Use `mise daemons urls` for the worktree's URL and `mise daemons stop astro` to stop it. Astro also supports `mise exec -- aube exec --no-install astro dev --background` and `mise exec -- aube exec --no-install astro preview --background` after an Astro build. Use the corresponding `stop` subcommand to shut those servers down.
+
 ## Deploy
 
-Every push to `main` deploys production through GitHub Actions (`.github/workflows/deploy.yml`): it runs `aube run check` and `biome ci .`, builds with `cf build` and uploads that build with `cf deploy --prebuilt --force`, so the upload overrides any configuration changed outside the repository (for example in the dashboard). It can also be started by hand from the Actions tab (`workflow_dispatch`, `main` only). Only the upload needs the token: the build needs no Cloudflare credentials, so pull requests (`.github/workflows/ci.yml`) run the checks and the build as well, without secrets.
+Every push to `main` deploys production through GitHub Actions (`.github/workflows/deploy.yml`). `mise run ci` runs the checks in parallel and builds with `cf build` after they pass. Deployment uploads that build with `cf deploy --prebuilt --force`, so repository configuration overrides changes made in the dashboard. You can also start the production workflow from the Actions tab on `main`. Only the upload uses the Cloudflare token. The pull request workflow runs the shared verification and build without it.
 
-Run `aube exec cf build` before previewing or deploying prebuilt artifacts from an earlier Cloudflare CLI version. The current toolchain uses Build Output v1 in `.cloudflare/output/v1/`.
+Run `mise run build` before previewing or deploying prebuilt artifacts from an earlier Cloudflare CLI version. The current toolchain uses Build Output v1 in `.cloudflare/output/v1/`.
 
 Images on prerendered pages are compiled at build time with sharp and served as static files; on-demand pages get theirs from the `IMAGES` binding at request time (`imageService: { build: "compile", runtime: "cloudflare-binding" }`). Local dev and preview use miniflare's simulation of that binding, which ignores the requested quality, so on-demand image output there differs from production.
 
@@ -55,16 +70,17 @@ One-time setup:
 Manual deploys still work after `cf auth login`:
 
 ```zsh
-aube run deploy
+mise -E production run deploy
 ```
+
+For the optional fnox path, configure `CLOUDFLARE_API_TOKEN` through a provider in your gitignored `fnox.toml`, then run `mise -E production run deploy:token`. Mise provides the token to that task only.
 
 ## Previews
 
 Production is served only on `alexanderniebuhr.garden`; the Worker has no `workers.dev` URL, for production or for Previews (`workersDev` and `previewUrls` are off). Previews use the custom domain `preview.alexanderniebuhr.garden` (`production: false, previews: true` in `domains`):
 
 ```zsh
-# creates or updates the Preview named after the current git branch
-aube exec cf previews deploy
+mise -E preview run preview:deploy my-branch
 ```
 
 - `https://<preview-name>.preview.alexanderniebuhr.garden` always serves the latest deployment of a Preview.

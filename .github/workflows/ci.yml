@@ -34,17 +34,10 @@ jobs:
 
       - uses: jdx/mise-action@924e7c586e33d7d4bae9c14e26c5d22e2beb6e78 # v5.3.0
         with:
-          version: '2026.11.12'
+          version: "2026.11.12"
           install_args: --locked
 
       - name: Install dependencies
         run: aube ci
-      - name: Audit dependencies
-        run: aube audit --audit-level high
-      - name: Check dependency deduplication
-        run: aube dedupe --check
-      - run: aube run --no-install check
-      - run: aube exec --no-install biome ci .
-      - run: aube exec --no-install cf build
-        env:
-          CF_SEND_TELEMETRY: "false"
+      - name: Verify and build
+        run: bash .github/scripts/mise-ci.sh

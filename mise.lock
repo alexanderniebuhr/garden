@@ -49,6 +49,23 @@ url = "https://github.com/aubepkg/aube/releases/download/v2.10.1/aube-v2.10.1-aa
 signer = "sigstore-oidc:https://github.com/aubepkg/aube/.github/workflows/release.yml"
 repository_ids = { repository = "1214542327" }
 
+[[tools."packslip:github.com/jdx/fnox"]]
+version = "1.50.0"
+backend = "packslip:github.com/jdx/fnox"
+specifiers = ["1.50.0"]
+
+[tools."packslip:github.com/jdx/fnox"."platforms.linux-x64"]
+checksum = "sha256:f08da606e120c676fc3a4f3def970a4ade82e3857841a3961afbdd337a88e30b"
+url = "https://github.com/jdx/fnox/releases/download/v1.50.0/fnox-x86_64-unknown-linux-gnu.tar.gz"
+signer = "sigstore-oidc:https://github.com/jdx/fnox/.github/workflows/release.yml"
+repository_ids = { repository = "1078762196" }
+
+[tools."packslip:github.com/jdx/fnox"."platforms.macos-arm64"]
+checksum = "sha256:cf8301a5355c3249284b4102c871b0c4b5e5924cd7b61397f7539f4328041eff"
+url = "https://github.com/jdx/fnox/releases/download/v1.50.0/fnox-aarch64-apple-darwin.tar.gz"
+signer = "sigstore-oidc:https://github.com/jdx/fnox/.github/workflows/release.yml"
+repository_ids = { repository = "1078762196" }
+
 [[tools."packslip:github.com/jdx/hk"]]
 version = "2.13.0"
 backend = "packslip:github.com/jdx/hk"
@@ -82,3 +99,20 @@ checksum = "sha256:c3f373c7eac668aacb390b9c802cf4b5e2ad1a11b0b0c0aea6b04ca0cfa0c
 url = "https://github.com/jdx/jactionlint/releases/download/v2.6.0/jactionlint_2.6.0_darwin_arm64.tar.gz"
 signer = "sigstore-oidc:https://github.com/jdx/jactionlint/.github/workflows/release.yaml"
 repository_ids = { repository = "1404951382" }
+
+[[tools."packslip:github.com/jdx/pitchfork"]]
+version = "2.36.0"
+backend = "packslip:github.com/jdx/pitchfork"
+specifiers = ["2.36.0"]
+
+[tools."packslip:github.com/jdx/pitchfork"."platforms.linux-x64"]
+checksum = "sha256:55e12b9467d86d9aeda468e586d603a2107962de0305dc92c9fe84b7a3b35a17"
+url = "https://github.com/jdx/pitchfork/releases/download/v2.36.0/pitchfork-x86_64-unknown-linux-gnu.tar.gz"
+signer = "sigstore-oidc:https://github.com/jdx/pitchfork/.github/workflows/release.yml"
+repository_ids = { repository = "899500793" }
+
+[tools."packslip:github.com/jdx/pitchfork"."platforms.macos-arm64"]
+checksum = "sha256:f85a855e814dd5918ea955d934594b2d3703fd066c087bf6bb5add97d59daee4"
+url = "https://github.com/jdx/pitchfork/releases/download/v2.36.0/pitchfork-aarch64-apple-darwin.tar.gz"
+signer = "sigstore-oidc:https://github.com/jdx/pitchfork/.github/workflows/release.yml"
+repository_ids = { repository = "899500793" }
