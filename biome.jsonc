@@ -43,7 +43,10 @@
 				"noNoninteractiveElementInteractions": "error"
 			},
 			"nursery": {
+				"noBufferConstructor": "error",
+				"noLateCurrentTargetAccess": "error",
 				"noMisplacedListElements": "error",
+				"noMisusedSpread": "error",
 				"noNonScalableViewport": "error"
 			}
 		},
