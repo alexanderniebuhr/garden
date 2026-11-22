@@ -8,16 +8,30 @@ on:
 permissions:
   contents: read
 
+defaults:
+  run:
+    shell: bash
+
 # one production deploy at a time; a newer push waits instead of cancelling a running upload
 concurrency:
   group: deploy-production
   cancel-in-progress: false
 
 jobs:
+  workflow-lint:
+    name: Workflow checks
+    if: ${{ github.ref == 'refs/heads/main' }}
+    permissions:
+      contents: read
+      security-events: write
+    uses: ./.github/workflows/workflow-lint.yml
+
   deploy:
+    name: Deploy to Cloudflare
+    needs: workflow-lint
     # workflow_dispatch can be started from any branch; only main deploys
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-26.04
     timeout-minutes: 20
     environment:
       name: production

@@ -3,6 +3,21 @@
 aube update --latest browserslist
 ```
 
+## GitHub Actions
+
+CI lints the complete workflow set with jactionlint's `pedantic` profile and treats warnings as failures. To review workflow edits locally:
+
+```zsh
+mise exec -- jactionlint --no-online --strict-exit --min-severity warn
+mise exec -- jactionlint --no-online --diff
+mise exec -- jactionlint update --diff
+mise exec -- jactionlint run --container --dry-run --event pull_request --job check ci
+```
+
+Apply only reviewed fixes and dependency updates. Keep each action pinned to a full SHA with a version comment. Run `gh actions-lock --no-narrow` after changing workflow dependencies and `gh actions-lock --verify-local` to check coverage. `jactionlint --suggest-timeouts` needs access to successful GitHub Actions runs and enough samples for each job.
+
+The workflow lint job annotates pull requests. To enable its separate SARIF upload on production runs, set the repository variable `ENABLE_CODE_SCANNING` to `true` once GitHub code scanning is available.
+
 ## Deploy
 
 Every push to `main` deploys production through GitHub Actions (`.github/workflows/deploy.yml`): it runs `aube run check` and `biome ci .`, builds with `cf build` and uploads that build with `cf deploy --prebuilt --force`, so the upload overrides any configuration changed outside the repository (for example in the dashboard). It can also be started by hand from the Actions tab (`workflow_dispatch`, `main` only). Only the upload needs the token: the build needs no Cloudflare credentials, so pull requests (`.github/workflows/ci.yml`) run the checks and the build as well, without secrets.
