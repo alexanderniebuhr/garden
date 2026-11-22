@@ -29,7 +29,7 @@
 		"@expressive-code/plugin-collapsible-sections": "0.44.4",
 		"astro": "7.4.13",
 		"astro-expressive-code": "0.44.4",
-		"browserslist": "4.29.5",
+		"browserslist": "4.29.6",
 		"d3": "7.9.2",
 		"lightningcss": "1.33.0",
 		"pixi.js": "8.23.0"
