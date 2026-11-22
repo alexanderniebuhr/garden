@@ -1,0 +1,45 @@
+name: Dependency report
+
+on:
+  schedule:
+    - cron: '17 4 1 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dependency-report-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  report:
+    name: Report dependency licenses and deprecations
+    runs-on: ubuntu-26.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: jdx/mise-action@924e7c586e33d7d4bae9c14e26c5d22e2beb6e78 # v5.3.0
+        with:
+          version: '2026.11.12'
+          install_args: --locked node packslip:github.com/aubepkg/aube
+      - name: Install dependencies
+        run: aube ci
+      - name: Generate license and deprecation reports
+        run: |
+          aube licenses --json > dependency-licenses.json
+          aube deprecations --transitive --json > dependency-deprecations.json
+      - name: Upload dependency reports
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: garden-dependency-report
+          path: |
+            dependency-licenses.json
+            dependency-deprecations.json
+          if-no-files-found: error

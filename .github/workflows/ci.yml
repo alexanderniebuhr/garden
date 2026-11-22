@@ -37,7 +37,12 @@ jobs:
           version: '2026.11.12'
           install_args: --locked
 
-      - run: aube install --frozen-lockfile
+      - name: Install dependencies
+        run: aube ci
+      - name: Audit dependencies
+        run: aube audit --audit-level high
+      - name: Check dependency deduplication
+        run: aube dedupe --check
       - run: aube run --no-install check
       - run: aube exec --no-install biome ci .
       - run: aube exec --no-install cf build

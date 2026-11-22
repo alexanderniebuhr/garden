@@ -48,12 +48,26 @@ jobs:
           version: '2026.11.12'
           install_args: --locked
 
-      - run: aube install --frozen-lockfile
+      - name: Install dependencies
+        run: aube ci
+      - name: Audit dependencies
+        run: aube audit --audit-level high
+      - name: Check dependency deduplication
+        run: aube dedupe --check
       - run: aube run --no-install check
       - run: aube exec --no-install biome ci .
 
       - name: Build
         run: aube exec --no-install cf build
+
+      - name: Generate build SBOM
+        run: aube sbom --lockfile-only --format cyclonedx > garden.cdx.json
+      - name: Upload build SBOM
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: garden-sbom
+          path: garden.cdx.json
+          if-no-files-found: error
 
       # --force: the repository is the source of truth, so the upload overrides remote changes (e.g. dashboard edits)
       - name: Deploy

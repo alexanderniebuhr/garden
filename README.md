@@ -1,7 +1,16 @@
+## Dependencies
+
+Use `aubr <script>` for package scripts and `aubx <package>@<exact-version>` for one-off tools. CI installs with `aube ci` and checks for high and critical advisories and redundant resolutions. Production builds attach a CycloneDX SBOM. The monthly Dependency report workflow publishes license and deprecation inventories.
+
 ```zsh
-# refreshes caniuse-lite along with browserslist
-aube update --latest browserslist
+aube update --latest --interactive
+aube update --latest browserslist # also refreshes caniuse-lite
+aube audit --audit-level high
+aube audit --audit-level high --fix --interactive
+aube dedupe --check
 ```
+
+Review any generated overrides and lockfile changes. For a temporary upstream fix, use `aube patch <package>@<version>` and `aube patch-commit <directory>` and commit the patch with the lockfile. Aube's `paranoid` bundle enforces the build allowlist, jailed scripts, integrity checks, and a 24-hour release cooldown. The TypeScript 7.1 development series has a narrowly scoped age exemption for its nightlies.
 
 ## GitHub Actions
 
