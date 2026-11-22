@@ -18,6 +18,7 @@ export default defineConfig({
 	compressHTML: false,
 	experimental: {
 		clientPrerender: true,
+		chromeDevtoolsWorkspace: true,
 		contentIntellisense: true,
 		svgOptimizer: svgoOptimizer(),
 	},

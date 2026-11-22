@@ -26,6 +26,7 @@ run = "hk install --mise"
 
 [tasks.dev]
 description = "Run the Astro development server"
+env = { ASTRO_DEV_BACKGROUND = "0" }
 run = "aubr --no-install dev"
 
 [tasks.check]
@@ -68,6 +69,7 @@ run = "aube exec --no-install astro build --timings"
 
 [tasks.preview]
 description = "Build and serve a local Astro preview"
+env = { ASTRO_PREVIEW_BACKGROUND = "0" }
 run = "aubr --no-install preview"
 
 [tasks."preview:deploy"]
@@ -97,7 +99,7 @@ depends = ["check", "lint", "audit", "dedupe"]
 run = [{ task = "build" }]
 
 [daemons.astro]
-run = 'exec aubr --no-install dev --port "$ASTRO_PORT"'
+run = 'exec env ASTRO_DEV_BACKGROUND=0 aubr --no-install dev --host 127.0.0.1 --port "$ASTRO_PORT"'
 port = { auto = true, base = 4321 }
 ready_cmd = 'curl -fsS "http://127.0.0.1:$ASTRO_PORT/" >/dev/null'
 
