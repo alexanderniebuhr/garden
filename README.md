@@ -20,7 +20,7 @@ CI lints the complete workflow set with jactionlint's `pedantic` profile and tre
 mise exec -- jactionlint --no-online --strict-exit --min-severity warn
 mise exec -- jactionlint --no-online --diff
 mise exec -- jactionlint update --diff
-mise exec -- jactionlint run --container --dry-run --event pull_request --job check ci
+mise exec -- jactionlint run --container=ubuntu:26.04 --dry-run --event pull_request --job check ci
 ```
 
 Apply only reviewed fixes and dependency updates. Keep each action pinned to a full SHA with a version comment. Run `gh actions-lock --no-narrow` after changing workflow dependencies and `gh actions-lock --verify-local` to check coverage. `jactionlint --suggest-timeouts` needs access to successful GitHub Actions runs and enough samples for each job.
