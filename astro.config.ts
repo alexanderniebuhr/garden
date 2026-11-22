@@ -1,4 +1,5 @@
 import cloudflare from "@astrojs/cloudflare";
+import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import { defineConfig, svgoOptimizer } from "astro/config";
 import expressiveCode from "astro-expressive-code";
@@ -38,7 +39,7 @@ export default defineConfig({
 	prefetch: {
 		defaultStrategy: "hover",
 	},
-	integrations: [expressiveCode(), sitemap()],
+	integrations: [expressiveCode(), mdx(), sitemap()],
 	devToolbar: {
 		enabled: false,
 	},

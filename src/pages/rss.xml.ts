@@ -2,11 +2,11 @@ import type { APIRoute } from "astro";
 
 export const prerender = true;
 
-import { getCollection } from "astro:content";
 import rss from "@astrojs/rss";
+import { getPublishedPosts } from "../posts";
 
 export const GET = (async ({ site }) => {
-	const article = await getCollection("blog");
+	const article = await getPublishedPosts();
 	return rss({
 		title: "Alexander Niebuhr's Garden",
 		description:

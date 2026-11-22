@@ -27,6 +27,10 @@ Apply only reviewed fixes and dependency updates. Keep each action pinned to a f
 
 The workflow lint job annotates pull requests. To enable its separate SARIF upload on production runs, set the repository variable `ENABLE_CODE_SCANNING` to `true` once GitHub code scanning is available.
 
+## Writing posts
+
+Put `.md` and `.mdx` posts under `src/content/blog/<locale>/`. Use the Astro VS Code extension for collection frontmatter hints and `mise exec -- aube exec --no-install astro sync` to refresh generated types. Use `draft: true` to keep a post out of the site and feed. Add `related: [en/pigsty]` to declare a relationship by collection ID. Published posts can reference only existing published posts.
+
 ## Deploy
 
 Every push to `main` deploys production through GitHub Actions (`.github/workflows/deploy.yml`): it runs `aube run check` and `biome ci .`, builds with `cf build` and uploads that build with `cf deploy --prebuilt --force`, so the upload overrides any configuration changed outside the repository (for example in the dashboard). It can also be started by hand from the Actions tab (`workflow_dispatch`, `main` only). Only the upload needs the token: the build needs no Cloudflare credentials, so pull requests (`.github/workflows/ci.yml`) run the checks and the build as well, without secrets.

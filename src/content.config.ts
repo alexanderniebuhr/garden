@@ -1,5 +1,5 @@
 // import type { Loader } from "astro/loaders";
-import { defineCollection } from "astro:content";
+import { defineCollection, reference } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
 
@@ -34,7 +34,7 @@ import { z } from "astro/zod";
 const blog = defineCollection({
 	loader: glob({
 		base: "./src/content/blog",
-		pattern: "**/*.md",
+		pattern: "**/*.{md,mdx}",
 		deferRender: true,
 	}),
 	schema: ({ image }) =>
@@ -53,6 +53,8 @@ const blog = defineCollection({
 			cover: image(),
 			coverAlt: z.string(),
 			excerpt: z.string().optional(),
+			draft: z.boolean().default(false),
+			related: z.array(reference("blog")).default([]),
 		}),
 });
 

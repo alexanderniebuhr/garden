@@ -24,6 +24,7 @@
 	},
 	"dependencies": {
 		"@astrojs/cloudflare": "15.0.0-beta.6",
+		"@astrojs/mdx": "8.1.6",
 		"@astrojs/rss": "4.0.19",
 		"@astrojs/sitemap": "3.7.6",
 		"@expressive-code/plugin-collapsible-sections": "0.44.4",

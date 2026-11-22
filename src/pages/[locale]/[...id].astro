@@ -2,12 +2,21 @@
 export const prerender = true;
 
 import type { GetStaticPaths, InferGetStaticPropsType } from "astro";
-import { getCollection, render } from "astro:content";
+import { render } from "astro:content";
 import Post from "../../layouts/Post.astro";
+import { getPublishedPosts } from "../../posts";
 
 export const getStaticPaths = (async () => {
-	const posts = await getCollection("blog");
+	const posts = await getPublishedPosts();
+	const publishedIds = new Set(posts.map(({ id }) => id));
 	return posts.map((post) => {
+		for (const { id } of post.data.related) {
+			if (!publishedIds.has(id)) {
+				throw new Error(
+					`${post.id} references an unpublished or missing post: ${id}`,
+				);
+			}
+		}
 		const [lang, ...id] = post.id.split("/");
 		return {
 			params: {
