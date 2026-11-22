@@ -1,6 +1,6 @@
 [tools]
 aube = "2.10.1"
-hk = { version = "2.12.0", workflow = "release.yml" }
+hk = { version = "2.13.0", workflow = "release.yml" }
 
 [hooks]
 # skipped in CI, where the workflows install with a frozen lockfile and need no git hooks
