@@ -9,6 +9,15 @@ import { getPublishedPosts } from "../../posts";
 export const getStaticPaths = (async () => {
 	const posts = await getPublishedPosts();
 	const publishedIds = new Set(posts.map(({ id }) => id));
+	const localesByPath = new Map<string, string[]>();
+	for (const { id } of posts) {
+		const [locale, ...segments] = id.split("/");
+		if (!locale) continue;
+		const path = segments.join("/");
+		const locales = localesByPath.get(path) ?? [];
+		locales.push(locale);
+		localesByPath.set(path, locales);
+	}
 	return posts.map((post) => {
 		for (const { id } of post.data.related) {
 			if (!publishedIds.has(id)) {
@@ -17,21 +26,24 @@ export const getStaticPaths = (async () => {
 				);
 			}
 		}
-		const [lang, ...id] = post.id.split("/");
+		const [locale, ...segments] = post.id.split("/");
+		const path = segments.join("/");
 		return {
 			params: {
-				locale: lang,
-				id: id.join("/") || undefined,
+				locale,
+				id: path || undefined,
 			},
-			props: post,
+			props: { post, alternateLocales: localesByPath.get(path) ?? [] },
 		};
 	});
 }) satisfies GetStaticPaths;
 
 // type Params = InferGetStaticParamsType<typeof getStaticPaths>;
 type Props = InferGetStaticPropsType<typeof getStaticPaths>;
-const post = Astro.props;
+const { post, alternateLocales } = Astro.props;
 const { Content } = await render(post);
 ---
 
-<Post {...post.data}> <Content /> </Post>
+<Post {...post.data} postId={post.id} alternateLocales={alternateLocales}>
+	<Content />
+</Post>

@@ -1,6 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import { getAbsoluteLocaleUrlList } from "astro:i18n";
+import { getAbsoluteLocaleUrl } from "astro:i18n";
 import cssesc from "cssesc";
 import Developing from "../components/icons/Developing.astro";
 import Experimental from "../components/icons/Experimental.astro";
@@ -10,17 +10,16 @@ import Understanding from "../components/icons/Understanding.astro";
 import Page from "./Page.astro";
 
 type Post = CollectionEntry<"blog">["data"];
-interface Props extends Post {}
-const { title } = Astro.props;
+interface Props extends Post {
+	postId: string;
+	alternateLocales: string[];
+}
+const { title, postId, alternateLocales } = Astro.props;
 const description = `${title} — by ${Astro.props.author}`;
 
-const absoluteLocaleUrlList = getAbsoluteLocaleUrlList(
-	Astro.url.pathname.split("/").toSpliced(1, 1).join("/"),
-	{},
-);
-
-const lang = Astro.currentLocale || "en";
-const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+const [lang = "en", ...segments] = postId.split("/");
+const localizedPath = segments.join("/");
+const canonicalUrl = new URL(`/${postId}/`, Astro.site);
 ---
 
 <Page>
@@ -28,10 +27,14 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 		<title>{title}</title>
 		<meta name="description" content={description}>
 		<link rel="canonical" href={canonicalUrl.href}>
-		{absoluteLocaleUrlList.map((url) => {
-			const locale = new URL(url).pathname.split("/").at(1);
-			return <link rel="alternate" hreflang={locale} href={url} />;
-		})}
+		{alternateLocales.length > 1 &&
+			alternateLocales.map((locale) => (
+				<link
+					rel="alternate"
+					hreflang={locale}
+					href={getAbsoluteLocaleUrl(locale, `${localizedPath}/`)}
+				/>
+			))}
 		<!-- Open Graph -->
 		<meta property="og:type" content="website">
 		<meta property="og:url" content={canonicalUrl.href}>

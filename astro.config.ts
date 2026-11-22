@@ -6,6 +6,8 @@ import expressiveCode from "astro-expressive-code";
 import browserslist from "browserslist";
 import { browserslistToTargets } from "lightningcss";
 
+const sitemapRedirects = new Set(["/de/", "/de/graph/"]);
+
 export default defineConfig({
 	site: "https://alexanderniebuhr.garden",
 	output: "server",
@@ -39,7 +41,25 @@ export default defineConfig({
 	prefetch: {
 		defaultStrategy: "hover",
 	},
-	integrations: [expressiveCode(), mdx(), sitemap()],
+	integrations: [
+		expressiveCode(),
+		mdx(),
+		sitemap({
+			i18n: { defaultLocale: "en", locales: { en: "en", de: "de" } },
+			filter: (page) => !sitemapRedirects.has(new URL(page).pathname),
+			serialize: (item) => {
+				// The root language selector is distinct from the localized indexes.
+				const { links: alternates, ...page } = item;
+				const links = alternates?.filter(
+					({ url }) => new URL(url).pathname !== "/",
+				);
+				if (new URL(page.url).pathname !== "/" && links && links.length > 1) {
+					return { ...page, links };
+				}
+				return page;
+			},
+		}),
+	],
 	devToolbar: {
 		enabled: false,
 	},
