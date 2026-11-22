@@ -46,6 +46,10 @@ Mise installs JavaScript dependencies when the manifests change or the local bin
 
 An alternative to foreground `mise run dev` is `mise daemons start astro`. Use `mise daemons urls` for the worktree's URL and `mise daemons stop astro` to stop it. Astro also supports `mise exec -- aube exec --no-install astro dev --background` and `mise exec -- aube exec --no-install astro preview --background` after an Astro build. Use the corresponding `stop` subcommand to shut those servers down.
 
+### Repository checks
+
+`mise run setup` installs check-only commit hooks and a type-checking pre-push hook. Use `mise run lint` for repository-wide checks, or `mise exec -- hk check --pr` for branch changes. Add `--plan` or `--why` to see which files and steps hk chooses. Use `mise exec -- hk check --all --slow` to include a Cloudflare build. CI attaches hk's SARIF and JUnit reports.
+
 ## Deploy
 
 Every push to `main` deploys production through GitHub Actions (`.github/workflows/deploy.yml`). `mise run ci` runs the checks in parallel and builds with `cf build` after they pass. Deployment uploads that build with `cf deploy --prebuilt --force`, so repository configuration overrides changes made in the dashboard. You can also start the production workflow from the Actions tab on `main`. Only the upload uses the Cloudflare token. The pull request workflow runs the shared verification and build without it.

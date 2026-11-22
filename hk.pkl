@@ -1,12 +1,37 @@
 amends "package://github.com/jdx/hk/releases/download/v2.13.0/hk@2.13.0#/Config.pkl"
+import "package://github.com/jdx/hk/releases/download/v2.13.0/hk@2.13.0#/Builtins.pkl"
 
 local biome_flags = "--no-errors-on-unmatched --files-ignore-unknown=true --colors=off"
 
-local linters = new Mapping<String, Step> {
-    ["biome"] {
-        glob = List("**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx,json,jsonc,css,graphql,gql,html,astro,vue,svelte,grit,svg}")
+steps {
+    ["biome"] = (Builtins.biome) {
+        glob = List("**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx,json,jsonc,css,graphql,gql,html,astro,vue,svelte,grit,svg,yaml,yml}")
+        profiles = List("!ci")
         check = "node_modules/.bin/biome check \(biome_flags) {{files}}"
         fix = "node_modules/.bin/biome check --write \(biome_flags) {{files}}"
+    }
+    ["biome-ci"] = new Step {
+        profiles = List("ci")
+        check = "node_modules/.bin/biome ci . --colors=off --reporter=sarif"
+        diagnostic_format = "sarif"
+    }
+    ["jactionlint"] = (Builtins.jactionlint) {
+        check = "jactionlint --no-online --strict-exit --min-severity warn --format sarif {{files}}"
+        fix = "jactionlint --no-online --fix {{files}}"
+        diagnostic_format = "sarif"
+    }
+    ["markdown"] = (Builtins.rumdl) {
+        glob = List("**/*.{md,mdx}")
+        check = "rumdl check --output-format sarif {{files}}"
+        diagnostic_format = "sarif"
+    }
+    ["hk-config"] = new Step {
+        glob = List("hk.pkl")
+        check = "hk validate --deny-warnings"
+    }
+    ["cloudflare-build"] = new Step {
+        profiles = List("slow")
+        check = "mise run --no-deps build"
     }
 }
 
@@ -15,13 +40,17 @@ hooks {
         fix = false
         stage = false
         stash = "none"
-        steps = linters
+        steps {
+            ["staged-secrets"] = (Builtins.gitleaks) {
+                check = "gitleaks git --pre-commit --staged --no-banner --redact ."
+            }
+        }
     }
-    ["check"] {
-        steps = linters
-    }
-    ["fix"] {
-        fix = true
-        steps = linters
+    ["pre-push"] {
+        steps {
+            ["type-check"] = new Step {
+                check = "mise run check"
+            }
+        }
     }
 }

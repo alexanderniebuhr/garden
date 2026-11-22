@@ -6,6 +6,8 @@ node = "26.13.1"
 "aqua:koalaman/shellcheck" = "0.11.0"
 "packslip:github.com/jdx/fnox" = "1.50.0"
 "packslip:github.com/jdx/pitchfork" = "2.36.0"
+"aqua:rvben/rumdl" = "0.3.5"
+"aqua:gitleaks/gitleaks" = "8.30.1"
 
 [env]
 _.file = ".env.local"
@@ -31,8 +33,16 @@ description = "Generate Cloudflare and Astro types and check the project"
 run = "aubr --no-install check"
 
 [tasks.lint]
-description = "Check code with Biome"
-run = "aube exec --no-install biome ci ."
+description = "Check code and project files with hk"
+run = '''
+if [ "${GITHUB_ACTIONS:-}" = true ]; then
+  reports="$RUNNER_TEMP/garden-hk"
+  mkdir -p "$reports" || exit 1
+  hk check --all --profile ci --no-fail-fast --skip-step jactionlint --sarif "$reports/hk.sarif" --junit-xml "$reports/hk.xml"
+else
+  hk check --all --no-fail-fast
+fi
+'''
 
 [tasks.audit]
 description = "Check for high and critical dependency advisories"

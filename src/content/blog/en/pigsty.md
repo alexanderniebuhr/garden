@@ -14,7 +14,7 @@ Pigsty seems to be a great way to self deploy postgresql. However their [v4 docs
 
 This is a WIP document documenting my steps and learning and trying to make it more reproducible.
 
-```
+```text
 It also doesn't cover all possible options and is opiniated based on our own use-case. Always conduct latest official documentation for all options.
 ```
 
