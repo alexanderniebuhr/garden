@@ -1,6 +1,7 @@
 [tools]
-aube = "2.10.1"
-hk = { version = "2.13.0", workflow = "release.yml" }
+node = "26.13.1"
+"packslip:github.com/aubepkg/aube" = "2.10.1"
+"packslip:github.com/jdx/hk" = "2.13.0"
 
 [hooks]
 # skipped in CI, where the workflows install with a frozen lockfile and need no git hooks
@@ -8,4 +9,4 @@ postinstall = '[ -n "$CI" ] || { aube install && hk install --mise; }'
 
 [settings]
 experimental = true
-idiomatic_version_file_enable_tools = ["node"]
+lockfile_platforms = ["macos-arm64", "linux-x64"]
