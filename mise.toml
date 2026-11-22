@@ -1,5 +1,5 @@
 [tools]
-aube = "2.10.0"
+aube = "2.10.1"
 hk = { version = "2.12.0", workflow = "release.yml" }
 
 [hooks]
