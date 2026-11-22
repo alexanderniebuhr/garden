@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
 
-export const prerender = false;
+export const prerender = true;
 
 import { getCollection } from "astro:content";
 import rss from "@astrojs/rss";
