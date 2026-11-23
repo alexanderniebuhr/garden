@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import { getImage } from "astro:assets";
 import { getAbsoluteLocaleUrl } from "astro:i18n";
 import cssesc from "cssesc";
 import Developing from "../components/icons/Developing.astro";
@@ -8,24 +9,68 @@ import Final from "../components/icons/Final.astro";
 import Sharing from "../components/icons/Sharing.astro";
 import Understanding from "../components/icons/Understanding.astro";
 import PostCover from "../components/PostCover.astro";
+import { getPostUrl } from "../posts";
+import { POST_STATES, type PostState, STATE_META } from "../states";
 import Page from "./Page.astro";
 
-type Post = CollectionEntry<"blog">["data"];
-interface Props extends Post {
+type PostData = CollectionEntry<"blog">["data"];
+
+interface RelatedPost {
+	id: string;
+	title: string;
+	date: Date;
+}
+
+interface Props extends PostData {
 	postId: string;
 	alternateLocales: string[];
+	relatedPosts: RelatedPost[];
 }
-const { title, postId, alternateLocales, cover, coverAlt } = Astro.props;
-const description = `${title} — by ${Astro.props.author}`;
+
+const {
+	title,
+	author,
+	date,
+	state,
+	cover,
+	coverAlt,
+	excerpt,
+	postId,
+	alternateLocales,
+	relatedPosts,
+} = Astro.props;
+
+const description = excerpt ?? `${title} — by ${author}`;
 
 const [lang = "en", ...segments] = postId.split("/");
 const localizedPath = segments.join("/");
-const canonicalUrl = new URL(`/${postId}/`, Astro.site);
+const canonicalUrl = new URL(getPostUrl(postId), Astro.site);
+const ogCover = await getImage({ src: cover, width: 1200, format: "jpeg" });
+const ogImageUrl = new URL(ogCover.src, Astro.site);
+
+const stageIcons: Record<PostState, typeof Experimental> = {
+	experimental: Experimental,
+	building: Developing,
+	idea: Understanding,
+	sharing: Sharing,
+	final: Final,
+};
+
+const stages = POST_STATES.map((key) => ({
+	key,
+	...STATE_META[key],
+	Icon: stageIcons[key],
+	isCurrent: key === state,
+}));
+
+const titleTransitionName = cssesc(`post-title-${postId}`, {
+	isIdentifier: true,
+});
 ---
 
 <Page>
 	<Fragment slot="head">
-		<title>{title}</title>
+		<title>{title} — Alexander Niebuhr's Garden</title>
 		<meta name="description" content={description}>
 		<link rel="canonical" href={canonicalUrl.href}>
 		{alternateLocales.length > 1 &&
@@ -37,142 +82,90 @@ const canonicalUrl = new URL(`/${postId}/`, Astro.site);
 				/>
 			))}
 		<!-- Open Graph -->
-		<meta property="og:type" content="website">
+		<meta property="og:type" content="article">
 		<meta property="og:url" content={canonicalUrl.href}>
 		<meta property="og:title" content={title}>
 		<meta property="og:description" content={description}>
+		<meta property="og:image" content={ogImageUrl.href}>
+		<meta property="og:image:alt" content={coverAlt}>
 		<meta property="og:locale" content={lang}>
+		{alternateLocales
+			.filter((locale) => locale !== lang)
+			.map((locale) => (
+				<meta property="og:locale:alternate" content={locale} />
+			))}
 		<meta property="og:site_name" content="Alexander Niebuhr's Garden">
+		<meta property="article:published_time" content={date.toISOString()}>
+		<meta property="article:author" content={author}>
 		<!-- Twitter -->
-		<meta name="twitter:card" content="summary">
+		<meta name="twitter:card" content="summary_large_image">
 		<meta name="twitter:title" content={title}>
 		<meta name="twitter:description" content={description}>
+		<meta name="twitter:image" content={ogImageUrl.href}>
+		<meta name="twitter:image:alt" content={coverAlt}>
 	</Fragment>
 	<Fragment slot="main">
 		<article class="post">
 			<header class="post-header">
-				<time class="post-date" datetime={Astro.props.date.toISOString()}>
-					{Astro.props.date.toLocaleDateString("de-DE")}
+				<time class="post-date" datetime={date.toISOString()}>
+					{date.toLocaleDateString(lang, {
+						year: "numeric",
+						month: "long",
+						day: "numeric",
+					})}
 				</time>
 				<h1
 					class="post-title"
-					style={{
-						"view-transition-name": cssesc(title, { isIdentifier: true }),
-					}}
+					style={{ "view-transition-name": titleTransitionName }}
 				>
 					{title}
 				</h1>
 				{/* biome-ignore lint/a11y/useSemanticElements: a <fieldset> brings default border, padding and min-width styling and is meant for form controls; role="group" with aria-label is valid ARIA here */}
 				<div role="group" aria-label="Post maturity stages" class="stages">
-					<button
-						class="stage"
-						style="anchor-name: --stage-experimental"
-						popovertarget="tip-experimental"
-						type="button"
-					>
-						<Experimental type="multi" width="2rem" height="2rem" />
-					</button>
-					<div
-						id="tip-experimental"
-						popover
-						class="stage-tip"
-						style="position-anchor: --stage-experimental"
-					>
-						<strong>Experimental</strong>
-						<p>Early seedling — a raw idea, just planted.</p>
-					</div>
-					&centerdot;
-					<button
-						class="stage"
-						style="anchor-name: --stage-developing"
-						popovertarget="tip-developing"
-						type="button"
-					>
-						<Developing
-							type="multi"
-							width="2rem"
-							height="2rem"
-							class="stage-icon-muted"
-						/>
-					</button>
-					<div
-						id="tip-developing"
-						popover
-						class="stage-tip"
-						style="position-anchor: --stage-developing"
-					>
-						<strong>Developing</strong>
-						<p>Growing — being actively worked on.</p>
-					</div>
-					&centerdot;
-					<button
-						class="stage"
-						style="anchor-name: --stage-understanding"
-						popovertarget="tip-understanding"
-						type="button"
-					>
-						<Understanding
-							type="multi"
-							width="2rem"
-							height="2rem"
-							class="stage-icon-muted"
-						/>
-					</button>
-					<div
-						id="tip-understanding"
-						popover
-						class="stage-tip"
-						style="position-anchor: --stage-understanding"
-					>
-						<strong>Understanding</strong>
-						<p>Maturing — deepening insight on the topic.</p>
-					</div>
-					&centerdot;
-					<button
-						class="stage"
-						style="anchor-name: --stage-sharing"
-						popovertarget="tip-sharing"
-						type="button"
-					>
-						<Sharing
-							type="multi"
-							width="2rem"
-							height="2rem"
-							class="stage-icon-muted"
-						/>
-					</button>
-					<div
-						id="tip-sharing"
-						popover
-						class="stage-tip"
-						style="position-anchor: --stage-sharing"
-					>
-						<strong>Sharing</strong>
-						<p>Ready to share — polished enough for others.</p>
-					</div>
-					&centerdot;
-					<button
-						class="stage"
-						style="anchor-name: --stage-final"
-						popovertarget="tip-final"
-						type="button"
-					>
-						<Final
-							type="multi"
-							width="2rem"
-							height="2rem"
-							class="stage-icon-muted"
-						/>
-					</button>
-					<div
-						id="tip-final"
-						popover
-						class="stage-tip"
-						style="position-anchor: --stage-final"
-					>
-						<strong>Final</strong>
-						<p>Evergreen — considered complete.</p>
-					</div>
+					{stages.map((stage, index) => {
+						const Icon = stage.Icon;
+						const tipId = `tip-${stage.key}`;
+						const anchorName = `--stage-${stage.key}`;
+						return (
+							<>
+								{index > 0 && <span aria-hidden="true">&centerdot;</span>}
+								<button
+									class="stage"
+									style={`anchor-name: ${anchorName}`}
+									popovertarget={tipId}
+									aria-label={
+										stage.isCurrent
+											? `${stage.label} (current stage)`
+											: stage.label
+									}
+									aria-current={stage.isCurrent ? "step" : undefined}
+									type="button"
+								>
+									<Icon
+										type="multi"
+										width="2rem"
+										height="2rem"
+										aria-hidden="true"
+										class={stage.isCurrent ? undefined : "stage-icon-muted"}
+									/>
+								</button>
+								<div
+									id={tipId}
+									popover
+									class="stage-tip"
+									style={`position-anchor: ${anchorName}`}
+								>
+									<strong>
+										{stage.label}
+										{stage.isCurrent && (
+											<span class="stage-current-badge">Current</span>
+										)}
+									</strong>
+									<p>{stage.description}</p>
+								</div>
+							</>
+						);
+					})}
 				</div>
 			</header>
 			<div class="post-cover">
@@ -184,7 +177,30 @@ const canonicalUrl = new URL(`/${postId}/`, Astro.site);
 					priority
 				/>
 			</div>
-			<div class="prose"><slot /></div>
+			<div class="prose post-prose"><slot /></div>
+			{relatedPosts.length > 0 && (
+				<aside aria-labelledby="related-heading" class="related-posts">
+					<h2 id="related-heading" class="related-heading">
+						Related posts
+					</h2>
+					<ul class="related-list">
+						{relatedPosts.map((related) => (
+							<li>
+								<a href={getPostUrl(related.id)} class="related-link">
+									<span>{related.title}</span>
+									<time datetime={related.date.toISOString()}>
+										{related.date.toLocaleDateString(lang, {
+											year: "numeric",
+											month: "short",
+											day: "numeric",
+										})}
+									</time>
+								</a>
+							</li>
+						))}
+					</ul>
+				</aside>
+			)}
 		</article>
 	</Fragment>
 </Page>
@@ -196,7 +212,6 @@ const canonicalUrl = new URL(`/${postId}/`, Astro.site);
 		display: flex;
 		flex-direction: column;
 		gap: var(--spacing-fluid-m);
-		padding-inline: var(--spacing-fluid-l);
 	}
 
 	.post-header {
@@ -222,12 +237,18 @@ const canonicalUrl = new URL(`/${postId}/`, Astro.site);
 		}
 	}
 
+	.post-prose {
+		width: min(100%, 45rem);
+		margin-inline: auto;
+	}
+
 	.post-title {
 		font-size: var(--text-fluid-heading);
 		line-height: var(--text-fluid-heading--line-height);
 		font-weight: var(--font-weight-bold);
 		text-align: center;
 		width: fit-content;
+		max-width: min(100%, 45rem);
 	}
 
 	.stages {
@@ -288,7 +309,9 @@ const canonicalUrl = new URL(`/${postId}/`, Astro.site);
 		}
 
 		& strong {
-			display: block;
+			display: flex;
+			align-items: center;
+			gap: 0.375rem;
 			margin-bottom: 0.125rem;
 			font-weight: var(--font-weight-semibold);
 			color: light-dark(var(--color-neutral-900), var(--color-white));
@@ -303,6 +326,78 @@ const canonicalUrl = new URL(`/${postId}/`, Astro.site);
 				opacity: 0;
 				translate: 0 -0.25rem;
 			}
+		}
+	}
+
+	.stage-current-badge {
+		border-radius: var(--radius-full);
+		background-color: light-dark(
+			var(--color-neutral-200),
+			var(--color-neutral-700)
+		);
+		padding-inline: 0.375rem;
+		padding-block: 0.0625rem;
+		font-size: 0.6875rem;
+		font-weight: var(--font-weight-medium);
+		color: light-dark(var(--color-neutral-700), var(--color-neutral-200));
+	}
+
+	.related-posts {
+		width: min(100%, 45rem);
+		margin-inline: auto;
+		border-top: 1px solid
+			light-dark(var(--color-neutral-200), var(--color-neutral-800));
+		padding-top: var(--spacing-fluid-s);
+	}
+
+	.related-heading {
+		margin-bottom: var(--spacing-fluid-xs);
+		font-size: var(--text-sm);
+		line-height: var(--text-sm--line-height);
+		font-weight: var(--font-weight-semibold);
+		letter-spacing: var(--tracking-wider);
+		text-transform: uppercase;
+		color: light-dark(var(--color-neutral-500), var(--color-neutral-400));
+	}
+
+	.related-list {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.related-link {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 0.5rem;
+		border-radius: var(--radius-lg);
+		padding-inline: 0.75rem;
+		padding-block: 0.5rem;
+		font-weight: var(--font-weight-medium);
+		transition-property: background-color;
+		transition-timing-function: var(--default-transition-timing-function);
+		transition-duration: var(--default-transition-duration);
+
+		& time {
+			font-size: var(--text-xs);
+			line-height: var(--text-xs--line-height);
+			color: light-dark(var(--color-neutral-500), var(--color-neutral-400));
+		}
+
+		@media (--hover) {
+			&:hover {
+				background-color: light-dark(
+					var(--color-neutral-200-a50),
+					var(--color-neutral-800-a50)
+				);
+			}
+		}
+
+		&:focus-visible {
+			outline: 2px solid currentcolor;
+			outline-offset: 2px;
 		}
 	}
 </style>
