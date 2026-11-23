@@ -1,4 +1,12 @@
 ---
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"svg"> {
+	type: "multi" | "duo";
+	width?: string | number;
+	height?: string | number;
+}
+
 const { type, width, height, ...props } = Astro.props;
 
 // multi
@@ -109,7 +117,7 @@ const { type, width, height, ...props } = Astro.props;
 	>
 		<title>Developing</title>
 		<g fill="none">
-			<g clip-path="url(#SVGw9scfcdR)">
+			<g clip-path="url(#icon-developing-clip)">
 				<path
 					fill="#00034a"
 					stroke="#00034a"
@@ -193,7 +201,7 @@ const { type, width, height, ...props } = Astro.props;
 				/>
 			</g>
 			<defs>
-				<clipPath id="SVGw9scfcdR">
+				<clipPath id="icon-developing-clip">
 					<path fill="#fff" d="M0 0h40v40H0z" />
 				</clipPath>
 			</defs>
