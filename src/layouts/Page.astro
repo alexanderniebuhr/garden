@@ -1,4 +1,5 @@
 ---
+import { getRelativeLocaleUrl } from "astro:i18n";
 import GraphIcon from "../assets/pixel/chart-network.svg";
 import Shell from "./Shell.astro";
 
@@ -6,34 +7,56 @@ interface Props {
 	wide?: boolean;
 }
 const { wide } = Astro.props;
+const locale = Astro.currentLocale ?? "en";
+const postsHref = getRelativeLocaleUrl(locale);
+const graphHref = getRelativeLocaleUrl(locale, "graph");
+const currentPath = Astro.url.pathname.replace(/\/?$/, "/");
 ---
 
 <Shell>
 	<Fragment slot="head"> <slot name="head" /> </Fragment>
 	<Fragment slot="body">
+		<a href="#main-content" class="skip-link">Skip to content</a>
 		<header id="site-header">
-			<nav id="site-nav">
+			<nav id="site-nav" aria-label="Main">
 				<ul>
 					<li>
-						<a href="https://alexanderniebuhr.me" class="nav-link"> me </a>
+						<a href="https://alexanderniebuhr.me" class="nav-link">me</a>
 					</li>
 					<li>
 						<a
-							href={`/${Astro.currentLocale}/graph`}
+							href={postsHref}
+							aria-current={currentPath === postsHref ? "page" : undefined}
+							class="nav-link"
+						>
+							posts
+						</a>
+					</li>
+					<li>
+						<a
+							href={graphHref}
 							aria-label="Graph"
+							aria-current={currentPath === graphHref ? "page" : undefined}
 							class="nav-link nav-link-icon"
 						>
 							<GraphIcon />
 						</a>
 					</li>
 					<li>
-						<a href="/" class="nav-link"> x </a>
+						<a
+							href="/"
+							aria-label="Language selector"
+							aria-current={currentPath === "/" ? "page" : undefined}
+							class="nav-link"
+						>
+							x
+						</a>
 					</li>
 				</ul>
 			</nav>
 		</header>
 
-		<main class:list={["site-main", { padded: !wide }]}>
+		<main id="main-content" class:list={["site-main", { padded: !wide }]}>
 			<slot name="main" />
 		</main>
 		<footer class="site-footer">
@@ -121,9 +144,17 @@ const { wide } = Astro.props;
 		line-height: var(--text-sm--line-height);
 		font-weight: var(--font-weight-medium);
 		color: light-dark(var(--color-neutral-600), var(--color-neutral-400));
-		transition-property: all;
+		transition-property: color, background-color, scale;
 		transition-timing-function: var(--ease-out);
 		transition-duration: 200ms;
+
+		&[aria-current="page"] {
+			color: light-dark(var(--color-black), var(--color-white));
+			background-color: light-dark(
+				var(--color-black-a5),
+				var(--color-white-a10)
+			);
+		}
 
 		@media (--hover) {
 			&:hover {
@@ -176,9 +207,7 @@ const { wide } = Astro.props;
 		color: light-dark(var(--color-neutral-500), var(--color-neutral-400));
 
 		& a {
-			transition-property:
-				color, background-color, border-color, outline-color,
-				text-decoration-color, fill, stroke;
+			transition-property: color;
 			transition-timing-function: var(--default-transition-timing-function);
 			transition-duration: var(--default-transition-duration);
 
