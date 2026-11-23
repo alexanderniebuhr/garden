@@ -4,75 +4,88 @@ export const prerender = true;
 import cssesc from "cssesc";
 import PostCover from "../../components/PostCover.astro";
 import Page from "../../layouts/Page.astro";
-import { getPublishedPosts } from "../../posts";
+import { getPostUrl, getPublishedPosts } from "../../posts";
 
-const posts = (await getPublishedPosts("en")).sort(
-	(a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
-);
+const locale = Astro.currentLocale ?? "en";
+const posts = await getPublishedPosts(locale);
+const canonicalUrl = new URL(`/${locale}/`, Astro.site);
 ---
 
 <Page>
-	<Fragment slot="head"> <title>Blog Übersicht</title> </Fragment>
+	<Fragment slot="head">
+		<title>Posts — Alexander Niebuhr's Garden</title>
+		<meta
+			name="description"
+			content="Notes and articles on web development, infrastructure, and design in Alexander Niebuhr's digital garden."
+		>
+		<link rel="canonical" href={canonicalUrl.href}>
+	</Fragment>
 	<Fragment slot="main">
 		<h1 class="page-title">Posts</h1>
 
-		<section class="posts">
-			{posts.map((post) => (
-				<article class="post-card">
-					<div class="post-date">
-						<time datetime={post.data.date.toDateString()}>
-							<span>
-								{post.data.date.toLocaleDateString(Astro.currentLocale, {
-									year: "numeric",
-								})}
-							</span>
-							<span class="post-date-rule" />
-							<span>
-								{post.data.date.toLocaleDateString(Astro.currentLocale, {
-									month: "short",
-									day: "2-digit",
-								})}
-							</span>
-						</time>
-					</div>
+		<section class="posts" aria-label="Published posts">
+			{posts.map((post) => {
+				const postUrl = getPostUrl(post.id);
+				const titleTransitionName = cssesc(`post-title-${post.id}`, {
+					isIdentifier: true,
+				});
+				return (
+					<article class="post-card">
+						<div class="post-date">
+							<time datetime={post.data.date.toISOString()}>
+								<span>
+									{post.data.date.toLocaleDateString(locale, {
+										year: "numeric",
+									})}
+								</span>
+								<span class="post-date-rule" aria-hidden="true" />
+								<span>
+									{post.data.date.toLocaleDateString(locale, {
+										month: "short",
+										day: "2-digit",
+									})}
+								</span>
+							</time>
+						</div>
 
-					<div class="post-cover">
-						<PostCover
-							postId={post.id}
-							src={post.data.cover}
-							alt={post.data.coverAlt}
-							sizes="auto, 14rem"
-						/>
-					</div>
+						<div class="post-cover">
+							<PostCover
+								postId={post.id}
+								src={post.data.cover}
+								alt={post.data.coverAlt}
+								sizes="auto, 14rem"
+							/>
+						</div>
 
-					<div class="post-body">
-						<div class="post-text">
-							<a href={`/${post.id}/`}>
-								<h3
-									class="post-title"
-									style={{
-										"view-transition-name": cssesc(post.data.title, {
-											isIdentifier: true,
-										}),
-									}}
+						<div class="post-body">
+							<div class="post-text">
+								<a href={postUrl} class="post-title-link">
+									<h2
+										class="post-title"
+										style={{ "view-transition-name": titleTransitionName }}
+									>
+										{post.data.title}
+									</h2>
+								</a>
+
+								{post.data.excerpt && (
+									<p class="post-excerpt">{post.data.excerpt}</p>
+								)}
+							</div>
+
+							<div class="post-actions">
+								<a
+									href={postUrl}
+									class="read-more"
+									aria-label={`Read ${post.data.title}`}
 								>
-									{post.data.title}
-								</h3>
-							</a>
-
-							{post.data.excerpt && (
-								<p class="post-excerpt">{post.data.excerpt}</p>
-							)}
+									Read Post
+								</a>
+							</div>
 						</div>
-
-						<div class="post-actions">
-							<a href={`/${post.id}`} class="read-more">
-								Read Post
-							</a>
-						</div>
-					</div>
-				</article>
-			))}
+					</article>
+				);
+			})}
 		</section>
 	</Fragment>
 </Page>
@@ -90,16 +103,14 @@ const posts = (await getPublishedPosts("en")).sort(
 	.posts {
 		display: grid;
 		gap: var(--spacing-fluid-s);
+		width: min(100%, 56rem);
+		margin-inline: auto;
 		padding: var(--spacing-fluid-xs);
 	}
 
 	.post-card {
 		display: flex;
-		transition-property:
-			color, background-color, border-color, outline-color,
-			text-decoration-color, fill, stroke, opacity, box-shadow, transform,
-			translate, scale, rotate, filter, backdrop-filter, display,
-			content-visibility, overlay, pointer-events;
+		transition-property: background-color;
 		transition-timing-function: var(--default-transition-timing-function);
 		transition-duration: var(--default-transition-duration);
 
@@ -147,6 +158,7 @@ const posts = (await getPublishedPosts("en")).sort(
 		@media (--sm) {
 			display: block;
 			flex-basis: 14rem;
+			flex-shrink: 0;
 		}
 
 		& :global(img) {
@@ -175,6 +187,16 @@ const posts = (await getPublishedPosts("en")).sort(
 			/* In dark mode the left border stays visible from sm up, as it always has */
 			border-left-color: light-dark(transparent, var(--color-white-a10));
 			padding: 1.5rem;
+		}
+	}
+
+	.post-title-link {
+		display: inline-block;
+		border-radius: var(--radius-sm);
+
+		&:focus-visible {
+			outline: 2px solid currentcolor;
+			outline-offset: 2px;
 		}
 	}
 
@@ -215,11 +237,7 @@ const posts = (await getPublishedPosts("en")).sort(
 		font-size: var(--text-xs);
 		line-height: var(--text-xs--line-height);
 		text-transform: uppercase;
-		transition-property:
-			color, background-color, border-color, outline-color,
-			text-decoration-color, fill, stroke, opacity, box-shadow, transform,
-			translate, scale, rotate, filter, backdrop-filter, display,
-			content-visibility, overlay, pointer-events;
+		transition-property: background-color;
 		transition-timing-function: var(--default-transition-timing-function);
 		transition-duration: var(--default-transition-duration);
 
@@ -227,6 +245,11 @@ const posts = (await getPublishedPosts("en")).sort(
 			&:hover {
 				background-color: var(--color-yellow-500);
 			}
+		}
+
+		&:focus-visible {
+			outline: 2px solid currentcolor;
+			outline-offset: 2px;
 		}
 	}
 </style>
