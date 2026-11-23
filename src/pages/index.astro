@@ -3,15 +3,102 @@ export const prerender = true;
 
 import { getRelativeLocaleUrl } from "astro:i18n";
 import Page from "../layouts/Page.astro";
+
+const canonicalUrl = new URL("/", Astro.site);
 ---
 
 <Page>
-	<Fragment slot="head"> <title>Dashboard</title> </Fragment>
+	<Fragment slot="head">
+		<title>Alexander Niebuhr's Garden</title>
+		<meta
+			name="description"
+			content="A personal digital garden about web development, design, and infrastructure."
+		>
+		<link rel="canonical" href={canonicalUrl.href}>
+	</Fragment>
 	<Fragment slot="main">
-		<h1>Dashboard</h1>
-		<!-- https://v6.docs.astro.build/en/guides/prefetch/#prefetch-strategies -->
-		<a href={getRelativeLocaleUrl("de")}>Deutsch</a>
-		<!-- https://v6.docs.astro.build/en/guides/prefetch/#prefetch-strategies -->
-		<a href={getRelativeLocaleUrl("en")} data-astro-prefetch>English</a>
+		<section class="landing">
+			<h1 class="landing-title">Garden</h1>
+			<p class="landing-subtitle">Choose a language to explore.</p>
+			<div class="locale-links">
+				<a
+					href={getRelativeLocaleUrl("en")}
+					data-astro-prefetch
+					class="locale-link"
+				>
+					English
+				</a>
+				<a href={getRelativeLocaleUrl("de")} class="locale-link">Deutsch</a>
+			</div>
+		</section>
 	</Fragment>
 </Page>
+
+<style>
+	@import "../styles/media.css";
+
+	.landing {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: var(--spacing-fluid-s);
+		text-align: center;
+	}
+
+	.landing-title {
+		font-size: var(--text-4xl);
+		line-height: var(--text-4xl--line-height);
+		font-weight: var(--font-weight-black);
+	}
+
+	.landing-subtitle {
+		font-size: var(--text-sm);
+		line-height: var(--text-sm--line-height);
+		color: light-dark(var(--color-neutral-600), var(--color-neutral-400));
+	}
+
+	.locale-links {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: center;
+		gap: var(--spacing-fluid-xs);
+		margin-top: var(--spacing-fluid-xs);
+	}
+
+	.locale-link {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: var(--radius-full);
+		padding-inline: 1.25rem;
+		padding-block: 0.625rem;
+		font-size: var(--text-sm);
+		line-height: var(--text-sm--line-height);
+		font-weight: var(--font-weight-semibold);
+		color: light-dark(var(--color-neutral-900), var(--color-white));
+		background-color: light-dark(
+			var(--color-neutral-200-a50),
+			var(--color-neutral-800-a50)
+		);
+		box-shadow: 0 0 0 1px
+			light-dark(var(--color-black-a10), var(--color-white-a10));
+		transition-property: background-color, color;
+		transition-timing-function: var(--default-transition-timing-function);
+		transition-duration: var(--default-transition-duration);
+
+		@media (--hover) {
+			&:hover {
+				background-color: var(--color-yellow-400);
+				color: var(--color-gray-900);
+			}
+		}
+
+		&:focus-visible {
+			outline: 2px solid currentcolor;
+			outline-offset: 2px;
+		}
+	}
+</style>
